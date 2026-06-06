@@ -533,7 +533,7 @@ canvas { max-width: 100%; }
     <div class="concept" id="noise" style="scroll-margin-top:16px">
       <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="audio-waveform"></i></span><div><div class="title">雜訊 / 底噪</div><div class="en">Noise · Noise Floor</div></div></div>
       <div class="concept-bd">
-        <div class="explain">永遠存在的背景嘶嘶聲。在頻譜上是一條毛毛的「地板」，叫<strong>底噪</strong>；訊號要冒出這條地板才聽得到。</div>
+        <div class="explain">永遠存在的背景嘶嘶聲。在頻譜上是一條毛毛的「地板」，叫<strong>底噪</strong>；訊號要冒出這條地板才聽得到。（接收機自己也會添雜訊，添多少叫<strong>噪聲指數 NF</strong>。）</div>
         <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像安靜房間裡冰箱的嗡嗡聲——你得講得比它大聲，別人才聽得清楚。</div>
       </div>
     </div>
@@ -583,6 +583,38 @@ canvas { max-width: 100%; }
       <div class="concept-bd">
         <div class="explain">讓中繼台「同一支天線、同時收又發」還不會自己吵自己的濾波器。它用陷波濾波器把收、發兩個頻率隔開，提供足夠的隔離度。</div>
         <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像同一條走廊裝了兩道單向門，進的人和出的人各走各的、不相撞。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="los" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="eye"></i></span><div><div class="title">視距（LOS）</div><div class="en">Line of Sight</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">兩支天線能不能「互相看得到」。看得到（視距內）訊號最好；中間隔著山丘、大樓擋住，訊號就大幅衰減——這也是為什麼要把中繼台架在高處。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像用手電筒打信號——你們之間沒有遮擋才看得到光，中間擋一面牆就沒了。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="rssi" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="signal-high"></i></span><div><div class="title">信號強度（RSSI / S 表）</div><div class="en">Received Signal Strength</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">收到的訊號有多強。常用 <strong>S 表</strong>（S1 最弱到 S9 最強）或 RSSI 數值表示。用不同位置量到的強弱，可以反推訊號源大概在哪個方向。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像手機的訊號格——格數越多代表離基地台越近、收得越好。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="df" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="compass"></i></span><div><div class="title">測向 / 三角定位</div><div class="en">Direction Finding · Triangulation</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">找出訊號（或干擾源）從哪裡來。用<strong>定向天線</strong>（如八木、環形）在不同位置量「哪個方向最強」，畫幾條方向線，交點就是訊號源大概位置。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像兩三個人各自指向同一聲響的方向，手指延伸線的交會點就是聲音來源。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="pathloss" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="trending-down"></i></span><div><div class="title">路徑衰減（Friis）</div><div class="en">Path Loss · Free-space</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">電波越走越弱。距離拉遠、頻率變高，訊號就衰減越多（自由空間裡每拉遠一倍約掉 6dB）。這是估算通訊距離的基礎。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像在空曠地喊話——越走越遠聲音越小，到一定距離就聽不到了。</div>
       </div>
     </div>
 
