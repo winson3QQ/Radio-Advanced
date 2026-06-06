@@ -637,6 +637,7 @@ FM調變指數：
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>注意（事實）</span>CTCSS 不提供通訊保密！只要不設 CTCSS 的接收機都能聽到全部通話。</div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 是「靜噪鑰匙」而非「加密鑰匙」——它決定接收喇叭開不開，不是頻率隔離。</div>
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>容易誤會</span>CTCSS <strong>不能</strong>讓多隊「同時」在同一頻率講話互不干擾。同時發射會因 FM 捕獲效應相撞（強者勝、弱者被吃掉）。它真正的價值是搭配<strong>輪流發話</strong>，讓多隊「分時」共用一個頻率，並各自只聽自己關心的那組。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p1"><strong>情境1：CTCSS 分時共用一頻</strong></a></div>
   </div>
 
   <!-- 情境2 -->
@@ -727,6 +728,7 @@ RF增益的dB計算：
       <tr><td>城市大樓（多反射）</td><td>15–25dB</td><td>先降後調</td><td>過多多路徑=換位置</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>「最大增益 ≠ 最好接收」。每個環境都有一個最佳增益點，用 FFT 的 SNR 就能找到。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p2"><strong>情境2：找出最佳增益點</strong></a></div>
   </div>
 
   <!-- 情境3 -->
@@ -827,6 +829,7 @@ Carson規則（FM「實際佔用頻寬」，事實）：
       <tr><td>強電池使用時間優先</td><td>12.5kHz</td><td>相同覆蓋所需功率更低</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>12.5kHz 窄頻是「用更少能量走更遠的路」。災害時節省電力和擴大覆蓋都靠它。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p3"><strong>情境3：寬窄頻與 Carson 計算</strong></a></div>
   </div>
 
   <!-- 情境4 -->
@@ -909,6 +912,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
     <div class="gnote">指揮所監聽看到全部；各樓只聽到廣播＋自己——不被其他層干擾（物理上仍是同一頻率、需輪流發話）。</div>
 
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 層級化 ≈ 在同一頻率上創造「虛擬分頻道」——但這是「選聽」上的虛擬分頻，物理上仍是<strong>一個頻率、同時只能一人講</strong>。必須搭配輪流發話的通訊規程才成立，不是讓各層可以同時開講。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p4"><strong>情境4：倒塌大樓分層通聯 SOP</strong></a></div>
   </div>
 
   <!-- 情境5 -->
@@ -1007,6 +1011,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
       <p style="margin-top:6px">把<strong>接收增益（或外接放大器）開到爆</strong>，接收機前端過載進入非線性區，兩個強台在機內混頻產生 <strong>2f₁−f₂、2f₂−f₁ 的互調(IMD)鬼影</strong>，憑空多出根本不存在的「干擾台」。很多人會誤把這當成真的有人在干擾。</p>
       <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把增益拉到過載，瀑布圖上會冒出一排<strong>等間隔的鬼影峰</strong>；把增益調回正常，它們同時消失——證明那是「自己機器產生的」假訊號，不是空中真有干擾。處置：先降增益／加裝衰減器再判斷。</p>
     </div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p5"><strong>情境5：干擾源測向定位（外場）</strong></a></div>
   </div>
 
   <!-- 情境6 -->
@@ -1148,6 +1153,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
       <tr><td>無法架設實體中繼</td><td>考慮衛星電話備援</td><td>SDR 監測無線電段</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>中繼台是「把低谷的信號搬到山頂再播出」，雙工頻率是「防止自己講話時堵住自己的耳朵」。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p6"><strong>情境6：正確上中繼與排錯</strong></a></div>
   </div>
 
 </div>
