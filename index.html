@@ -497,7 +497,7 @@ canvas { max-width: 100%; }
       <tr><th>層</th><th>學什麼</th></tr>
       <tr><td>第 1 層　災害現場</td><td>為什麼需要這個參數？（情境切入）</td></tr>
       <tr><td>第 2 層　RF 物理</td><td>這個參數在 RF 層面做了什麼？</td></tr>
-      <tr><td>第 3 層　SDR 驗證</td><td>教官用 GQRX 瀑布圖示範，先建立視覺印象</td></tr>
+      <tr><td>第 3 層　SDR 驗證</td><td>講師用 GQRX 瀑布圖示範，先建立視覺印象</td></tr>
       <tr><td>第 4 層　現場應用</td><td>災害時如何快速正確決策</td></tr>
       <tr><td>第 5 層　數學推導</td><td>想量化深入 → 連結到「深入數學」頁（選修）</td></tr>
     </table>
@@ -511,8 +511,6 @@ canvas { max-width: 100%; }
       <tr><td>干擾</td><td>無法判斷</td><td>掃頻找峰值位置 + 三角定位估算來源</td></tr>
     </table>
 
-    <div class="callout info"><span class="ct"><i data-lucide="info"></i>關於 SDR</span>本課所有 SDR（GQRX 瀑布圖／FFT）操作一律由<strong>教官在示範站</strong>進行——學員<strong>不需自備 SDR、也不用安裝軟體</strong>。各組只要帶對講機、紙筆，需要看頻譜時一起到示範站前觀察即可。</div>
-
     <div class="sec-h"><i data-lucide="clipboard-list"></i>課程總覽：六大情境 × RF 理論 × SDR 工具</div>
     <table class="tbl">
       <tr><th>情境</th><th>核心困難</th><th>RF 參數</th><th>關鍵公式</th><th>SDR 工具</th></tr>
@@ -523,12 +521,14 @@ canvas { max-width: 100%; }
       <tr><td>5：干擾</td><td>陌生聲音干擾</td><td>捕捉效應</td><td>Friis 路徑衰減公式</td><td>掃頻+三角定位</td></tr>
       <tr><td>6：中繼</td><td>地形阻擋通話</td><td>雙工頻率對</td><td>菲涅耳區計算</td><td>雙頻瀑布圖</td></tr>
     </table>
+
+    <div class="callout info"><span class="ct"><i data-lucide="info"></i>關於 SDR</span>本課所有 SDR（GQRX 瀑布圖／FFT）操作一律由<strong>講師在示範站</strong>進行——學員<strong>不需自備 SDR、也不用安裝軟體</strong>。各組只要帶對講機、紙筆，需要看頻譜時一起到示範站前觀察即可。</div>
   </div>
 
   <!-- 情境1 -->
   <div id="p1" class="scenario">
     <h2><i data-lucide="building-2" style="width:24px;height:24px;vertical-align:-4px"></i> 情境1：CTCSS 亞音頻</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>地震後 5 支隊伍共用唯一申請到的頻率 145.500MHz，所有隊伍同時搶頻講話，指揮所只聽到雜訊，救援協調完全癱瘓。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：CTCSS 的本質</div>
@@ -606,7 +606,7 @@ canvas { max-width: 100%; }
   <!-- 情境2 -->
   <div id="p2" class="scenario">
     <h2><i data-lucide="mountain" style="width:24px;height:24px;vertical-align:-4px"></i> 情境2：RF 增益與接收靈敏度</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>山區搜救隊距指揮所 5km，信號微弱，調到最大音量仍聽不清楚。指揮官問：「除了大聲，還有什麼辦法？」</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：靈敏度與增益的關係</div>
@@ -668,7 +668,7 @@ canvas { max-width: 100%; }
   <!-- 情境3 -->
   <div id="p3" class="scenario">
     <h2><i data-lucide="radio-tower" style="width:24px;height:24px;vertical-align:-4px"></i> 情境3：頻寬與頻譜效率</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>中繼台停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz 寬頻。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與能量密度</div>
@@ -718,7 +718,7 @@ canvas { max-width: 100%; }
 
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>錯誤示範（設定錯誤→干擾）</span>
       <p style="margin-top:6px">一隊把對講機誤設成 <strong>25kHz 寬頻</strong>（或麥克風增益開到爆、過度頻偏），訊號的裙邊往外溢，<strong>咬到相鄰 12.5kHz 頻道</strong>正在通聯的隊伍。</p>
-      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把寬頻那台和窄頻那台擺在相鄰頻道，瀑布圖上立刻看到寬頻的訊號柱「胖」到壓進隔壁那條——這就是鄰頻干擾的長相。處置：要求該隊改回 12.5kHz、降低麥克風增益。</p>
+      <p style="margin-top:6px"><strong>講師瀑布圖示範：</strong>把寬頻那台和窄頻那台擺在相鄰頻道，瀑布圖上立刻看到寬頻的訊號柱「胖」到壓進隔壁那條——這就是鄰頻干擾的長相。處置：要求該隊改回 12.5kHz、降低麥克風增益。</p>
     </div>
 
     <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
@@ -737,7 +737,7 @@ canvas { max-width: 100%; }
   <!-- 情境4 -->
   <div id="p4" class="scenario">
     <h2><i data-lucide="building" style="width:24px;height:24px;vertical-align:-4px"></i> 情境4：CTCSS 層級管理</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>大樓倒塌 40 人被困不同樓層，1 台對講機需協調 5 支搜救隊，結果 40 人搶著發話，指揮所聽到一片混亂。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻率共享的信道容量</div>
@@ -820,7 +820,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
   <!-- 情境5 -->
   <div id="p5" class="scenario">
     <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：干擾檢測與定位</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認干擾來源。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：干擾的類型與物理特徵</div>
@@ -855,7 +855,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
         <li>C 點（西邊）：RSSI = S2</li>
         <li>結論：干擾源靠近 A 點（東邊），最強信號方向即為來源方向</li>
       </ul>
-      <p style="margin-top:6px;font-size:13px;color:var(--ink-3)">※ 純 RSSI 三角定位很粗略。要準確測向（DF）需要<strong>定向天線</strong>（八木／環形）並實際移動位置——這比較適合當<strong>外場分組練習</strong>，不是教官桌上的瀑布圖示範。</p>
+      <p style="margin-top:6px;font-size:13px;color:var(--ink-3)">※ 純 RSSI 三角定位很粗略。要準確測向（DF）需要<strong>定向天線</strong>（八木／環形）並實際移動位置——這比較適合當<strong>外場分組練習</strong>，不是講師桌上的瀑布圖示範。</p>
       <p style="margin-top:8px"><strong>步驟4：驗證換頻率的效果</strong></p>
       <ul style="margin:4px 0 0 20px">
         <li>掃描 145.0–146.0MHz 全段，找無信號的乾淨頻率</li>
@@ -879,7 +879,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
 
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>錯誤示範（設定錯誤→干擾）</span>
       <p style="margin-top:6px">把<strong>接收增益（或外接放大器）開到爆</strong>，接收機前端過載進入非線性區，兩個強台在機內混頻產生 <strong>2f₁−f₂、2f₂−f₁ 的互調(IMD)鬼影</strong>，憑空多出根本不存在的「干擾台」。很多人會誤把這當成真的有人在干擾。</p>
-      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把增益拉到過載，瀑布圖上會冒出一排<strong>等間隔的鬼影峰</strong>；把增益調回正常，它們同時消失——證明那是「自己機器產生的」假訊號，不是空中真有干擾。處置：先降增益／加裝衰減器再判斷。</p>
+      <p style="margin-top:6px"><strong>講師瀑布圖示範：</strong>把增益拉到過載，瀑布圖上會冒出一排<strong>等間隔的鬼影峰</strong>；把增益調回正常，它們同時消失——證明那是「自己機器產生的」假訊號，不是空中真有干擾。處置：先降增益／加裝衰減器再判斷。</p>
     </div>
     <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p5"><strong>情境5：捕獲效應與路徑衰減</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p5"><strong>情境5：干擾源測向定位（外場）</strong></a></div>
@@ -888,7 +888,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
   <!-- 情境6 -->
   <div id="p6" class="scenario">
     <h2><i data-lucide="route" style="width:24px;height:24px;vertical-align:-4px"></i> 情境6：中繼台設計與雙工原理</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>文山區與信義區搜救隊需要協調，直線距離 3km 但中間有山丘遮擋，直聯完全無法通話。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：中繼台的物理原理</div>
@@ -980,7 +980,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
         <li><strong>忘開 Tone：</strong>按 PTT 中繼台不動，常被誤判成「中繼台壞了」，其實是門禁碼沒帶。</li>
         <li><strong>偏移設反：</strong>對講機直接發在中繼台的<strong>輸出頻率（下行）</strong>上，等於拿石頭砸自家喇叭——壓掉所有人正在收聽的轉播訊號。</li>
       </ul>
-      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>同時監看輸入（145.500）與輸出（146.100）兩條頻率。帶錯碼／沒帶碼 → 輸出那條<strong>不出現</strong>；偏移設反 → 輸出頻率上冒出<strong>不該有的直發訊號</strong>蓋住轉播。Tone、偏移一改對，輸出柱立刻正常——因果一目了然。</p>
+      <p style="margin-top:6px"><strong>講師瀑布圖示範：</strong>同時監看輸入（145.500）與輸出（146.100）兩條頻率。帶錯碼／沒帶碼 → 輸出那條<strong>不出現</strong>；偏移設反 → 輸出頻率上冒出<strong>不該有的直發訊號</strong>蓋住轉播。Tone、偏移一改對，輸出柱立刻正常——因果一目了然。</p>
     </div>
 
     <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
