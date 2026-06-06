@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>進階無線電：RF 理論 + 驗證</title>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IueEoee3mumbu+WtuOe/kuermSBsb2dvIG1hcmsiPgogIAogIDxjaXJjbGUgY3g9IjQ4IiBjeT0iNDgiIHI9IjQ2IiBmaWxsPSIjRkZFNURBIj48L2NpcmNsZT4KICAKICA8ZyBzdHJva2U9IiNGMjY0M0MiIHN0cm9rZS13aWR0aD0iNC41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiPgogICAgPHBhdGggZD0iTTMwIDYwIEEgMjIgMjIgMCAwIDEgMzAgMzYiIG9wYWNpdHk9IjAuNTUiPjwvcGF0aD4KICAgIDxwYXRoIGQ9Ik02NiAzNiBBIDIyIDIyIDAgMCAxIDY2IDYwIiBvcGFjaXR5PSIwLjU1Ij48L3BhdGg+CiAgICA8cGF0aCBkPSJNMjIgNjYgQSAzNCAzNCAwIDAgMSAyMiAzMCIgb3BhY2l0eT0iMC4yOCI+PC9wYXRoPgogICAgPHBhdGggZD0iTTc0IDMwIEEgMzQgMzQgMCAwIDEgNzQgNjYiIG9wYWNpdHk9IjAuMjgiPjwvcGF0aD4KICA8L2c+CiAgCiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iOSIgZmlsbD0iI0YyNjQzQyI+PC9jaXJjbGU+Cjwvc3ZnPg==">
+<style>
+/* ============================================================
+   無線電學習站 — Shared Design System
+   Warm, friendly learning-site styling for the whole product.
+   Tokens + base + components (hub / reading / tools) in one file.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+:root {
+  /* surfaces — warm paper */
+  --bg:            #FBF5EC;
+  --bg-tint:       #F6ECDD;
+  --surface:       #FFFFFF;
+  --surface-soft:  #FFF6EC;
+  --border:        #ECDFCB;
+  --border-strong: #E0CFB4;
+
+  /* ink — warm charcoal */
+  --ink:    #2F2A25;
+  --ink-2:  #6B6157;
+  --ink-3:  #A89C8C;
+  --ink-on: #FFFFFF;
+
+  /* primary — "signal" coral */
+  --primary:        #F2643C;
+  --primary-strong: #D8482A;
+  --primary-soft:   #FFE5DA;
+  --primary-ink:    #B83A1F;
+
+  /* secondary — teal */
+  --teal:        #1F9E96;
+  --teal-strong: #157E77;
+  --teal-soft:   #D7F0ED;
+  --teal-ink:    #126B65;
+
+  /* pedagogical / semantic */
+  --honey: #E89A1C; --honey-soft: #FFF3DA; --honey-ink: #9A6510;  /* lightbulb 生活比喻 */
+  --leaf:  #3DA35D; --leaf-soft:  #E3F4E8; --leaf-ink:  #237A3C;  /* circle-check 記憶方法 */
+  --rose:  #E5544B; --rose-soft:  #FCE7E5; --rose-ink:  #B5342C;  /* triangle-alert 常見誤解 */
+  --sky:   #3B86C9; --sky-soft:   #E4F1FB; --sky-ink:   #225F95;  /* info 補充 / SDR */
+
+  /* RF domain accents */
+  --grade-1: var(--honey);
+  --grade-2: var(--sky);
+  --grade-3: var(--leaf);
+  --signal:  var(--primary);
+
+  /* type */
+  --font-display: 'Baloo 2', 'Noto Sans TC', sans-serif;
+  --font-sans:    'Nunito', 'Noto Sans TC', sans-serif;
+  --font-mono:    'Space Mono', 'Noto Sans TC', monospace;
+
+  /* spacing */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  /* radii */
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+
+  /* shadows — soft, warm-tinted */
+  --shadow-sm: 0 1px 3px rgba(94,60,32,.07), 0 2px 8px rgba(94,60,32,.05);
+  --shadow-md: 0 4px 10px rgba(94,60,32,.08), 0 10px 24px rgba(94,60,32,.08);
+  --shadow-lg: 0 12px 28px rgba(94,60,32,.12), 0 24px 50px rgba(94,60,32,.10);
+  --ring:      0 0 0 4px rgba(242,100,60,.22);
+
+  /* motion */
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --ease-bounce: cubic-bezier(.34,1.56,.64,1);
+  --dur: .22s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* very subtle warm wash — the only permitted bg flourish */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 12% 0%, rgba(242,100,60,.06), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 92% 8%, rgba(31,158,150,.05), transparent 55%);
+}
+
+h1, .h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4.5vw, 44px); line-height: 1.15; letter-spacing: .2px; color: var(--ink); }
+h2, .h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 3vw, 32px); line-height: 1.25; color: var(--ink); }
+h3, .h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.35; color: var(--ink); }
+p, .body { font-size: 16px; line-height: 1.8; color: var(--ink-2); }
+.lead { font-size: 18px; line-height: 1.7; color: var(--ink-2); }
+small, .small { font-size: 14px; line-height: 1.6; }
+.caption { font-size: 12px; letter-spacing: .4px; color: var(--ink-3); }
+
+.eyebrow { font-family: var(--font-sans); font-weight: 800; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary-ink); }
+
+.readout, code, kbd, .mono { font-family: var(--font-mono); font-size: .92em; letter-spacing: -.2px; }
+code { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 6px; padding: .08em .4em; color: var(--primary-ink); }
+
+a { color: var(--primary-ink); text-underline-offset: 3px; }
+a:hover { color: var(--primary-strong); }
+::selection { background: var(--primary-soft); color: var(--primary-ink); }
+
+/* ---------- LAYOUT ---------- */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.wrap-narrow { max-width: 920px; }
+
+/* ============================================================
+   TOP NAV (injected by nav.js) + FOOTER
+   ============================================================ */
+.nav { display: flex; align-items: center; gap: 20px; padding: 18px 0; }
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+.brand img { width: 42px; height: 42px; }
+.brand .wm { font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--ink); line-height: 1.05; white-space: nowrap; }
+.brand .tg { font-family: var(--font-mono); font-size: 10px; color: var(--primary-ink); letter-spacing: .5px; margin-top: 3px; }
+.nav-links { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+.nav-links a { font-weight: 700; font-size: 14px; color: var(--ink-2); text-decoration: none; padding: 8px 14px; border-radius: var(--r-pill); transition: all var(--dur) var(--ease); }
+.nav-links a:hover { background: var(--surface-soft); color: var(--ink); }
+.nav-links a.active { background: var(--primary-soft); color: var(--primary-ink); }
+
+/* journey breadcrumb (injected by nav.js on main-track tool pages) */
+.journey-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--jc, var(--teal)); border-radius: var(--r-pill); padding: 8px 16px; margin: 4px 0 2px; box-shadow: var(--shadow-sm); font-size: 13px; }
+.journey-bar .jb-map { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.journey-bar .jb-map:hover { color: var(--primary-ink); }
+.journey-bar .jb-map svg { width: 15px; height: 15px; }
+.journey-bar .jb-sep { color: var(--ink-3); }
+.journey-bar .jb-here { font-weight: 800; color: var(--jc, var(--teal-ink)); }
+.journey-bar .jb-steps { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.journey-bar .jb-step { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; font-size: 12.5px; color: var(--ink-2); text-decoration: none; background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 4px 12px; white-space: nowrap; transition: all var(--dur) var(--ease); }
+.journey-bar .jb-step:hover { border-color: var(--jc, var(--teal)); color: var(--ink); }
+.journey-bar .jb-step svg { width: 13px; height: 13px; }
+@media (max-width: 560px) {
+  .journey-bar { font-size: 12px; padding: 8px 13px; }
+  .journey-bar .jb-steps { width: 100%; margin-left: 0; margin-top: 2px; }
+}
+
+.foot { margin-top: 56px; padding: 26px 0 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.foot .l { font-weight: 700; font-size: 13px; color: var(--ink-2); }
+.foot .r { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+
+/* ---------- HERO ---------- */
+.hero { padding: 40px 0 24px; max-width: 760px; }
+.hero .eyebrow { margin-bottom: 14px; }
+.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 5.2vw, 52px); line-height: 1.12; color: var(--ink); }
+.hero h1 .hl { color: var(--primary); }
+.hero p { font-size: 18px; line-height: 1.7; color: var(--ink-2); margin-top: 18px; max-width: 620px; }
+.hero-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+
+.btn { font-family: var(--font-sans); font-weight: 800; font-size: 15px; border: none; border-radius: var(--r-md); padding: 13px 24px; cursor: pointer; transition: all var(--dur) var(--ease); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--primary-strong); box-shadow: var(--shadow-md); color: #fff; }
+.btn-ghost { background: var(--surface); color: var(--ink-2); border: 1.5px solid var(--border-strong); }
+.btn-ghost:hover { border-color: var(--ink-3); color: var(--ink); }
+
+/* stat chips */
+.stats { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+.stat { display: flex; align-items: center; gap: 9px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 8px 16px 8px 10px; box-shadow: var(--shadow-sm); text-decoration: none; color: inherit; cursor: pointer; transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+.stat .dot { width: 9px; height: 9px; border-radius: 50%; }
+.stat .num { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--ink); }
+.stat .lab { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+
+/* ---------- SECTION LABEL ---------- */
+.section-label { display: flex; align-items: center; gap: 12px; margin: 44px 0 18px; scroll-margin-top: 24px; }
+.section-label .ico { font-size: 22px; line-height: 1; }
+.section-label h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--ink); }
+.section-label .rule { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
+.section-label .count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+
+/* ---------- CONTENT CARDS (directory) ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.ccard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; text-decoration: none; color: inherit; display: block; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.ccard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--card-accent, var(--primary)); }
+.ccard .badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; color: var(--card-ink, var(--primary-ink)); background: var(--card-soft, var(--primary-soft)); border-radius: var(--r-pill); padding: 4px 11px; margin-bottom: 14px; font-weight: 700; white-space: nowrap; }
+.ccard .ico { display: block; margin-bottom: 10px; color: var(--card-accent, var(--primary)); }
+.ccard .ico svg { width: 30px; height: 30px; }
+.ccard h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink); line-height: 1.35; margin-bottom: 7px; }
+.ccard p { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
+.ccard .arrow { position: absolute; bottom: 18px; right: 18px; color: var(--card-accent, var(--primary)); opacity: 0; transform: translateX(-4px); transition: all var(--dur) var(--ease); display: flex; }
+.ccard:hover .arrow { opacity: 1; transform: translateX(0); }
+
+.accent-coral { --card-accent: var(--primary); --card-soft: var(--primary-soft); --card-ink: var(--primary-ink); }
+.accent-teal  { --card-accent: var(--teal);    --card-soft: var(--teal-soft);    --card-ink: var(--teal-ink); }
+.accent-honey { --card-accent: var(--honey);   --card-soft: var(--honey-soft);   --card-ink: var(--honey-ink); }
+.accent-sky   { --card-accent: var(--sky);     --card-soft: var(--sky-soft);     --card-ink: var(--sky-ink); }
+.accent-rose  { --card-accent: var(--rose);    --card-soft: var(--rose-soft);    --card-ink: var(--rose-ink); }
+.accent-leaf  { --card-accent: var(--leaf);    --card-soft: var(--leaf-soft);    --card-ink: var(--leaf-ink); }
+.accent-pur   { --card-accent: #6D3FC0;        --card-soft: #efe7fb;             --card-ink: #6D3FC0; }
+
+/* ============================================================
+   READING VIEW (glossary / course)
+   ============================================================ */
+.read-top { display: flex; align-items: center; gap: 14px; padding: 6px 0 0; }
+.back-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1.5px solid var(--border-strong); border-radius: var(--r-pill); padding: 8px 16px; font-weight: 700; font-size: 14px; color: var(--ink-2); text-decoration: none; cursor: pointer; transition: all var(--dur) var(--ease); }
+.back-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+
+.read-hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 30px 32px; box-shadow: var(--shadow-sm); margin: 20px 0 22px; }
+.read-hero .eyebrow { margin-bottom: 10px; }
+.read-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4vw, 34px); color: var(--ink); line-height: 1.15; }
+.read-hero p { font-size: 16px; color: var(--ink-2); margin-top: 12px; max-width: 680px; line-height: 1.7; }
+
+.search { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--border-strong); border-radius: var(--r-pill); padding: 12px 20px; margin-bottom: 14px; transition: all var(--dur) var(--ease); }
+.search:focus-within { border-color: var(--primary); box-shadow: var(--ring); }
+.search .ico { color: var(--ink-3); flex-shrink: 0; display: flex; }
+.search input { flex: 1; border: none; outline: none; background: transparent; font-family: var(--font-sans); font-size: 16px; color: var(--ink); }
+.search input::placeholder { color: var(--ink-3); }
+
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+.fbtn { font-family: var(--font-sans); font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: var(--r-pill); border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; transition: all var(--dur) var(--ease); display: inline-flex; align-items: center; gap: 6px; }
+.fbtn svg { width: 15px; height: 15px; stroke-width: 2.25; flex-shrink: 0; }
+.fbtn:hover { border-color: var(--primary); color: var(--primary-ink); }
+.fbtn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.cat-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); margin: 28px 0 14px; display: flex; align-items: center; gap: 10px; }
+.cat-title::before { content: ''; width: 5px; height: 22px; background: var(--primary); border-radius: 3px; }
+.cat-title svg { width: 20px; height: 20px; stroke-width: 2.25; color: var(--primary); flex-shrink: 0; }
+
+.concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.concept { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.concept:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.concept-hd { display: flex; align-items: center; gap: 12px; padding: 15px 17px; }
+.concept-hd .ico { font-size: 26px; line-height: 1; display: flex; }
+.concept-hd .ico svg { width: 24px; height: 24px; stroke-width: 2; color: var(--ink); }
+.concept-hd .title { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--ink); line-height: 1.2; }
+.concept-hd .en { font-size: 13.5px; font-style: italic; font-weight: 500; color: var(--ink-2); margin-top: 3px; }
+.concept-bd { padding: 14px 17px 17px; }
+.concept-bd .explain { font-size: 14px; color: var(--ink-2); line-height: 1.75; }
+
+.hd-basic { background: var(--sky-soft); }
+.hd-sdr   { background: var(--leaf-soft); }
+.hd-scen  { background: var(--rose-soft); }
+.hd-adv   { background: var(--honey-soft); }
+.hd-coral { background: var(--primary-soft); }
+
+/* callouts — teaching triad */
+.callout { border-radius: var(--r-md); padding: 12px 15px; margin-top: 12px; font-size: 14px; line-height: 1.7; }
+.callout .ct { font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.callout .ct svg { width: 15px; height: 15px; stroke-width: 2.25; flex-shrink: 0; }
+.callout.analogy { background: var(--honey-soft); border-left: 4px solid var(--honey); color: #5b4a2a; }
+.callout.analogy .ct { color: var(--honey-ink); }
+.callout.tip { background: var(--leaf-soft); border-left: 4px solid var(--leaf); color: #33503a; }
+.callout.tip .ct { color: var(--leaf-ink); }
+.callout.warn { background: var(--rose-soft); border-left: 4px solid var(--rose); color: #5e3633; }
+.callout.warn .ct { color: var(--rose-ink); }
+.callout.info { background: var(--sky-soft); border-left: 4px solid var(--sky); color: #2c4a63; }
+.callout.info .ct { color: var(--sky-ink); }
+.callout.task { background: var(--teal-soft); border-left: 4px solid var(--teal); color: #134f4a; }
+.callout.task .ct { color: var(--teal-ink); }
+
+/* class-QR card (course pages — scan to take the lesson onto your phone) */
+.qr-card { display: flex; align-items: center; gap: 22px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 20px 24px; margin: 18px 0 4px; box-shadow: var(--shadow-sm); }
+.qr-card img { width: 132px; height: 132px; flex-shrink: 0; border: 1px solid var(--border); border-radius: var(--r-md); }
+.qr-card h3 { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--ink); margin: 7px 0 6px; }
+.qr-card p { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
+.qr-card .qr-url { display: inline-block; margin-top: 9px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--primary-ink); background: var(--primary-soft); border-radius: var(--r-pill); padding: 4px 13px; word-break: break-all; }
+@media (max-width: 560px) {
+  .qr-card { flex-direction: column; text-align: center; gap: 14px; padding: 18px 16px; }
+  .qr-card img { width: 168px; height: 168px; }
+  .qr-card h3 { font-size: 18px; }
+  .qr-card p { font-size: 13.5px; }
+}
+
+/* prominent step-flow card (SOP / closed-loop sequence — a teaching centrepiece) */
+.flowcard { background: linear-gradient(180deg, var(--surface-soft), var(--surface)); border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: var(--r-lg); padding: 20px 22px; margin: 16px 0; box-shadow: var(--shadow-md); }
+.flowcard-h { display: flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--primary-ink); margin-bottom: 16px; }
+.flowcard-h svg { width: 20px; height: 20px; stroke-width: 2.25; flex-shrink: 0; }
+.flow .step { position: relative; display: flex; gap: 14px; padding-bottom: 16px; }
+.flow .step:last-child { padding-bottom: 0; }
+.flow .step::before { content: ''; position: absolute; left: 15px; top: 30px; bottom: -2px; width: 2px; background: var(--primary-soft); }
+.flow .step:last-child::before { display: none; }
+.flow .num { flex-shrink: 0; width: 31px; height: 31px; border-radius: 50%; background: var(--primary); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); position: relative; z-index: 1; }
+.flow .body { padding-top: 3px; }
+.flow .body .t { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; color: var(--ink); line-height: 1.4; }
+.flow .body .d { font-size: 13.5px; color: var(--ink-2); line-height: 1.6; margin-top: 2px; }
+.flow .tmark { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--primary-ink); background: var(--primary-soft); border-radius: var(--r-pill); padding: 2px 9px; margin-left: 8px; white-space: nowrap; }
+
+/* embedded figure (photos / labelled diagrams) */
+.fig { margin: 16px 0; text-align: center; }
+.fig img { max-width: 100%; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.fig img.contain { max-height: 460px; width: auto; }
+.fig figcaption { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: 8px; }
+
+.visual { background: var(--bg-tint); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 13px; margin-top: 12px; font-family: var(--font-mono); font-size: 12px; white-space: pre; overflow-x: auto; line-height: 1.55; color: var(--ink-2); }
+
+/* glossary: small muted note under a table/figure */
+.gnote { font-size: 12.5px; color: var(--ink-3); line-height: 1.6; margin-top: 7px; }
+.gnote .readout { color: var(--ink-2); }
+
+/* inline SVG figure (redrawn diagrams: waveforms, signal paths…) */
+.svgfig { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 14px; margin: 14px 0; }
+.svgfig svg { width: 100%; height: auto; display: block; }
+.svgfig .axis { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-top: 3px; }
+.svgfig-cap { font-size: 12.5px; color: var(--ink-2); margin-bottom: 2px; }
+.svgfig-cap:not(:first-child) { margin-top: 10px; }
+
+/* math / formula block (advanced course) */
+.formula { background: var(--honey-soft); border: 1px solid #f0dcae; border-left: 4px solid var(--honey); border-radius: var(--r-sm); padding: 12px 15px; margin-top: 12px; font-family: var(--font-mono); font-size: 12.5px; white-space: pre-wrap; overflow-x: auto; line-height: 1.62; color: #5b4a2a; }
+
+.tagrow { display: flex; gap: 6px; margin-top: 13px; flex-wrap: wrap; }
+.ctag { font-size: 11px; font-weight: 700; padding: 3px 11px; border-radius: var(--r-pill); }
+.ctag.basic { background: var(--sky-soft); color: var(--sky-ink); }
+.ctag.sdr { background: var(--leaf-soft); color: var(--leaf-ink); }
+.ctag.scen { background: var(--rose-soft); color: var(--rose-ink); }
+.ctag.adv { background: var(--honey-soft); color: var(--honey-ink); }
+
+/* generic prose card for course pages */
+.prose-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px 28px; box-shadow: var(--shadow-sm); margin-bottom: 18px; }
+.prose-card h2 { margin-bottom: 12px; }
+.prose-card h3 { margin: 18px 0 8px; }
+.prose-card p { margin-bottom: 12px; }
+.prose-card ul, .prose-card ol { margin: 0 0 12px 22px; color: var(--ink-2); line-height: 1.8; }
+.prose-card li { margin-bottom: 6px; }
+
+/* section heading for course pages (coral bar + display font) */
+.sec-h { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--ink); margin: 30px 0 14px; display: flex; align-items: center; gap: 10px; }
+.sec-h::before { content: ''; width: 5px; height: 22px; background: var(--primary); border-radius: 3px; flex-shrink: 0; }
+.sec-h svg { width: 20px; height: 20px; stroke-width: 2.25; color: var(--primary); flex-shrink: 0; }
+
+/* data table (course pages) */
+.tbl { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-sm); }
+.tbl th, .tbl td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+.tbl th { background: var(--teal-soft); color: var(--teal-ink); font-weight: 700; font-family: var(--font-display); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tbody tr:nth-child(even), .tbl tr:nth-child(even) { background: var(--surface-soft); }
+
+/* learning-point card grid (course pages) */
+.lcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0; }
+.lcard { background: var(--surface-soft); border: 1px solid var(--border); border-top: 3px solid var(--primary); border-radius: var(--r-md); padding: 14px 16px; }
+.lcard strong { display: block; font-family: var(--font-display); font-weight: 700; color: var(--primary-ink); margin-bottom: 6px; font-size: 15px; }
+.lcard p { font-size: 13.5px; color: var(--ink-2); line-height: 1.65; }
+
+/* tabbed scenario switcher (course pages reuse .tabs/.tab) */
+.scenario { display: none; }
+.scenario.active { display: block; animation: pop .3s var(--ease); }
+.scn-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 4px; }
+.scn-meta .m { display: flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 7px 15px; font-size: 13px; color: var(--ink-2); box-shadow: var(--shadow-sm); }
+.scn-meta .m b { color: var(--teal-ink); font-weight: 700; }
+
+/* ============================================================
+   INTERACTIVE TOOLS
+   ============================================================ */
+.tool-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 4vw, 30px); color: var(--ink); margin: 18px 0 4px; }
+.tool-sub { font-size: 15px; color: var(--ink-2); margin-bottom: 18px; max-width: 680px; }
+
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.tab { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-sans); font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: var(--r-pill); border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; transition: all var(--dur) var(--ease); }
+.tab:hover { border-color: var(--teal); color: var(--teal-ink); }
+.tab.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 18px; }
+.panel-h { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+.emerg { display: flex; gap: 10px; align-items: flex-start; background: var(--rose-soft); border: 1px solid #f3c9c5; border-left: 4px solid var(--rose); border-radius: var(--r-md); padding: 12px 15px; margin-bottom: 18px; font-size: 13.5px; color: #5e3633; line-height: 1.6; }
+.emerg b { color: var(--rose-ink); }
+
+/* band spectrum */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 18px; }
+.leg { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.leg .sw { width: 18px; height: 11px; border-radius: 3px; }
+.band-row { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+.band-label { font-family: var(--font-mono); font-size: 13px; color: var(--teal-ink); width: 56px; text-align: right; flex-shrink: 0; font-weight: 700; }
+.band-track { flex: 1; height: 30px; background: var(--bg-tint); border-radius: var(--r-sm); position: relative; cursor: pointer; overflow: hidden; border: 1px solid var(--border); }
+.band-seg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #fff; transition: filter var(--dur) var(--ease); }
+.band-track:hover .band-seg { filter: brightness(1.06) saturate(1.1); }
+.band-track.sel { box-shadow: var(--ring); border-color: var(--primary); }
+.band-info { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); width: 92px; flex-shrink: 0; }
+.mode-cw { background: #6FA8DC; }
+.mode-data { background: var(--teal); }
+.mode-phone { background: var(--honey); }
+.mode-emerg { background: var(--rose); }
+
+.detail { background: var(--surface-soft); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: var(--r-md); padding: 18px 20px; margin-top: 18px; }
+.detail-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.detail-freq { font-family: var(--font-mono); font-size: 22px; color: var(--primary-ink); font-weight: 700; }
+.detail-name { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.detail-grades { display: flex; gap: 6px; }
+.gbadge { font-family: var(--font-mono); font-weight: 700; font-size: 12px; padding: 4px 11px; border-radius: var(--r-pill); border: 1.5px solid; }
+.g1 { color: var(--honey-ink); border-color: var(--honey); background: var(--honey-soft); }
+.g2 { color: var(--sky-ink); border-color: var(--sky); background: var(--sky-soft); }
+.g3 { color: var(--leaf-ink); border-color: var(--leaf); background: var(--leaf-soft); }
+.detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.dcell { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 12px; }
+.dcell .l { font-family: var(--font-mono); font-size: 9px; color: var(--ink-3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.dcell .v { font-family: var(--font-mono); font-size: 14px; color: var(--ink); font-weight: 700; }
+.dcell .v.hl { color: var(--primary-ink); }
+.modes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 13px; }
+.mtag { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: var(--r-pill); background: var(--honey-soft); color: var(--honey-ink); font-weight: 700; }
+
+/* input field (shared) */
+.field { display: flex; align-items: center; background: var(--surface); border: 1.5px solid var(--border-strong); border-radius: var(--r-md); margin-bottom: 12px; transition: all var(--dur) var(--ease); }
+.field:focus-within { border-color: var(--primary); box-shadow: var(--ring); }
+.field label { font-weight: 700; font-size: 14px; color: var(--ink-2); padding: 12px 15px; min-width: 130px; }
+.field input, .field select { flex: 1; border: none; outline: none; background: transparent; font-family: var(--font-mono); font-size: 17px; color: var(--ink); padding: 12px 0; min-width: 0; }
+.field .unit { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); padding: 12px 15px; border-left: 1px solid var(--border); }
+
+.result { background: var(--surface-soft); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: var(--r-md); padding: 18px 20px; animation: pop .26s var(--ease-bounce); }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.result .rfreq { font-family: var(--font-mono); font-size: 26px; color: var(--primary-ink); font-weight: 700; }
+.result .rdet { font-family: var(--font-mono); font-size: 13px; color: var(--ink-2); line-height: 2; margin-top: 6px; }
+.result .rdet b { color: var(--ink); }
+.result .rmatch { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+.match-yes { color: var(--leaf-ink); }
+.match-no { color: var(--rose-ink); }
+
+.utog { display: flex; gap: 8px; margin-bottom: 16px; }
+.utog .b { font-family: var(--font-mono); font-weight: 700; font-size: 13px; padding: 7px 16px; border-radius: var(--r-pill); border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.utog .b.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* circuit calc */
+.ohm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.ohm-out { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+.ohm-cell { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px 16px; text-align: center; }
+.ohm-cell .l { font-size: 12px; color: var(--ink-2); font-weight: 700; margin-bottom: 5px; }
+.ohm-cell .v { font-family: var(--font-mono); font-size: 22px; color: var(--primary-ink); font-weight: 700; }
+.ohm-cell .u { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+
+/* callsign decoder */
+.cs-input { display: flex; gap: 10px; margin-bottom: 18px; }
+.cs-input input { flex: 1; border: 1.5px solid var(--border-strong); border-radius: var(--r-md); padding: 14px 18px; font-family: var(--font-mono); font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); outline: none; background: var(--surface); transition: all var(--dur) var(--ease); }
+.cs-input input:focus { border-color: var(--primary); box-shadow: var(--ring); }
+.cs-res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.cs-card { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px; display: flex; align-items: center; gap: 13px; }
+.cs-card .ico { font-size: 28px; line-height: 1; }
+.cs-card .l { font-size: 12px; color: var(--ink-3); font-weight: 700; }
+.cs-card .v { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink); }
+
+canvas { max-width: 100%; }
+
+@media (max-width: 560px) {
+  .nav-links { gap: 2px; }
+  .nav-links a { padding: 7px 10px; font-size: 13px; }
+  .cards, .concept-grid { grid-template-columns: 1fr; }
+  .detail-grid, .ohm-grid, .ohm-out, .cs-res { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+</head>
+<body>
+<script>window.SITE_SECTION = 'courses';</script>
+
+<div class="wrap wrap-narrow">
+
+  <div class="read-hero">
+    <div class="eyebrow">COURSE · ADVANCED</div>
+    <h1>進階無線電</h1>
+    <p>RF 理論推導 + 無線電參數 + 實驗驗證 + 現場應急應用。不只教「怎麼用」，更教「為什麼這樣用」及背後的物理與數學原理。</p>
+  </div>
+
+  <div class="qr-card">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQMAAADRyf5aAAAABlBMVEUaFxT///8KLzV6AAABgElEQVR42u2a2wrDMAxDxf7/nz26+iI3Tiljb1MHIV3ydLBlxQ3syQPt0q5vd+F8PpNj8D+NVl548vzDLgRYB2eFDbUiXo0XcLKBT47x8x4r4jXwyvDKWBOv2/jy0SrexOtGv86QctXyfJR+Dbx8MvxUHwdeaS3OFwyGRLyYV+QeaGacnOLV48sHsANDqb94rfURKfSh++nzxWvhZZGWyLpIVl+8rvoVAcYxFSZf+rX4iTwMkVcNXvITG/2ykvjoU2Suitfi7209NdaiePV8pF5Xlkpu6ohX03tPPCvrxcGnfBz0vnNK02o6P4752DqEpf4m/3XTz6HmfbBz4ypei18lN19eAjoPbepjOYhmyNQvHPtfYSCsbCuyHyZe1/gqq3VJzzgciVePLyvHmsJlZc3E6xJfbFwBVLRBer/1E735BSoD4rX0J6KHk11WTk/xGnlFYQwjhrwgIF4Dr9IsuiIgP7E/D6Vg8dda9b+29RHVgka/1SReg//SzUHt+vmuN541HhU86nWqAAAAAElFTkSuQmCC" alt="進階無線電 QR Code">
+    <div>
+      <div class="eyebrow">掃碼把課程帶著走</div>
+      <h3>用手機掃這個 QR</h3>
+      <p>掃描就能把這份「進階無線電」帶到你的手機，上課跟著看、課後隨時複習。</p>
+      <span class="qr-url">winson3qq.github.io/Radio-Advanced/</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="go('p0', this)"><i data-lucide="book-open"></i> 導讀</button>
+    <button class="tab" onclick="go('p1', this)">情境1 CTCSS 亞音頻</button>
+    <button class="tab" onclick="go('p2', this)">情境2 RF 增益</button>
+    <button class="tab" onclick="go('p3', this)">情境3 頻寬</button>
+    <button class="tab" onclick="go('p4', this)">情境4 層級管理</button>
+    <button class="tab" onclick="go('p5', this)">情境5 天線診斷</button>
+    <button class="tab" onclick="go('p6', this)">情境6 干擾檢測</button>
+    <button class="tab" onclick="go('p7', this)">情境7 中繼台</button>
+  </div>
+
+  <!-- 導讀 -->
+  <div id="p0" class="scenario active">
+    <h2><i data-lucide="book-open" style="width:24px;height:24px;vertical-align:-4px"></i> 課程導讀</h2>
+    <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>核心理念</span>不只教「怎麼用」，更教「為什麼這樣用」及背後的物理和數學原理。</div>
+
+    <div class="callout info"><span class="ct"><i data-lucide="info"></i>數據標註約定</span>本課公式與數字分三級標註：<strong>（事實）</strong>＝可查證的規格／物理常數；<strong>（推論）</strong>＝由公式推導的結果；<strong>（量級參考）</strong>＝受功率／天線／地形影響的粗略估計，不可當精確值。法規數字一律以 NCC 最新公告為準。</div>
+
+    <div class="sec-h"><i data-lucide="target"></i>五層深化學習模式</div>
+    <table class="tbl">
+      <tr><th>層</th><th>學什麼</th></tr>
+      <tr><td>第 1 層　災害現場</td><td>為什麼需要這個參數？</td></tr>
+      <tr><td>第 2 層　RF 物理</td><td>這個參數在 RF 層面做了什麼？</td></tr>
+      <tr><td>第 3 層　數學推導</td><td>如何量化計算、預測結果？</td></tr>
+      <tr><td>第 4 層　SDR 驗證</td><td>用 GQRX / GNU Radio 實際測量</td></tr>
+      <tr><td>第 5 層　現場應用</td><td>災害時如何快速正確決策</td></tr>
+    </table>
+
+    <div class="sec-h"><i data-lucide="lightbulb"></i>為何需要 RF 理論深化？</div>
+    <table class="tbl">
+      <tr><th>問題</th><th>傳統教學</th><th>RF 深化學習</th></tr>
+      <tr><td>CTCSS</td><td>「是 67-250Hz 的亞音」</td><td>推導 FM 調變方程 + 看 FFT 峰值驗證</td></tr>
+      <tr><td>RF 增益</td><td>「越高越好」</td><td>計算靈敏度公式 + 測 SNR 找最佳點</td></tr>
+      <tr><td>頻寬</td><td>死背 12.5kHz</td><td>算能量密度 + FFT 波寬對比理解原因</td></tr>
+      <tr><td>天線故障</td><td>只知道「沒信號」</td><td>FFT 全底噪 → 2 分鐘定位是天線還是設定問題</td></tr>
+      <tr><td>干擾</td><td>無法判斷</td><td>掃頻找峰值位置 + 三角定位估算來源</td></tr>
+    </table>
+
+    <div class="sec-h"><i data-lucide="package"></i>課程所需工具（全免費開源）</div>
+    <div class="prose-card">
+      <p><strong>硬體：</strong>RTL-SDR 接收器（約 300 元台幣）+ USB 線 + 天線</p>
+      <p><strong>軟體：</strong></p>
+      <ul>
+        <li>GQRX：FFT 頻譜 + 瀑布圖 + 即時調整</li>
+        <li>GNU Radio：流程圖信號處理 + CTCSS 分析</li>
+        <li>CubicSDR：友善介面，適合快速掃頻</li>
+      </ul>
+    </div>
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>任何民防隊可用最低成本自建「無線電實驗室」，學員可在真實信號上驗證每一條理論。</div>
+
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>課程總覽：七大情境 × RF 理論 × SDR 工具</div>
+    <table class="tbl">
+      <tr><th>情境</th><th>核心困難</th><th>RF 參數</th><th>關鍵公式</th><th>SDR 工具</th></tr>
+      <tr><td>1：CTCSS</td><td>5 隊搶 1 頻</td><td>亞音頻調變</td><td>FM 調變指數 β=Δf/f_m</td><td>GQRX 音頻 FFT</td></tr>
+      <tr><td>2：RF 增益</td><td>山區弱信號</td><td>接收靈敏度</td><td>S=-174+10lg(B)+NF+SNR</td><td>GQRX SNR 測量</td></tr>
+      <tr><td>3：頻寬</td><td>直聯距離短</td><td>頻譜效率</td><td>PSD=P/B，Carson 規則</td><td>FFT 波寬對比</td></tr>
+      <tr><td>4：層級</td><td>40 人指揮混亂</td><td>CTCSS 分層</td><td>碼間距 ≥20Hz</td><td>瀑布圖時間軸</td></tr>
+      <tr><td>5：天線</td><td>信號突然消失</td><td>波長匹配</td><td>λ=c/f, L=λ/4×0.95</td><td>FFT 底噪診斷</td></tr>
+      <tr><td>6：干擾</td><td>陌生聲音干擾</td><td>捕捉效應</td><td>Friis 路徑衰減公式</td><td>掃頻+三角定位</td></tr>
+      <tr><td>7：中繼</td><td>地形阻擋通話</td><td>雙工頻率對</td><td>菲涅耳區計算</td><td>雙頻瀑布圖</td></tr>
+    </table>
+  </div>
+
+  <!-- 情境1 -->
+  <div id="p1" class="scenario">
+    <h2><i data-lucide="building-2" style="width:24px;height:24px;vertical-align:-4px"></i> 情境1：CTCSS 亞音頻</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>地震後 5 支隊伍共用唯一申請到的頻率 145.500MHz，所有隊伍同時搶頻講話，指揮所只聽到雜訊，救援協調完全癱瘓。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：CTCSS 的本質</div>
+    <div class="prose-card">
+      <p><strong>關鍵概念：CTCSS 不是新頻率，而是訊號疊加</strong></p>
+      <p>一個對講機發出的 FM 信號，同時包含三層：</p>
+      <ul>
+        <li><strong>第 1 層（語音）：</strong>300–3000Hz，人耳可清晰聽到</li>
+        <li><strong>第 2 層（CTCSS 亞音）：</strong>67–250Hz 之一，低於人耳舒適聽覺範圍</li>
+        <li><strong>第 3 層（FM 載波）：</strong>145.500MHz，無線電的「傳輸馬路」</li>
+      </ul>
+      <p style="margin:8px 0 0;font-size:13.5px"><a href="https://winson3qq.github.io/RF-Study/courses/rf-glossary.html#ctcss">📖 白話手冊：CTCSS 是什麼（不用公式）→</a></p>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">FM調變基本方程：
+  s(t) = A·cos( 2π·f_c·t + (Δf/f_m)·sin(2π·f_m·t) )
+
+混合後的調變信號：
+  m(t) = V_語音(t) + V_CTCSS(t)
+
+  V_語音(t)  = 語音成分（300–3000Hz帶寬）
+  V_CTCSS(t) = A_sub·sin(2π·f_CTCSS·t)
+
+CTCSS 38個標準頻率（EIA規格）：
+  67.0, 71.9, 74.4, 77.0, 79.7, 82.5, 85.4, 88.5,
+  91.5, 94.8, 97.4, 100.0, 103.5, 107.2, 110.9, 114.8,
+  118.8, 123.0, 127.3, 131.8, 136.5, 141.3, 146.2, 151.4,
+  156.7, 162.2, 167.9, 173.8, 179.9, 186.2, 192.8, 203.5,
+  210.7, 218.1, 225.7, 233.6, 241.8, 250.3 Hz
+
+FM調變指數：
+  β = Δf / f_m   （Δf＝頻率偏移，f_m＝調變訊號頻率）
+
+  窄帶語音(Δf≈±2.5kHz, f_m≈3kHz)：β ≈ 0.8  →窄帶FM(NBFM)
+  CTCSS亞音：刻意用「很小的偏移」(約±0.5kHz以下)疊加
+
+重點（更正常見誤解）：
+  CTCSS 偏移刻意壓到系統峰值偏移的約15%以下，
+  只在語音下方佔一小塊頻率，不影響語音可懂度。
+
+  CTCSS 能被可靠解碼，靠的是接收端的「窄帶濾波＋連續音判別」，
+  與 β 大小無關——β 越大只代表佔用頻寬越寬，並不等於越穩定。</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 2 支對講機</span>
+      <p style="margin-top:8px"><strong>步驟1：接收單一 CTCSS 信號</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機A設 CTCSS = 67.0Hz，在 145.500MHz 發話</li>
+        <li>GQRX：接收模式 NFM，帶寬 12.5kHz</li>
+        <li>點選 Audio → 看頻率響應，在 67Hz 附近應出現尖峰</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：比較不同 CTCSS 頻率</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機A換成 CTCSS = 88.5Hz，重複觀測</li>
+        <li>尖峰位置從 67Hz 移到 88.5Hz → 直接驗證 CTCSS 嵌入</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：兩隊「輪流」發話（正確用法）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機A：CTCSS 67Hz；對講機B：CTCSS 88.5Hz</li>
+        <li>A 先講完、B 再講 → 設接收 CTCSS=67Hz 只聽到 A；設 88.5Hz 只聽到 B ✓</li>
+        <li>這證明 CTCSS 能讓你「選聽其中一隊」，前提是兩隊<strong>不同時</strong>佔用頻率</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3b：兩隊「同時」發話（觀察碰撞）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>讓 A、B 在 145.500MHz 同一瞬間按下發話鍵</li>
+        <li>FM 捕獲效應：接收機只鎖定<strong>較強的一方</strong>，較弱者被壓掉；功率相近時則是一團亂碼</li>
+        <li>就算把接收 CTCSS 設成弱方的碼，也救不回來——射頻已在空中相撞，CTCSS 只是接收端的篩選</li>
+        <li>結論：CTCSS 不能讓多隊「同時」共存，只能搭配<strong>輪流發話（通訊規程）</strong>分時共用同一頻率</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟4（GNU Radio 進階）：抽出 CTCSS 信號</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>流程：RTL-SDR Source → FM Demod → Low Pass Filter(300Hz) → Audio Sink</li>
+        <li>低通濾波器截止 300Hz → 聽到 CTCSS 的嗡嗡聲</li>
+        <li>改成帶通濾波器：65–70Hz → 只留下 67Hz CTCSS</li>
+        <li>FFT Sink 顯示清晰的 67Hz 峰值 → 理論完全驗證</li>
+      </ul>
+    </div>
+
+    <figure class="svgfig">
+      <div class="svgfig-cap">音頻頻譜：<b>CTCSS 67Hz 尖峰</b>位在語音（300Hz 以上）下方</div>
+      <svg viewBox="0 0 300 70">
+        <path d="M0,52 L40,51 L58,40 L67,15 L76,40 L95,51 L150,52 L230,51 L300,52 L300,70 L0,70 Z" style="fill:var(--teal-soft)"/>
+        <path d="M0,52 L40,51 L58,40 L67,15 L76,40 L95,51 L150,52 L230,51 L300,52" style="fill:none;stroke:var(--teal);stroke-width:1.6"/>
+        <circle cx="67" cy="15" r="3.5" style="fill:var(--primary)"/>
+      </svg>
+      <div class="axis"><span>0 Hz</span><span>CTCSS 67Hz</span><span>300 Hz</span></div>
+    </figure>
+    <div class="gnote">切到 88.5Hz 時尖峰會往右移到 88.5 的位置——用 FFT 就能確認 CTCSS 設定是否正確。</div>
+
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
+    <table class="tbl">
+      <tr><th>隊伍數量</th><th>CTCSS 分配策略</th><th>指揮所設定</th></tr>
+      <tr><td>2–5 支</td><td>標準 38 碼，各隊一個</td><td>無 CTCSS（接收全部）</td></tr>
+      <tr><td>6–10 支</td><td>選擇間隔較大的碼（避免互調）</td><td>無 CTCSS</td></tr>
+      <tr><td>11+ 支</td><td>考慮分配第二個頻率</td><td>無 CTCSS</td></tr>
+    </table>
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>注意（事實）</span>CTCSS 不提供通訊保密！只要不設 CTCSS 的接收機都能聽到全部通話。</div>
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 是「靜噪鑰匙」而非「加密鑰匙」——它決定接收喇叭開不開，不是頻率隔離。</div>
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>容易誤會</span>CTCSS <strong>不能</strong>讓多隊「同時」在同一頻率講話互不干擾。同時發射會因 FM 捕獲效應相撞（強者勝、弱者被吃掉）。它真正的價值是搭配<strong>輪流發話</strong>，讓多隊「分時」共用一個頻率，並各自只聽自己關心的那組。</div>
+  </div>
+
+  <!-- 情境2 -->
+  <div id="p2" class="scenario">
+    <h2><i data-lucide="mountain" style="width:24px;height:24px;vertical-align:-4px"></i> 情境2：RF 增益與接收靈敏度</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>山區搜救隊距指揮所 5km，信號微弱，調到最大音量仍聽不清楚。指揮官問：「除了大聲，還有什麼辦法？」</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：靈敏度與增益的關係</div>
+    <div class="prose-card">
+      <p><strong>接收機的本質問題：</strong>信號和雜訊都會被放大</p>
+      <ul>
+        <li><strong>信號弱時，增益↑：</strong>信號和底噪一起放大，但信號相對提升 → 清晰度改善</li>
+        <li><strong>信號強時，增益↑：</strong>信號已足夠，只是加更多噪音 → 清晰度反而降低</li>
+        <li><strong>增益過高：</strong>接收機前端過載（Overload），產生非線性失真 → 聽到嗡嗡聲或嘯叫</li>
+      </ul>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">接收靈敏度公式（事實）：
+  S(dBm) = 10·lg(k·T·B) + NF + SNR_min
+
+各參數說明：
+  k   = 波茲曼常數 = 1.38×10⁻²³ J/K
+  T   = 標準溫度 = 290 K（約17°C）
+  B   = 接收頻寬（Hz）
+  NF  = 系統噪聲指數（Noise Figure, dB）
+  SNR_min = 解調所需最低信噪比（dB）
+
+熱噪聲底限計算：
+  10·lg(k·T) = -174 dBm/Hz （在290K時）
+
+對12.5kHz窄頻FM：
+  10·lg(k·T·B) = -174 + 10·lg(12500)
+               = -174 + 41 = -133 dBm
+
+加上典型民用接收機參數：
+  NF = 8 dB，SNR_min = 12 dB
+  S = -133 + 8 + 12 = -113 dBm
+
+結論：理想接收靈敏度約 -113 dBm
+     （實際RTL-SDR約 -90 至 -100 dBm）
+
+RF增益的dB計算：
+  增益每提升 6dB = 信號在FFT中高約兩倍
+  過載點（Overload）：接收機前端飽和
+    → RTL-SDR典型過載點：約 -30 dBm輸入</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 對講機（500m 外發話）</span>
+      <p style="margin-top:8px"><strong>步驟1：建立基準</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>GQRX 設定：NFM 模式，頻寬 12.5kHz，目標頻率 145.500MHz</li>
+        <li>RF 增益設為 0dB，記錄 FFT 信號高度和底噪水平</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：增益爬升測試</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>每次增加 5dB，記錄：FFT 峰值高度、底噪水平、SNR、語音清晰度（1-5 分）</li>
+        <li>重複：0→5→10→15→20→25→30→35→40→49.6dB</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：繪製 SNR 曲線</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>橫軸：增益（dB）；縱軸：SNR（dB）</li>
+        <li>找出「最佳增益點」（SNR 最大值對應的增益）</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟4：重複不同距離</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機移到 100m、300m、1km、2km 重複測試</li>
+        <li>發現：距離越遠，最佳增益點越高 → 形成規律</li>
+      </ul>
+    </div>
+
+    <table class="tbl">
+      <tr><th>RF 增益</th><th>FFT 峰值</th><th>語音</th></tr>
+      <tr><td>0 dB</td><td>幾乎沒入底噪</td><td>無</td></tr>
+      <tr><td>20 dB</td><td>小峰冒出</td><td>微弱</td></tr>
+      <tr><td><b>35 dB（最佳）</b></td><td>峰高、SNR 最大</td><td><b>清晰</b></td></tr>
+      <tr><td>49 dB（過載）</td><td>底噪一起抬高</td><td>噪聲蓋過</td></tr>
+    </table>
+    <div class="gnote">增益不是越高越好——目標是讓「峰值−底噪」差值（SNR）最大的那個點。</div>
+
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
+    <table class="tbl">
+      <tr><th>距離/環境</th><th>建議起始增益</th><th>調整方向</th><th>警告訊號</th></tr>
+      <tr><td>近距離市區（&lt;300m）</td><td>10–15dB</td><td>信號好不需再增</td><td>嗡聲=過載→降低</td></tr>
+      <tr><td>中距離（300m–1km）</td><td>20–30dB</td><td>視 FFT 峰值調整</td><td>背景嘶聲=底噪高</td></tr>
+      <tr><td>山區/遠距（1km+）</td><td>30–40dB</td><td>找 SNR 最大點</td><td>仍無信號=天線問題</td></tr>
+      <tr><td>城市大樓（多反射）</td><td>15–25dB</td><td>先降後調</td><td>過多多路徑=換位置</td></tr>
+    </table>
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>「最大增益 ≠ 最好接收」。每個環境都有一個最佳增益點，用 FFT 的 SNR 就能找到。</div>
+  </div>
+
+  <!-- 情境3 -->
+  <div id="p3" class="scenario">
+    <h2><i data-lucide="radio-tower" style="width:24px;height:24px;vertical-align:-4px"></i> 情境3：頻寬與頻譜效率</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>中繼台停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz 寬頻。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與能量密度</div>
+    <div class="prose-card">
+      <p><strong>核心物理原理：</strong></p>
+      <ul>
+        <li>相同發射功率，帶寬越窄 → 能量越集中 → 每 Hz 的功率密度越高</li>
+        <li>能量密度越高 → 接收機更容易從雜訊中識別信號</li>
+        <li>識別容易 → 在更遠距離仍能清晰通話</li>
+      </ul>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">頻譜功率密度（推論，基於FM頻譜特性）：
+
+功率密度 PSD(W/Hz) = P_total / B
+
+相同1W發射：
+  25kHz模式：PSD = 1W / 25000Hz = 40μW/Hz
+  12.5kHz模式：PSD = 1W / 12500Hz = 80μW/Hz
+
+結論：窄頻的功率密度是寬頻的 2倍（＋3dB）
+
+接收靈敏度公式（重複應用）：
+  S(dBm) = -174 + 10·lg(B) + NF + SNR_min
+
+  25kHz時：  -174 + 44 + 8 + 12 = -110 dBm （理論）
+  12.5kHz時：-174 + 41 + 8 + 12 = -113 dBm （理論）
+
+差距：3dB ≈ 通訊距離增加約 1.4倍
+
+Carson規則（FM頻寬計算）：
+  B_FM = 2(Δf + f_max)
+
+  窄頻（12.5kHz限）：Δf = 2.5kHz，f_max = 3.5kHz
+  寬頻（25kHz限）：  Δf = 5kHz，  f_max = 7.5kHz</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 2 支不同頻寬設定的對講機</span>
+      <p style="margin-top:8px"><strong>步驟1：測量 FFT 波形寬度</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機A設 25kHz 模式在 145.500MHz 發話</li>
+        <li>GQRX：看 FFT 峰值的 -3dB（半功率）寬度，應約 25kHz</li>
+        <li>對講機B設 12.5kHz 模式發話，重複測量</li>
+        <li>視覺對比：25kHz 的山型明顯更寬</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：SNR 比較測試（相同距離）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>兩支對講機在相同地點、相同功率，距離 500m 發話</li>
+        <li>分別用 GQRX 測量接收到的 SNR（信號高度 - 底噪高度）</li>
+        <li>預期：12.5kHz 的 SNR 比 25kHz 高約 3dB</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：通話距離測試（關鍵實驗）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>兩支對講機逐步後退，每 50m 記錄通話清晰度（1-5 分）</li>
+        <li>記錄「通話失去清晰」的距離（清晰度降至 3 分以下）</li>
+        <li>預期：12.5kHz 清晰距離比 25kHz 遠約 30-40%</li>
+      </ul>
+    </div>
+
+    <figure class="svgfig">
+      <div class="svgfig-cap">同功率下：<b>12.5kHz 窄頻</b>能量更集中、峰更高</div>
+      <svg viewBox="0 0 300 76">
+        <line x1="0" y1="60" x2="300" y2="60" style="stroke:var(--border-strong);stroke-width:1"/>
+        <path d="M30,60 L80,30 L130,60 Z" style="fill:var(--honey-soft);stroke:var(--honey);stroke-width:1.4"/>
+        <path d="M198,60 L222,16 L246,60 Z" style="fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.4"/>
+        <text x="80" y="72" style="fill:var(--honey-ink);font:9px var(--font-mono)" text-anchor="middle">25kHz 寬</text>
+        <text x="222" y="72" style="fill:var(--teal-ink);font:9px var(--font-mono)" text-anchor="middle">12.5kHz 窄</text>
+      </svg>
+    </figure>
+    <div class="gnote">能量集中 → 功率密度更高 → 相同功率下信號更清晰。</div>
+
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
+    <table class="tbl">
+      <tr><th>情況</th><th>推薦頻寬</th><th>原因</th></tr>
+      <tr><td>有中繼台支援</td><td>12.5kHz（仍建議）</td><td>現代標準，節省電力</td></tr>
+      <tr><td>直聯（無中繼）</td><td>12.5kHz（強制）</td><td>能量密度高，距離更遠</td></tr>
+      <tr><td>與舊式對講機配合</td><td>視對方設定</td><td>需確認對方設定</td></tr>
+      <tr><td>強電池使用時間優先</td><td>12.5kHz</td><td>相同覆蓋所需功率更低</td></tr>
+    </table>
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>12.5kHz 窄頻是「用更少能量走更遠的路」。災害時節省電力和擴大覆蓋都靠它。</div>
+  </div>
+
+  <!-- 情境4 -->
+  <div id="p4" class="scenario">
+    <h2><i data-lucide="building" style="width:24px;height:24px;vertical-align:-4px"></i> 情境4：CTCSS 層級管理</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>大樓倒塌 40 人被困不同樓層，1 台對講機需協調 5 支搜救隊，結果 40 人搶著發話，指揮所聽到一片混亂。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻率共享的信道容量</div>
+    <div class="prose-card">
+      <p><strong>Shannon 容量公式（推論方向）：</strong></p>
+      <ul>
+        <li>一個頻道（145.500MHz）在同一時刻只能承載 1 個信號，不能同時多人發話</li>
+        <li>CTCSS 是「接收側的過濾器」，不能解決同時發話的物理衝突</li>
+        <li>真正的解法：用通訊規程（SOP）管理發話順序</li>
+        <li>CTCSS 的作用：讓每層搜救隊只聽到自己層的指令，不被其他層干擾</li>
+      </ul>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>系統設計原則</div>
+    <div class="formula">層級化通訊模型：
+
+主頻率：145.500MHz（唯一申請）
+
+CTCSS碼分配：
+  指揮所：無CTCSS（聽全部）
+  ├─ 1–2樓隊：CTCSS 67.0Hz
+  ├─ 3–4樓隊：CTCSS 88.5Hz
+  ├─ 5–6樓隊：CTCSS 110.9Hz
+  └─ 7–8樓隊：CTCSS 131.8Hz
+
+發話流程（SOP）：
+  指揮所 → 廣播（設無CTCSS發話：所有人都收到）
+  各樓層隊 → 只發自己的CTCSS（其他層聽不到）
+
+優點：
+  ・每層只聽指揮所的廣播 + 自己的確認
+  ・其他層的日常報告不干擾
+  ・指揮所統一掌握所有資訊
+
+CTCSS碼選擇建議（避免互調干擾）：
+  選擇頻率差距大的碼（間隔不小於20Hz）
+  例：67.0, 88.5, 110.9, 131.8 → 間隔約20Hz ✓
+  避免：67.0, 71.9, 74.4 → 間隔過小，有互調風險</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 瀑布圖 + 4 支對講機（分別設不同 CTCSS）</span>
+      <p style="margin-top:8px"><strong>步驟1：建立層級通訊系統</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機1（指揮所）：145.500MHz，無 CTCSS</li>
+        <li>對講機2（1-2樓）：145.500MHz，CTCSS 67.0Hz</li>
+        <li>對講機3（3-4樓）：145.500MHz，CTCSS 88.5Hz</li>
+        <li>對講機4（5-6樓）：145.500MHz，CTCSS 110.9Hz</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：瀑布圖監控（最具視覺效果）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>GQRX 瀑布圖顯示在大螢幕</li>
+        <li>各樓層輪流報告：觀察瀑布圖中通話時間軸</li>
+        <li>指揮所發廣播：瀑布圖顯示廣播信號（強）</li>
+        <li>各層確認：瀑布圖顯示輕微的回覆信號</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：驗證 CTCSS 選聽效果（各隊輪流報告）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>對講機設接收 CTCSS=67Hz → 只聽到 1-2 樓的報告</li>
+        <li>其他樓層通話時 → 靜噪不開，不干擾</li>
+        <li>GQRX「音頻頻譜」顯示：切換 CTCSS 接收值 → 峰值位置改變</li>
+      </ul>
+    </div>
+
+    <table class="tbl">
+      <tr><th>時間</th><th>事件</th><th>CTCSS</th></tr>
+      <tr><td>13:00:01</td><td>指揮所廣播</td><td>無</td></tr>
+      <tr><td>13:00:03</td><td>1-2 樓確認</td><td>67 Hz</td></tr>
+      <tr><td>13:00:10</td><td>3-4 樓確認</td><td>88.5 Hz</td></tr>
+      <tr><td>13:00:17</td><td>5-6 樓確認</td><td>110.9 Hz</td></tr>
+    </table>
+    <div class="gnote">指揮所監聽看到全部；各樓只聽到廣播＋自己——不被其他層干擾（物理上仍是同一頻率、需輪流發話）。</div>
+
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 層級化 ≈ 在同一頻率上創造「虛擬分頻道」——但這是「選聽」上的虛擬分頻，物理上仍是<strong>一個頻率、同時只能一人講</strong>。必須搭配輪流發話的通訊規程才成立，不是讓各層可以同時開講。</div>
+  </div>
+
+  <!-- 情境5 -->
+  <div id="p5" class="scenario">
+    <h2><i data-lucide="wrench" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：天線診斷與故障定位</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>救援第 8 小時，信號突然完全消失，電池有電，頻率沒動，找不到原因。後來發現天線被倒塌物砸歪。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：天線的核心作用</div>
+    <div class="prose-card">
+      <p><strong>天線的本質：將電能轉換為電磁波（或反向）</strong></p>
+      <ul>
+        <li>天線尺寸必須與波長匹配，才能高效轉換</li>
+        <li>失配時，能量反射回去 → 駐波比（SWR）升高 → 發射效率急降</li>
+        <li>天線完全損壞時，發射功率幾乎全部反射或耗散為熱</li>
+      </ul>
+      <p style="margin:8px 0 0;font-size:13.5px"><a href="https://winson3qq.github.io/RF-Study/courses/rf-glossary.html#wavelength">📖 白話手冊：波長與 λ/4 天線（不用公式）→</a></p>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">波長計算：
+  λ = c / f
+
+  c = 3×10⁸ m/s（光速）
+  f = 頻率（Hz）
+
+VHF 145MHz對講機：
+  λ = 3×10⁸ / 145×10⁶ = 2.07m
+  λ/4 ≈ 0.517m ≈ 51.7cm（四分之一波長天線）
+  λ/2 ≈ 1.035m（半波長偶極天線）
+
+UHF 435MHz對講機：
+  λ = 3×10⁸ / 435×10⁶ = 0.69m
+  λ/4 ≈ 17.2cm（手持對講機標準天線）
+
+實際天線長度修正（速度因子）：
+  L_實際 = λ/4 × 0.95（考慮波傳播速度）
+  VHF 145MHz：L ≈ 49.1cm
+  UHF 435MHz：L ≈ 16.3cm
+
+駐波比（SWR）判讀：
+  SWR = 1.0：完全匹配（理想，實際不可達）
+  SWR ≤ 1.5：優良（通訊設備標準）
+  SWR 1.5–2.0：可接受
+  SWR 2.0–3.0：有問題，需調整
+  SWR > 3.0：嚴重失配，損壞天線</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 診斷流程</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>快速診斷三步驟（目標：2 分鐘內定位問題）</span>
+      <p style="margin-top:8px"><strong>步驟1：FFT 有無信號（最快）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>GQRX 監聽目標頻率，叫對方發話</li>
+        <li>FFT 全是底噪（-100dBm 以下）→ 天線或 RF 鏈問題</li>
+        <li>FFT 有信號但低 → 可能是距離、地形、增益問題</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：換天線驗證（確認是天線問題）</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>拆下可疑天線，換上備用天線（或臨時天線）</li>
+        <li>對方重新發話 → FFT 看是否恢復正常峰值</li>
+        <li>恢復 ✓ → 確認是原天線損壞</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：臨時天線製作驗證</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>電話線或單芯銅線，剪成 λ/4 長度（VHF=51cm, UHF=17cm）</li>
+        <li>接上同軸電纜中心導體</li>
+        <li>GQRX 監聽 → 應恢復到約原信號強度的 70-80%</li>
+        <li>對比原天線的 FFT 高度 → 量化性能損失</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟4（進階）：測量 SWR 概念驗證</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>用 GNU Radio：監聽反射信號強度</li>
+        <li>發射功率 vs 反射功率之比 = 直觀理解 SWR</li>
+      </ul>
+    </div>
+
+    <table class="tbl">
+      <tr><th>天線狀態</th><th>FFT 峰值</th><th>判讀</th></tr>
+      <tr><td>正常</td><td><span class="readout">≈ −60 dBm</span></td><td>清晰信號峰</td></tr>
+      <tr><td>鬆動（SWR≈3）</td><td><span class="readout">≈ −75 dBm</span></td><td>衰減 15–20 dB</td></tr>
+      <tr><td>完全損壞</td><td><span class="readout">≤ −100 dBm</span></td><td>全是底噪、無峰</td></tr>
+    </table>
+    <div class="gnote">信號消失先看 FFT 而非猜測——2 分鐘內可分辨是天線問題還是設定問題。</div>
+
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>信號消失的第一個診斷工具是 FFT，不是猜測。2 分鐘內可定位是天線問題還是設定問題。</div>
+  </div>
+
+  <!-- 情境6 -->
+  <div id="p6" class="scenario">
+    <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境6：干擾檢測與定位</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認干擾來源。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：干擾的類型與物理特徵</div>
+    <div class="prose-card">
+      <p><strong>FM 通訊中常見干擾類型（事實）：</strong></p>
+      <ul>
+        <li><strong>同頻干擾（Co-channel）：</strong>兩個信號在同一頻率上，FM 的「捕捉效應」讓強者獲勝，但若強度相近則雙方都失真</li>
+        <li><strong>鄰頻干擾（Adjacent-channel）：</strong>相鄰頻率的強信號「洩漏」到目標頻率</li>
+        <li><strong>互調干擾（IMD）：</strong>兩個強信號在接收機非線性電路中混頻，產生新的虛假頻率</li>
+      </ul>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">FM捕捉效應（Capture Effect）：
+  當S1/S2 > 6dB（約4倍功率差）時（6dB 為保守教學門檻，
+  品質好的接收機「捕捉比」可低到 1–3dB）
+  接收機傾向「捕捉」強信號，弱信號被抑制
+
+  → 若干擾信號比我方信號強 > 6dB：
+    我方信號被完全壓制 ← 無法通話
+
+自由空間路徑衰減（Friis公式）：
+  PL(dB) = 20·log(d) + 20·log(f) + 20·log(4π/c)
+
+  簡化版（實際應用，事實推論）：
+  每倍距離增加約6dB衰減
+
+  信號強度推估距離：
+  假設對講機發射功率5W（37dBm），
+  接收靈敏度-100dBm，天線增益0dBi：
+
+  最大路徑損耗 = 37 + 0 - (-100) = 137dB
+
+  自由空間距離估算（145MHz，僅供量級參考）：
+  ※ 實際距離受發射功率、天線、地形影響甚大，下表只是粗略量級
+  RSSI S9（強）→ 約 300m–1km
+  RSSI S7（中）→ 約 1–3km
+  RSSI S5（弱）→ 約 3–8km
+  RSSI S3（很弱）→ 約 8–20km
+
+互調干擾產物：
+  兩個頻率 f1, f2 → 產生 2f1-f2 及 2f2-f1
+  例：145.500 + 146.000MHz → 產生 145.000MHz虛假信號</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 掃頻模式 + RTL-SDR</span>
+      <p style="margin-top:8px"><strong>步驟1：定位干擾頻率</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>GQRX 設定：掃描模式，範圍 144.0–147.0MHz</li>
+        <li>觀察 FFT：在目標頻率以外找異常峰值</li>
+        <li>紀錄干擾頻率（例：145.510MHz）</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：判斷干擾類型</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>干擾在目標頻率正上方 → 同頻干擾</li>
+        <li>干擾在目標頻率旁邊 ±12.5kHz → 鄰頻干擾</li>
+        <li>多個異常峰值，等間隔分布 → 互調干擾</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：信號強度三角定位</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>在不同位置（A、B、C 點）測量干擾信號的 RSSI</li>
+        <li>A 點（東邊）：RSSI = S7</li>
+        <li>B 點（北邊）：RSSI = S4</li>
+        <li>C 點（西邊）：RSSI = S2</li>
+        <li>結論：干擾源靠近 A 點（東邊），最強信號方向即為來源方向</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟4：驗證換頻率的效果</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>掃描 145.0–146.0MHz 全段，找無信號的乾淨頻率</li>
+        <li>隊伍換到新頻率後，用 GQRX 確認無干擾</li>
+        <li>對比：換前 FFT 雜亂 vs 換後 FFT 乾淨</li>
+      </ul>
+    </div>
+
+    <figure class="svgfig">
+      <div class="svgfig-cap">掃頻 144–147MHz：<b>干擾峰比我方更高</b></div>
+      <svg viewBox="0 0 300 78">
+        <path d="M0,58 L50,56 L95,57 L113,42 L125,30 L137,44 L152,50 L165,40 L175,14 L185,40 L208,54 L250,56 L300,57 L300,78 L0,78 Z" style="fill:var(--teal-soft)"/>
+        <path d="M0,58 L50,56 L95,57 L113,42 L125,30 L137,44 L152,50 L165,40 L175,14 L185,40 L208,54 L250,56 L300,57" style="fill:none;stroke:var(--teal);stroke-width:1.6"/>
+        <circle cx="125" cy="30" r="3" style="fill:var(--ink-2)"/>
+        <circle cx="175" cy="14" r="3.5" style="fill:var(--rose)"/>
+        <text x="95" y="72" style="fill:var(--ink-3);font:9px var(--font-mono)" text-anchor="middle">145.500 我方</text>
+        <text x="218" y="72" style="fill:var(--rose-ink);font:9px var(--font-mono)" text-anchor="middle">.510 干擾</text>
+      </svg>
+    </figure>
+    <div class="gnote">干擾更強 → FM 捕捉效應讓它壓過我方信號。三角定位推算方向、快速換頻是最有效處置。</div>
+
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>干擾不是魔鬼，用 FFT 能清楚看到它的頻率和強度，三角定位能推算方向，快速換頻是最有效的應急處置。</div>
+  </div>
+
+  <!-- 情境7 -->
+  <div id="p7" class="scenario">
+    <h2><i data-lucide="route" style="width:24px;height:24px;vertical-align:-4px"></i> 情境7：中繼台設計與雙工原理</h2>
+    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
+    <div class="prose-card"><p>文山區與信義區搜救隊需要協調，直線距離 3km 但中間有山丘遮擋，直聯完全無法通話。</p></div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：中繼台的物理原理</div>
+    <div class="prose-card">
+      <p><strong>為什麼需要中繼台：地形遮擋 = 菲涅耳區阻礙</strong></p>
+      <ul>
+        <li>無線電信號在「視距（Line of Sight）」外顯著衰減</li>
+        <li>山丘或建築物遮擋菲涅耳區 → 信號強度損失 10–30dB</li>
+        <li>中繼台放在高點 → 與兩個端點都保持視距 → 信號轉發</li>
+      </ul>
+      <p><strong>雙工的必要性（重要！）</strong></p>
+      <ul>
+        <li>中繼台需同時接收和發射</li>
+        <li>如果收發頻率相同：自己的發射信號進入自己的接收機 → 自激 → 嘯叫</li>
+        <li>解法：收發使用不同頻率（頻率對）</li>
+      </ul>
+    </div>
+
+    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
+    <div class="formula">菲涅耳區（Fresnel Zone）計算（事實）：
+  第一菲涅耳區半徑：
+  r1 = √(λ·d1·d2 / (d1+d2))
+
+  d1 = 發射端到障礙物距離
+  d2 = 障礙物到接收端距離
+  λ  = 波長
+
+  例：VHF 145MHz，兩點間距3km，中間有山：
+  d1=d2=1.5km，λ=2.07m
+  r1 = √(2.07 × 1500 × 1500 / 3000) ≈ √1552 ≈ 39m
+
+  → 菲涅耳區需要39m凈空，山丘若超過此高度即造成嚴重衰減
+
+雙工頻率隔離度需求：
+  中繼台同時收發，發射端信號會干擾接收端
+  所需隔離度：發射功率 - 接收靈敏度 + 餘量
+
+  例：5W(37dBm)發射，接收靈敏度-113dBm：
+  最低隔離需求 = 37 - (-113) + 20 = 170dB
+
+  實際做法（用濾波器）：
+  每個陷波濾波器（Notch Filter）提供約60–70dB
+  兩個組成「雙工器（Duplexer）」→ 120–140dB
+
+頻率偏移（Offset）選擇（事實）：
+  VHF民防常見偏移：±600kHz
+  例：接收145.500，發射146.100MHz
+  UHF常見偏移：±5MHz
+  例：接收430.000，發射435.000MHz</div>
+
+    <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
+    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 雙頻監聽 + RTL-SDR</span>
+      <p style="margin-top:8px"><strong>步驟1：設置中繼台通訊系統</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>文山隊對講機：發 145.500，收 146.100MHz（設 offset +600kHz）</li>
+        <li>信義隊對講機：發 145.500，收 146.100MHz（同上）</li>
+        <li>中繼台：收 145.500，發 146.100MHz（自動轉發）</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟2：GQRX 雙頻監聽驗證</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>GQRX 打開兩個接收視窗：145.500 和 146.100MHz</li>
+        <li>文山隊發話 → 145.500 FFT 出現峰值 → 146.100 FFT 稍後出現（中繼延遲）</li>
+        <li>兩個 FFT 圖的時間差即為中繼台延遲（通常 &lt;100ms）</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟3：驗證中繼台健康狀況</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>文山隊每分鐘發一次信標（短信號）</li>
+        <li>GQRX 瀑布圖：145.500 和 146.100 各出現規律信號條紋</li>
+        <li>若 146.100 無信號 → 中繼台故障 ← 立即可知</li>
+      </ul>
+      <p style="margin-top:8px"><strong>步驟4：比較直聯 vs 中繼信號強度</strong></p>
+      <ul style="margin:4px 0 0 20px">
+        <li>直聯（地形遮擋）：GQRX 幾乎無法接收到信號</li>
+        <li>透過中繼台：GQRX 接收到明顯峰值（S7 以上）</li>
+        <li>差距量化：中繼帶來的信號強度提升（dB 數值）</li>
+      </ul>
+    </div>
+
+    <table class="tbl">
+      <tr><th>時間</th><th>145.500（接收）</th><th>146.100（轉發）</th></tr>
+      <tr><td>t = 0</td><td>有信號</td><td>無</td></tr>
+      <tr><td>t = 0.1</td><td>有信號</td><td>有信號（中繼延遲）</td></tr>
+      <tr><td>t = 1.5</td><td>無</td><td>有信號</td></tr>
+    </table>
+    <div class="gnote">文山隊發 145.500 → 中繼台轉發 146.100 → 信義隊收到。中繼台故障時 146.100 一直無轉發，在 GQRX 上立刻看得出來。</div>
+
+    <div class="sec-h"><i data-lucide="key-round"></i>CTCSS 在中繼台的應用</div>
+    <div class="prose-card">
+      <p>中繼台架在高處、收訊靈敏、涵蓋極廣。若只靠單純的<strong>載波靜噪（Carrier Squelch）</strong>，很容易被遠端雜訊、非法電波或隔壁縣市的同頻訊號觸發，導致中繼台無故啟動、持續發射（俗稱<strong>空轉、拉尾巴</strong>）。<strong>CTCSS 亞音頻</strong>就是中繼台的「鑰匙＋門禁」——核心目的有二：<strong>防止干擾</strong>與<strong>控制轉播權限</strong>。</p>
+      <p>發話時，對講機會在語音下方疊加一個聽不太到的低頻連續音（<strong>67.0–250.3 Hz</strong>）。中繼台內部 CPU 濾波解碼後，<strong>只有 Tone 碼完全吻合才會啟動發射機轉播</strong>；不帶碼或帶錯碼的訊號一律被過濾、不予理會。</p>
+    </div>
+
+    <div class="prose-card">
+      <p><strong>應用一　上行鎖定：控制轉播啟動（最常見）</strong></p>
+      <p>中繼台在<strong>接收端（上行 Uplink）</strong>設一組 CTCSS（如 88.5 Hz）。使用者按 PTT 發話時帶上此 Tone，碼吻合 → 中繼台啟動轉播；沒帶碼的雜訊與同頻干擾全被擋掉。</p>
+      <p style="margin-top:10px"><strong>應用二　下行鎖定：減少使用端收訊干擾</strong></p>
+      <p>中繼台<strong>發射端（下行 Downlink）</strong>可選擇要不要也送 Tone：</p>
+      <ul style="margin:4px 0 0 20px">
+        <li><strong>只開上行</strong>：使用者只需開「發射 Tone（T）」即可觸發中繼，轉播出來的訊號不帶 Tone。</li>
+        <li><strong>雙向開啟</strong>：中繼台轉播時也疊加 Tone，使用者再開「接收 Tone（R）」→ 喇叭只在中繼台真正轉播時才打開，徹底隔絕環境雜訊與其他同頻對講機的直通干擾。</li>
+      </ul>
+      <p style="margin-top:10px"><strong>應用三　同頻不同 Tone：頻率重複利用</strong></p>
+      <p>頻率資源緊張時，有地理阻隔的兩隊可共用同一中繼頻率：A 隊中繼台設 100.0 Hz、B 隊設 141.3 Hz。收發頻率一模一樣，但內碼不同 → A 隊說話絕不會觸發 B 隊的中繼台，反之亦然，大幅提升頻道利用率。</p>
+    </div>
+
+    <table class="tbl">
+      <tr><th>狀態</th><th>落在中繼台接收頻率？</th><th>帶正確 CTCSS？</th><th>中繼台反應</th></tr>
+      <tr><td>正常通話</td><td>是</td><td>是（正確）</td><td>啟動轉播，擴大通訊範圍</td></tr>
+      <tr><td>同頻干擾</td><td>是</td><td>否／錯誤</td><td>拒絕轉播，保持靜音、不干擾</td></tr>
+      <tr><td>環境雜訊</td><td>否（落於盲區）</td><td>否</td><td>拒絕轉播，完全屏蔽</td></tr>
+    </table>
+    <div class="gnote">三種情況只有「頻率對 + Tone 對」才會啟動轉播——這就是 CTCSS 既擋干擾、又能讓多隊共用同頻的關鍵。</div>
+
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>使用中繼台要設三樣：<strong>頻率</strong>（如 145.500）＋<strong>偏移</strong>（如 +600kHz）＋<strong>發射 CTCSS（Tone / T）</strong>。少設 CTCSS，按了發話鍵中繼台也不會動。</div>
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>常見誤解</span>中繼台的 CTCSS 是「存取碼（開門用）」，和情境 1 用 CTCSS「選聽分隊」目的不同——但原理一樣：都是用亞音頻控制「要不要打開」。它一樣<strong>不是加密</strong>，沒設 CTCSS 的人仍聽得到中繼台轉發的內容。</div>
+    <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>中繼台像一台「公用擴音器」，但要先刷對門禁卡（CTCSS）它才幫你廣播；刷錯卡或不刷，喊破喉嚨它也不理你。</div>
+
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
+    <table class="tbl">
+      <tr><th>地形情況</th><th>中繼台部署策略</th><th>SDR 驗證方式</th></tr>
+      <tr><td>兩點間有山丘（&lt;5km）</td><td>山頂或高樓架設</td><td>兩頻同時監聽</td></tr>
+      <tr><td>兩點間有建築物</td><td>樓頂架設</td><td>RSSI 對比驗證</td></tr>
+      <tr><td>廣大搜索區域</td><td>多個中繼形成網絡</td><td>掃頻監控所有節點</td></tr>
+      <tr><td>無法架設實體中繼</td><td>考慮衛星電話備援</td><td>SDR 監測無線電段</td></tr>
+    </table>
+    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>中繼台是「把低谷的信號搬到山頂再播出」，雙工頻率是「防止自己講話時堵住自己的耳朵」。</div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  function go(id, btn) {
+    document.querySelectorAll('.scenario').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tabs .tab').forEach(a => a.classList.remove('active'));
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    if (btn) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 支援以 #pN 深連結直接開啟對應情境（供白話手冊的「情境」標籤連入）
+  function openFromHash() {
+    var id = (location.hash || '').replace(/^#/, '');
+    if (!/^p[0-7]$/.test(id)) return;
+    var tabs = document.querySelectorAll('.tabs .tab');
+    for (var i = 0; i < tabs.length; i++) {
+      if ((tabs[i].getAttribute('onclick') || '').indexOf("'" + id + "'") >= 0) { go(id, tabs[i]); break; }
+    }
+  }
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+  if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
