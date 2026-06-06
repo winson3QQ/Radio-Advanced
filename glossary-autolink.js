@@ -103,9 +103,11 @@
 
   function injectStyle() {
     var css =
-      '.gterm{color:inherit;text-decoration:none;border-bottom:1px dashed var(--primary,#F2643C);' +
-      'cursor:help;transition:color .15s,border-color .15s;}' +
-      '.gterm:hover{color:var(--primary-ink,#B83A1F);border-bottom-style:solid;}';
+      '.gterm{color:var(--primary-ink,#B83A1F);text-decoration:underline;' +
+      'text-decoration-color:var(--primary,#F2643C);text-decoration-thickness:1px;' +
+      'text-underline-offset:3px;cursor:pointer;transition:color .15s;}' +
+      '.gterm:hover{color:var(--primary-strong,#D8482A);' +
+      'text-decoration-color:var(--primary-strong,#D8482A);}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
