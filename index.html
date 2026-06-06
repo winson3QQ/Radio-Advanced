@@ -670,7 +670,7 @@ canvas { max-width: 100%; }
   <div id="p3" class="scenario">
     <h2><i data-lucide="radio-tower" style="width:24px;height:24px;vertical-align:-4px"></i> 情境3：頻寬與頻譜效率</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
-    <div class="prose-card"><p>中繼台停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz 寬頻。</p></div>
+    <div class="prose-card"><p><a href="glossary.html#repeater">中繼台</a>停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz <a href="glossary.html#bandwidth">寬頻</a>。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與能量密度</div>
     <div class="prose-card">
@@ -824,7 +824,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
   <div id="p5" class="scenario">
     <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：干擾檢測與定位</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
-    <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認干擾來源。</p></div>
+    <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認<a href="glossary.html#capture">干擾</a>來源。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：干擾的類型與物理特徵</div>
     <div class="prose-card">
@@ -893,7 +893,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
   <div id="p6" class="scenario">
     <h2><i data-lucide="route" style="width:24px;height:24px;vertical-align:-4px"></i> 情境6：中繼台設計與雙工原理</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
-    <div class="prose-card"><p>文山區與信義區搜救隊需要協調，直線距離 3km 但中間有山丘遮擋，直聯完全無法通話。</p></div>
+    <div class="prose-card"><p>海濱組與右岸組搜救隊需要協調，直線距離 3km 但中間有山丘遮擋，直聯完全無法通話。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：中繼台的物理原理</div>
     <div class="prose-card">
@@ -916,19 +916,19 @@ CTCSS碼選擇建議（避免解碼誤判）：
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 雙頻監聽 + RTL-SDR</span>
       <p style="margin-top:8px"><strong>步驟1：設置中繼台通訊系統</strong></p>
       <ul style="margin:4px 0 0 20px">
-        <li>文山隊對講機：發 145.500，收 146.100MHz（設 offset +600kHz）</li>
-        <li>信義隊對講機：發 145.500，收 146.100MHz（同上）</li>
+        <li>海濱組對講機：發 145.500，收 146.100MHz（設 offset +600kHz）</li>
+        <li>右岸組對講機：發 145.500，收 146.100MHz（同上）</li>
         <li>中繼台：收 145.500，發 146.100MHz（自動轉發）</li>
       </ul>
       <p style="margin-top:8px"><strong>步驟2：GQRX 雙頻監聽驗證</strong></p>
       <ul style="margin:4px 0 0 20px">
         <li>GQRX 打開兩個接收視窗：145.500 和 146.100MHz</li>
-        <li>文山隊發話 → 145.500 FFT 出現峰值 → 146.100 FFT 稍後出現（中繼延遲）</li>
+        <li>海濱組發話 → 145.500 FFT 出現峰值 → 146.100 FFT 稍後出現（中繼延遲）</li>
         <li>兩個 FFT 圖的時間差即為中繼台延遲（通常 &lt;100ms）</li>
       </ul>
       <p style="margin-top:8px"><strong>步驟3：驗證中繼台健康狀況</strong></p>
       <ul style="margin:4px 0 0 20px">
-        <li>文山隊每分鐘發一次信標（短信號）</li>
+        <li>海濱組每分鐘發一次信標（短信號）</li>
         <li>GQRX 瀑布圖：145.500 和 146.100 各出現規律信號條紋</li>
         <li>若 146.100 無信號 → 中繼台故障 ← 立即可知</li>
       </ul>
@@ -946,7 +946,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
       <tr><td>t = 0.1</td><td>有信號</td><td>有信號（中繼延遲）</td></tr>
       <tr><td>t = 1.5</td><td>無</td><td>有信號</td></tr>
     </table>
-    <div class="gnote">文山隊發 145.500 → 中繼台轉發 146.100 → 信義隊收到。中繼台故障時 146.100 一直無轉發，在 GQRX 上立刻看得出來。</div>
+    <div class="gnote">海濱組發 145.500 → 中繼台轉發 146.100 → 右岸組收到。中繼台故障時 146.100 一直無轉發，在 GQRX 上立刻看得出來。</div>
 
     <div class="sec-h"><i data-lucide="key-round"></i>CTCSS 在中繼台的應用</div>
     <div class="prose-card">
