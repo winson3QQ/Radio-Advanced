@@ -540,7 +540,6 @@ canvas { max-width: 100%; }
         <li><strong>第 2 層（CTCSS 亞音）：</strong>67–250Hz 之一。這個頻段人耳其實聽得到，但會被收訊端約 300Hz 的高通濾波與通訊音頻的低頻滾降濾掉——所以「聽不太到」是被<strong>濾掉</strong>，不是耳朵聽不見</li>
         <li><strong>第 3 層（FM 載波）：</strong>145.500MHz，無線電的「傳輸馬路」</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#ctcss">📖 白話手冊：CTCSS 是什麼（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
@@ -617,7 +616,6 @@ canvas { max-width: 100%; }
         <li><strong>信號強時，增益↑：</strong>信號已足夠，只是加更多噪音 → 清晰度反而降低</li>
         <li><strong>增益過高：</strong>接收機前端過載（Overload），產生非線性失真 → 聽到嗡嗡聲或嘯叫</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#gain">📖 白話手冊：RF 增益 / 接收靈敏度（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
@@ -670,7 +668,7 @@ canvas { max-width: 100%; }
   <div id="p3" class="scenario">
     <h2><i data-lucide="radio-tower" style="width:24px;height:24px;vertical-align:-4px"></i> 情境3：頻寬與頻譜效率</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
-    <div class="prose-card"><p><a href="glossary.html#repeater">中繼台</a>停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz <a href="glossary.html#bandwidth">寬頻</a>。</p></div>
+    <div class="prose-card"><p>中繼台停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz 寬頻。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與能量密度</div>
     <div class="prose-card">
@@ -680,7 +678,6 @@ canvas { max-width: 100%; }
         <li>能量密度越高 → 接收機更容易從雜訊中識別信號</li>
         <li>識別容易 → 在更遠距離仍能清晰通話</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#bandwidth">📖 白話手冊：頻寬（寬頻 / 窄頻）（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
@@ -752,7 +749,6 @@ canvas { max-width: 100%; }
         <li>真正的解法：用通訊規程（SOP）管理發話順序</li>
         <li>CTCSS 的作用：讓每層搜救隊只聽到自己層的指令，不被其他層干擾</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#ctcss">📖 白話手冊：CTCSS（亞音頻）（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="ruler"></i>系統設計原則</div>
@@ -824,7 +820,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
   <div id="p5" class="scenario">
     <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：干擾檢測與定位</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
-    <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認<a href="glossary.html#capture">干擾</a>來源。</p></div>
+    <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認干擾來源。</p></div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：干擾的類型與物理特徵</div>
     <div class="prose-card">
@@ -834,7 +830,6 @@ CTCSS碼選擇建議（避免解碼誤判）：
         <li><strong>鄰頻干擾（Adjacent-channel）：</strong>相鄰頻率的強信號「洩漏」到目標頻率</li>
         <li><strong>互調干擾（IMD）：</strong>兩個強信號在接收機非線性電路中混頻，產生新的虛假頻率</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#capture">📖 白話手冊：捕獲效應 / 干擾（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
@@ -909,7 +904,6 @@ CTCSS碼選擇建議（避免解碼誤判）：
         <li>如果收發頻率相同：自己的發射信號進入自己的接收機 → 自激 → 嘯叫</li>
         <li>解法：收發使用不同頻率（頻率對）</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#repeater">📖 白話手冊：中繼台 / 雙工（不用公式）→</a></p>
     </div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
