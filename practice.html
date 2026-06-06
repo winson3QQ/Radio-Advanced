@@ -464,20 +464,20 @@ canvas { max-width: 100%; }
   <div class="read-hero">
     <div class="eyebrow">COURSE · ADVANCED · 分組練習</div>
     <h1>進階無線電 · 分組練習</h1>
-    <p>每個情境的動手練習集中在這一頁。流程一致：<strong>教官用 SDR 瀑布圖示範 → 展開情境（在課程頁）→ 回到這裡分組練習</strong>。SDR 是教官的共用示範站，<strong>不需要每組一台</strong>。</p>
+    <p>每個情境的動手練習集中在這一頁。流程一致：<strong>講師用 SDR 瀑布圖示範 → 展開情境（在課程頁）→ 回到這裡分組練習</strong>。SDR 是講師的共用示範站，<strong>不需要每組一台</strong>。</p>
   </div>
 
-  <div class="callout info"><span class="ct"><i data-lucide="info"></i>使用方式</span>各組需要的只有對講機、紙筆與計算；需要看頻譜時到教官的 SDR 站前一起看。每個練習都附「<strong>可檢核的產出</strong>」，做完要交得出東西。</div>
+  <div class="callout info"><span class="ct"><i data-lucide="info"></i>使用方式</span>各組需要的只有對講機、紙筆與計算；需要看頻譜時到講師的 SDR 站前一起看。每個練習都附「<strong>可檢核的產出</strong>」，做完要交得出東西。</div>
 
   <!-- 練習1 -->
   <div class="prose-card" id="p1" style="scroll-margin-top:16px">
     <div class="sec-h" style="margin-top:6px"><i data-lucide="users"></i>情境1 練習：CTCSS 分時共用一頻</div>
     <div class="callout task"><span class="ct"><i data-lucide="target"></i>目標</span>用「不同 CTCSS + 輪流發話」，讓 3 組在<strong>同一頻率</strong>不打架，並親身體會「同時講」會怎樣。</div>
-    <p><strong>器材：</strong>每組 1 台對講機（全部設同一頻率）｜教官 SDR 示範站</p>
+    <p><strong>器材：</strong>每組 1 台對講機（全部設同一頻率）｜講師 SDR 示範站</p>
     <div class="flowcard"><div class="flowcard-h"><i data-lucide="list-checks"></i>練習步驟</div><div class="flow">
       <div class="step"><div class="num">1</div><div class="body"><div class="t">各組設不同 CTCSS</div><div class="d">A 組 67.0、B 組 88.5、C 組 110.9，頻率全部相同。</div></div></div>
-      <div class="step"><div class="num">2</div><div class="body"><div class="t">輪流回報</div><div class="d">教官（無 CTCSS）廣播，各組依序回報，體會「分時共用」順暢的樣子。</div></div></div>
-      <div class="step"><div class="num">3</div><div class="body"><div class="t">故意製造碰撞</div><div class="d">讓 A、B 同一瞬間按 PTT → 到教官 SDR 站看瀑布圖的碰撞痕跡、聽結果（強者勝／一團亂）。</div></div></div>
+      <div class="step"><div class="num">2</div><div class="body"><div class="t">輪流回報</div><div class="d">講師（無 CTCSS）廣播，各組依序回報，體會「分時共用」順暢的樣子。</div></div></div>
+      <div class="step"><div class="num">3</div><div class="body"><div class="t">故意製造碰撞</div><div class="d">讓 A、B 同一瞬間按 PTT → 到講師 SDR 站看瀑布圖的碰撞痕跡、聽結果（強者勝／一團亂）。</div></div></div>
       <div class="step"><div class="num">4</div><div class="body"><div class="t">改回輪流</div><div class="d">恢復秩序，對照差異。</div></div></div>
     </div></div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>產出（檢核）</span>寫出本組 CTCSS，並用一句話說明「為什麼設了不同碼還是不能同時講」。</div>
@@ -487,9 +487,9 @@ canvas { max-width: 100%; }
   <div class="prose-card" id="p2" style="scroll-margin-top:16px">
     <div class="sec-h" style="margin-top:6px"><i data-lucide="users"></i>情境2 練習：找出最佳增益點</div>
     <div class="callout task"><span class="ct"><i data-lucide="target"></i>目標</span>證明「增益不是越大越好」，畫出 SNR–增益曲線、標出最佳點與過載點。</div>
-    <p><strong>器材：</strong>教官 SDR 示範站（共用）｜一台對講機在固定距離發信標</p>
+    <p><strong>器材：</strong>講師 SDR 示範站（共用）｜一台對講機在固定距離發信標</p>
     <div class="flowcard"><div class="flowcard-h"><i data-lucide="list-checks"></i>練習步驟</div><div class="flow">
-      <div class="step"><div class="num">1</div><div class="body"><div class="t">逐步調增益</div><div class="d">教官把 SDR 增益 0→最大逐級調，各組記錄每一級的 FFT 峰值、底噪、語音清晰度（1–5 分）。</div></div></div>
+      <div class="step"><div class="num">1</div><div class="body"><div class="t">逐步調增益</div><div class="d">講師把 SDR 增益 0→最大逐級調，各組記錄每一級的 FFT 峰值、底噪、語音清晰度（1–5 分）。</div></div></div>
       <div class="step"><div class="num">2</div><div class="body"><div class="t">畫曲線</div><div class="d">各組把資料畫成「增益（橫）對 SNR（縱）」曲線。</div></div></div>
       <div class="step"><div class="num">3</div><div class="body"><div class="t">標重點</div><div class="d">標出 SNR 最高的「最佳增益點」與底噪一起抬高的「過載點」。</div></div></div>
     </div></div>
@@ -500,11 +500,11 @@ canvas { max-width: 100%; }
   <div class="prose-card" id="p3" style="scroll-margin-top:16px">
     <div class="sec-h" style="margin-top:6px"><i data-lucide="users"></i>情境3 練習：寬窄頻與 Carson 計算</div>
     <div class="callout task"><span class="ct"><i data-lucide="target"></i>目標</span>手算 Carson 佔用頻寬、對照 SDR 實測波寬，並看「寬頻誤設」如何溢出到鄰頻。</div>
-    <p><strong>器材：</strong>教官 SDR 站｜兩台分別設 25kHz / 12.5kHz 的對講機｜計算紙</p>
+    <p><strong>器材：</strong>講師 SDR 站｜兩台分別設 25kHz / 12.5kHz 的對講機｜計算紙</p>
     <div class="flowcard"><div class="flowcard-h"><i data-lucide="list-checks"></i>練習步驟</div><div class="flow">
       <div class="step"><div class="num">1</div><div class="body"><div class="t">手算 Carson</div><div class="d">各組用 B=2(Δf+f_max)、f_max≈3kHz，算 12.5kHz 與 25kHz 兩種的佔用頻寬。</div></div></div>
-      <div class="step"><div class="num">2</div><div class="body"><div class="t">對照實測</div><div class="d">教官 SDR 顯示兩者的 −3dB 波寬，各組比對手算與實測差多少。</div></div></div>
-      <div class="step"><div class="num">3</div><div class="body"><div class="t">看溢出</div><div class="d">教官把寬頻台擺到相鄰頻道 → 觀察瀑布圖上裙邊咬到隔壁的鄰頻干擾。</div></div></div>
+      <div class="step"><div class="num">2</div><div class="body"><div class="t">對照實測</div><div class="d">講師 SDR 顯示兩者的 −3dB 波寬，各組比對手算與實測差多少。</div></div></div>
+      <div class="step"><div class="num">3</div><div class="body"><div class="t">看溢出</div><div class="d">講師把寬頻台擺到相鄰頻道 → 觀察瀑布圖上裙邊咬到隔壁的鄰頻干擾。</div></div></div>
     </div></div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>產出（檢核）</span>交 Carson 計算表，並說明「頻道間隔」與「實際佔用頻寬」差在哪。</div>
   </div>
@@ -526,10 +526,10 @@ canvas { max-width: 100%; }
   <div class="prose-card" id="p5" style="scroll-margin-top:16px">
     <div class="sec-h" style="margin-top:6px"><i data-lucide="users"></i>情境5 練習：干擾源測向定位（外場）</div>
     <div class="callout task"><span class="ct"><i data-lucide="target"></i>目標</span>用定向天線實際把一個藏起來的干擾源找出來。</div>
-    <p><strong>器材：</strong>定向天線（八木／環形）｜對講機當干擾源（教官藏點持續發）｜指北針＋場區地圖</p>
-    <div class="emerg"><i data-lucide="triangle-alert"></i><div>這是<strong>外場</strong>練習，不是教官桌上的 SDR 示範——純 RSSI 不夠，務必用定向天線並實際移動到多個點。</div></div>
+    <p><strong>器材：</strong>定向天線（八木／環形）｜對講機當干擾源（講師藏點持續發）｜指北針＋場區地圖</p>
+    <div class="emerg"><i data-lucide="triangle-alert"></i><div>這是<strong>外場</strong>練習，不是講師桌上的 SDR 示範——純 RSSI 不夠，務必用定向天線並實際移動到多個點。</div></div>
     <div class="flowcard"><div class="flowcard-h"><i data-lucide="list-checks"></i>練習步驟</div><div class="flow">
-      <div class="step"><div class="num">1</div><div class="body"><div class="t">布置干擾源</div><div class="d">教官在場區某處放干擾源持續發信。</div></div></div>
+      <div class="step"><div class="num">1</div><div class="body"><div class="t">布置干擾源</div><div class="d">講師在場區某處放干擾源持續發信。</div></div></div>
       <div class="step"><div class="num">2</div><div class="body"><div class="t">三點取方位</div><div class="d">各組在 3 個不同位置用定向天線找「最強方位」，在地圖上畫方位線。</div></div></div>
       <div class="step"><div class="num">3</div><div class="body"><div class="t">交點＋驗證</div><div class="d">方位線交點即估計位置，實際走過去驗證。</div></div></div>
     </div></div>
@@ -540,10 +540,10 @@ canvas { max-width: 100%; }
   <div class="prose-card" id="p6" style="scroll-margin-top:16px">
     <div class="sec-h" style="margin-top:6px"><i data-lucide="users"></i>情境6 練習：正確上中繼與排錯</div>
     <div class="callout task"><span class="ct"><i data-lucide="target"></i>目標</span>正確設定「頻率＋偏移＋發射 Tone」上中繼，並學會診斷「打不開／打到下行」。</div>
-    <p><strong>器材：</strong>中繼台（或教官模擬）｜對講機｜教官 SDR 雙頻示範站</p>
+    <p><strong>器材：</strong>中繼台（或講師模擬）｜對講機｜講師 SDR 雙頻示範站</p>
     <div class="flowcard"><div class="flowcard-h"><i data-lucide="list-checks"></i>練習步驟</div><div class="flow">
       <div class="step"><div class="num">1</div><div class="body"><div class="t">正確設定</div><div class="d">各組設定收／發頻率、偏移方向、發射 CTCSS，成功透過中繼通聯。</div></div></div>
-      <div class="step"><div class="num">2</div><div class="body"><div class="t">看輸出</div><div class="d">教官 SDR 同時監看輸入與輸出頻率，確認轉播柱有出現。</div></div></div>
+      <div class="step"><div class="num">2</div><div class="body"><div class="t">看輸出</div><div class="d">講師 SDR 同時監看輸入與輸出頻率，確認轉播柱有出現。</div></div></div>
       <div class="step"><div class="num">3</div><div class="body"><div class="t">故意設錯</div><div class="d">忘開 Tone／偏移設反，觀察症狀（中繼不動／打到下行），再修正回來。</div></div></div>
     </div></div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>產出（檢核）</span>交本組正確設定值，外加一份「中繼打不開」三步排錯清單。</div>
@@ -551,7 +551,7 @@ canvas { max-width: 100%; }
 
   <div class="foot">
     <div class="l">進階無線電 · 分組練習</div>
-    <div class="r">教官 SDR 示範 → 情境 → 分組練習</div>
+    <div class="r">講師 SDR 示範 → 情境 → 分組練習</div>
   </div>
 
 </div>
