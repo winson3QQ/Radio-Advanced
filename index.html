@@ -488,16 +488,18 @@ canvas { max-width: 100%; }
     <h2><i data-lucide="book-open" style="width:24px;height:24px;vertical-align:-4px"></i> 課程導讀</h2>
     <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>核心理念</span>不只教「怎麼用」，更教「為什麼這樣用」及背後的物理和數學原理。</div>
 
+    <div class="callout tip"><span class="ct"><i data-lucide="book-open"></i>看不懂術語？</span>先翻 <a href="glossary.html"><strong>白話手冊</strong></a>（生活比喻、不用公式），建立直覺再回來看細節。</div>
+
     <div class="callout info"><span class="ct"><i data-lucide="info"></i>數據標註約定</span>本課公式與數字分三級標註：<strong>（事實）</strong>＝可查證的規格／物理常數；<strong>（推論）</strong>＝由公式推導的結果；<strong>（量級參考）</strong>＝受功率／天線／地形影響的粗略估計，不可當精確值。法規數字一律以 NCC 最新公告為準。<strong>課程中的頻率（如 145.500MHz）僅為教學示意</strong>；實際演練與部署一律使用主管機關核配給貴單位的頻率，切勿佔用業餘呼叫頻率或他人正在使用的頻道。</div>
 
     <div class="sec-h"><i data-lucide="target"></i>五層深化學習模式</div>
     <table class="tbl">
       <tr><th>層</th><th>學什麼</th></tr>
-      <tr><td>第 1 層　災害現場</td><td>為什麼需要這個參數？</td></tr>
+      <tr><td>第 1 層　災害現場</td><td>為什麼需要這個參數？（情境切入）</td></tr>
       <tr><td>第 2 層　RF 物理</td><td>這個參數在 RF 層面做了什麼？</td></tr>
-      <tr><td>第 3 層　數學推導</td><td>如何量化計算、預測結果？</td></tr>
-      <tr><td>第 4 層　SDR 驗證</td><td>用 GQRX / GNU Radio 實際測量</td></tr>
-      <tr><td>第 5 層　現場應用</td><td>災害時如何快速正確決策</td></tr>
+      <tr><td>第 3 層　SDR 驗證</td><td>教官用 GQRX 瀑布圖示範，先建立視覺印象</td></tr>
+      <tr><td>第 4 層　現場應用</td><td>災害時如何快速正確決策</td></tr>
+      <tr><td>第 5 層　數學推導</td><td>想量化深入 → 連結到「深入數學」頁（選修）</td></tr>
     </table>
 
     <div class="sec-h"><i data-lucide="lightbulb"></i>為何需要 RF 理論深化？</div>
@@ -509,17 +511,7 @@ canvas { max-width: 100%; }
       <tr><td>干擾</td><td>無法判斷</td><td>掃頻找峰值位置 + 三角定位估算來源</td></tr>
     </table>
 
-    <div class="sec-h"><i data-lucide="package"></i>課程所需工具（全免費開源）</div>
-    <div class="prose-card">
-      <p><strong>硬體：</strong>RTL-SDR 接收器（約 300 元台幣）+ USB 線 + 天線</p>
-      <p><strong>軟體：</strong></p>
-      <ul>
-        <li>GQRX：FFT 頻譜 + 瀑布圖 + 即時調整</li>
-        <li>GNU Radio：流程圖信號處理 + CTCSS 分析</li>
-        <li>CubicSDR：友善介面，適合快速掃頻</li>
-      </ul>
-    </div>
-    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>任何民防隊可用最低成本自建「無線電實驗室」，學員可在真實信號上驗證每一條理論。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="info"></i>關於 SDR</span>本課所有 SDR（GQRX 瀑布圖／FFT）操作一律由<strong>教官在示範站</strong>進行——學員<strong>不需自備 SDR、也不用安裝軟體</strong>。各組只要帶對講機、紙筆，需要看頻譜時一起到示範站前觀察即可。</div>
 
     <div class="sec-h"><i data-lucide="clipboard-list"></i>課程總覽：六大情境 × RF 理論 × SDR 工具</div>
     <table class="tbl">
@@ -548,38 +540,8 @@ canvas { max-width: 100%; }
         <li><strong>第 2 層（CTCSS 亞音）：</strong>67–250Hz 之一。這個頻段人耳其實聽得到，但會被收訊端約 300Hz 的高通濾波與通訊音頻的低頻滾降濾掉——所以「聽不太到」是被<strong>濾掉</strong>，不是耳朵聽不見</li>
         <li><strong>第 3 層（FM 載波）：</strong>145.500MHz，無線電的「傳輸馬路」</li>
       </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="https://winson3qq.github.io/RF-Study/courses/rf-glossary.html#ctcss">📖 白話手冊：CTCSS 是什麼（不用公式）→</a></p>
+      <p style="margin:8px 0 0;font-size:13.5px"><a href="glossary.html#ctcss">📖 白話手冊：CTCSS 是什麼（不用公式）→</a></p>
     </div>
-
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">FM調變基本方程：
-  s(t) = A·cos( 2π·f_c·t + (Δf/f_m)·sin(2π·f_m·t) )
-
-混合後的調變信號：
-  m(t) = V_語音(t) + V_CTCSS(t)
-
-  V_語音(t)  = 語音成分（300–3000Hz帶寬）
-  V_CTCSS(t) = A_sub·sin(2π·f_CTCSS·t)
-
-CTCSS 38個標準頻率（EIA規格）：
-  67.0, 71.9, 74.4, 77.0, 79.7, 82.5, 85.4, 88.5,
-  91.5, 94.8, 97.4, 100.0, 103.5, 107.2, 110.9, 114.8,
-  118.8, 123.0, 127.3, 131.8, 136.5, 141.3, 146.2, 151.4,
-  156.7, 162.2, 167.9, 173.8, 179.9, 186.2, 192.8, 203.5,
-  210.7, 218.1, 225.7, 233.6, 241.8, 250.3 Hz
-
-FM調變指數：
-  β = Δf / f_m   （Δf＝頻率偏移，f_m＝調變訊號頻率）
-
-  窄帶語音(Δf≈±2.5kHz, f_m≈3kHz)：β ≈ 0.8  →窄帶FM(NBFM)
-  CTCSS亞音：刻意用「很小的偏移」(約±0.5kHz以下)疊加
-
-重點（更正常見誤解）：
-  CTCSS 偏移刻意壓到系統峰值偏移的約15%以下，
-  只在語音下方佔一小塊頻率，不影響語音可懂度。
-
-  CTCSS 能被可靠解碼，靠的是接收端的「窄帶濾波＋連續音判別」，
-  與 β 大小無關——β 越大只代表佔用頻寬越寬，並不等於越穩定。</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 2 支對講機</span>
@@ -637,6 +599,7 @@ FM調變指數：
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>注意（事實）</span>CTCSS 不提供通訊保密！只要不設 CTCSS 的接收機都能聽到全部通話。</div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 是「靜噪鑰匙」而非「加密鑰匙」——它決定接收喇叭開不開，不是頻率隔離。</div>
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>容易誤會</span>CTCSS <strong>不能</strong>讓多隊「同時」在同一頻率講話互不干擾。同時發射會因 FM 捕獲效應相撞（強者勝、弱者被吃掉）。它真正的價值是搭配<strong>輪流發話</strong>，讓多隊「分時」共用一個頻率，並各自只聽自己關心的那組。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p1"><strong>情境1：CTCSS 與 FM 調變</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p1"><strong>情境1：CTCSS 分時共用一頻</strong></a></div>
   </div>
 
@@ -655,36 +618,6 @@ FM調變指數：
         <li><strong>增益過高：</strong>接收機前端過載（Overload），產生非線性失真 → 聽到嗡嗡聲或嘯叫</li>
       </ul>
     </div>
-
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">接收靈敏度公式（事實）：
-  S(dBm) = 10·lg(k·T·B) + NF + SNR_min
-
-各參數說明：
-  k   = 波茲曼常數 = 1.38×10⁻²³ J/K
-  T   = 標準溫度 = 290 K（約17°C）
-  B   = 接收頻寬（Hz）
-  NF  = 系統噪聲指數（Noise Figure, dB）
-  SNR_min = 解調所需最低信噪比（dB）
-
-熱噪聲底限計算：
-  10·lg(k·T) = -174 dBm/Hz （在290K時）
-
-對12.5kHz窄頻FM：
-  10·lg(k·T·B) = -174 + 10·lg(12500)
-               = -174 + 41 = -133 dBm
-
-加上典型民用接收機參數：
-  NF = 8 dB，SNR_min = 12 dB
-  S = -133 + 8 + 12 = -113 dBm
-
-結論：理想接收靈敏度約 -113 dBm
-     （實際RTL-SDR約 -90 至 -100 dBm）
-
-RF增益的dB計算：
-  增益每提升 6dB = 信號在FFT中高約兩倍
-  過載點（Overload）：接收機前端飽和
-    → RTL-SDR典型過載點：約 -30 dBm輸入</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 對講機（500m 外發話）</span>
@@ -728,6 +661,7 @@ RF增益的dB計算：
       <tr><td>城市大樓（多反射）</td><td>15–25dB</td><td>先降後調</td><td>過多多路徑=換位置</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>「最大增益 ≠ 最好接收」。每個環境都有一個最佳增益點，用 FFT 的 SNR 就能找到。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p2"><strong>情境2：接收靈敏度與增益</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p2"><strong>情境2：找出最佳增益點</strong></a></div>
   </div>
 
@@ -746,39 +680,6 @@ RF增益的dB計算：
         <li>識別容易 → 在更遠距離仍能清晰通話</li>
       </ul>
     </div>
-
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">頻譜功率密度（推論，基於FM頻譜特性）：
-
-功率密度 PSD(W/Hz) = P_total / B
-
-相同1W發射：
-  25kHz模式：PSD = 1W / 25000Hz = 40μW/Hz
-  12.5kHz模式：PSD = 1W / 12500Hz = 80μW/Hz
-
-結論：窄頻的功率密度是寬頻的 2倍（＋3dB）
-
-接收靈敏度公式（重複應用）：
-  S(dBm) = -174 + 10·lg(B) + NF + SNR_min
-
-  25kHz時：  -174 + 44 + 8 + 12 = -110 dBm （理論）
-  12.5kHz時：-174 + 41 + 8 + 12 = -113 dBm （理論）
-
-差距：3dB（接收門限低 3dB）
-  換算成距離要看地形：
-    自由空間(理想，路徑指數 n=2)：≈ 1.4 倍
-    實際地形(n≈3~4)：多半只有 1.1~1.2 倍
-  ※這是「接收雜訊頻寬變小、門限降低」的效果；
-   並非單純「能量密度」——寬頻 FM 反而有較高的調變增益，是個取捨。
-
-Carson規則（FM「實際佔用頻寬」，事實）：
-  B_FM = 2(Δf + f_max)，f_max＝最高語音頻率(約3kHz)
-
-  窄頻：Δf = 2.5kHz → B ≈ 2(2.5+3) = 11kHz（放進 12.5kHz 頻道）
-  寬頻：Δf = 5kHz   → B ≈ 2(5+3)   = 16kHz（放進 25kHz 頻道）
-
-  重點：12.5 / 25kHz 是「頻道間隔」，不等於實際佔用頻寬；
-       間隔要比佔用頻寬大一些，留保護帶給鄰頻。</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 2 支不同頻寬設定的對講機</span>
@@ -829,6 +730,7 @@ Carson規則（FM「實際佔用頻寬」，事實）：
       <tr><td>強電池使用時間優先</td><td>12.5kHz</td><td>相同覆蓋所需功率更低</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>12.5kHz 窄頻是「用更少能量走更遠的路」。災害時節省電力和擴大覆蓋都靠它。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p3"><strong>情境3：頻寬與頻譜效率</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p3"><strong>情境3：寬窄頻與 Carson 計算</strong></a></div>
   </div>
 
@@ -931,38 +833,6 @@ CTCSS碼選擇建議（避免解碼誤判）：
       </ul>
     </div>
 
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">FM捕捉效應（Capture Effect）：
-  當S1/S2 > 6dB（約4倍功率差）時（6dB 為保守教學門檻，
-  品質好的接收機「捕捉比」可低到 1–3dB）
-  接收機傾向「捕捉」強信號，弱信號被抑制
-
-  → 若干擾信號比我方信號強 > 6dB：
-    我方信號被完全壓制 ← 無法通話
-
-自由空間路徑衰減（Friis公式）：
-  PL(dB) = 20·log(d) + 20·log(f) + 20·log(4π/c)
-
-  簡化版（實際應用，事實推論）：
-  每倍距離增加約6dB衰減
-
-  信號強度推估距離：
-  假設對講機發射功率5W（37dBm），
-  接收靈敏度-100dBm，天線增益0dBi：
-
-  最大路徑損耗 = 37 + 0 - (-100) = 137dB
-
-  自由空間距離估算（145MHz，僅供量級參考）：
-  ※ 實際距離受發射功率、天線、地形影響甚大，下表只是粗略量級
-  RSSI S9（強）→ 約 300m–1km
-  RSSI S7（中）→ 約 1–3km
-  RSSI S5（弱）→ 約 3–8km
-  RSSI S3（很弱）→ 約 8–20km
-
-互調干擾產物：
-  兩個頻率 f1, f2 → 產生 2f1-f2 及 2f2-f1
-  例：145.500 + 146.000MHz → 產生 145.000MHz虛假信號</div>
-
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 掃頻模式 + RTL-SDR</span>
       <p style="margin-top:8px"><strong>步驟1：定位干擾頻率</strong></p>
@@ -1011,6 +881,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
       <p style="margin-top:6px">把<strong>接收增益（或外接放大器）開到爆</strong>，接收機前端過載進入非線性區，兩個強台在機內混頻產生 <strong>2f₁−f₂、2f₂−f₁ 的互調(IMD)鬼影</strong>，憑空多出根本不存在的「干擾台」。很多人會誤把這當成真的有人在干擾。</p>
       <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把增益拉到過載，瀑布圖上會冒出一排<strong>等間隔的鬼影峰</strong>；把增益調回正常，它們同時消失——證明那是「自己機器產生的」假訊號，不是空中真有干擾。處置：先降增益／加裝衰減器再判斷。</p>
     </div>
+    <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p5"><strong>情境5：捕獲效應與路徑衰減</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p5"><strong>情境5：干擾源測向定位（外場）</strong></a></div>
   </div>
 
@@ -1035,38 +906,6 @@ CTCSS碼選擇建議（避免解碼誤判）：
         <li>解法：收發使用不同頻率（頻率對）</li>
       </ul>
     </div>
-
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">菲涅耳區（Fresnel Zone）計算（事實）：
-  第一菲涅耳區半徑：
-  r1 = √(λ·d1·d2 / (d1+d2))
-
-  d1 = 發射端到障礙物距離
-  d2 = 障礙物到接收端距離
-  λ  = 波長
-
-  例：VHF 145MHz，兩點間距3km，中間有山：
-  d1=d2=1.5km，λ=2.07m
-  r1 = √(2.07 × 1500 × 1500 / 3000) ≈ √1552 ≈ 39m
-
-  → 菲涅耳區需要39m凈空，山丘若超過此高度即造成嚴重衰減
-
-雙工頻率隔離度需求：
-  中繼台同時收發，發射端信號會干擾接收端
-  所需隔離度：發射功率 - 接收靈敏度 + 餘量
-
-  例：5W(37dBm)發射，接收靈敏度-113dBm：
-  最低隔離需求 = 37 - (-113) + 20 = 170dB
-
-  實際做法（用濾波器）：
-  每個陷波濾波器（Notch Filter）提供約60–70dB
-  兩個組成「雙工器（Duplexer）」→ 120–140dB
-
-頻率偏移（Offset）選擇（事實）：
-  VHF民防常見偏移：±600kHz
-  例：接收145.500，發射146.100MHz
-  UHF常見偏移：±5MHz
-  例：接收430.000，發射435.000MHz</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 雙頻監聽 + RTL-SDR</span>
@@ -1153,6 +992,7 @@ CTCSS碼選擇建議（避免解碼誤判）：
       <tr><td>無法架設實體中繼</td><td>考慮衛星電話備援</td><td>SDR 監測無線電段</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>中繼台是「把低谷的信號搬到山頂再播出」，雙工頻率是「防止自己講話時堵住自己的耳朵」。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="sigma"></i>深入數學（選修）</span>想看公式推導 → <a href="math.html#p6"><strong>情境6：菲涅耳區與雙工隔離</strong></a></div>
     <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p6"><strong>情境6：正確上中繼與排錯</strong></a></div>
   </div>
 
