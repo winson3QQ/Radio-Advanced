@@ -479,9 +479,8 @@ canvas { max-width: 100%; }
     <button class="tab" onclick="go('p2', this)">情境2 RF 增益</button>
     <button class="tab" onclick="go('p3', this)">情境3 頻寬</button>
     <button class="tab" onclick="go('p4', this)">情境4 層級管理</button>
-    <button class="tab" onclick="go('p5', this)">情境5 天線診斷</button>
-    <button class="tab" onclick="go('p6', this)">情境6 干擾檢測</button>
-    <button class="tab" onclick="go('p7', this)">情境7 中繼台</button>
+    <button class="tab" onclick="go('p5', this)">情境5 干擾檢測</button>
+    <button class="tab" onclick="go('p6', this)">情境6 中繼台</button>
   </div>
 
   <!-- 導讀 -->
@@ -489,7 +488,7 @@ canvas { max-width: 100%; }
     <h2><i data-lucide="book-open" style="width:24px;height:24px;vertical-align:-4px"></i> 課程導讀</h2>
     <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>核心理念</span>不只教「怎麼用」，更教「為什麼這樣用」及背後的物理和數學原理。</div>
 
-    <div class="callout info"><span class="ct"><i data-lucide="info"></i>數據標註約定</span>本課公式與數字分三級標註：<strong>（事實）</strong>＝可查證的規格／物理常數；<strong>（推論）</strong>＝由公式推導的結果；<strong>（量級參考）</strong>＝受功率／天線／地形影響的粗略估計，不可當精確值。法規數字一律以 NCC 最新公告為準。</div>
+    <div class="callout info"><span class="ct"><i data-lucide="info"></i>數據標註約定</span>本課公式與數字分三級標註：<strong>（事實）</strong>＝可查證的規格／物理常數；<strong>（推論）</strong>＝由公式推導的結果；<strong>（量級參考）</strong>＝受功率／天線／地形影響的粗略估計，不可當精確值。法規數字一律以 NCC 最新公告為準。<strong>課程中的頻率（如 145.500MHz）僅為教學示意</strong>；實際演練與部署一律使用主管機關核配給貴單位的頻率，切勿佔用業餘呼叫頻率或他人正在使用的頻道。</div>
 
     <div class="sec-h"><i data-lucide="target"></i>五層深化學習模式</div>
     <table class="tbl">
@@ -507,7 +506,6 @@ canvas { max-width: 100%; }
       <tr><td>CTCSS</td><td>「是 67-250Hz 的亞音」</td><td>推導 FM 調變方程 + 看 FFT 峰值驗證</td></tr>
       <tr><td>RF 增益</td><td>「越高越好」</td><td>計算靈敏度公式 + 測 SNR 找最佳點</td></tr>
       <tr><td>頻寬</td><td>死背 12.5kHz</td><td>算能量密度 + FFT 波寬對比理解原因</td></tr>
-      <tr><td>天線故障</td><td>只知道「沒信號」</td><td>FFT 全底噪 → 2 分鐘定位是天線還是設定問題</td></tr>
       <tr><td>干擾</td><td>無法判斷</td><td>掃頻找峰值位置 + 三角定位估算來源</td></tr>
     </table>
 
@@ -523,16 +521,15 @@ canvas { max-width: 100%; }
     </div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>任何民防隊可用最低成本自建「無線電實驗室」，學員可在真實信號上驗證每一條理論。</div>
 
-    <div class="sec-h"><i data-lucide="clipboard-list"></i>課程總覽：七大情境 × RF 理論 × SDR 工具</div>
+    <div class="sec-h"><i data-lucide="clipboard-list"></i>課程總覽：六大情境 × RF 理論 × SDR 工具</div>
     <table class="tbl">
       <tr><th>情境</th><th>核心困難</th><th>RF 參數</th><th>關鍵公式</th><th>SDR 工具</th></tr>
       <tr><td>1：CTCSS</td><td>5 隊搶 1 頻</td><td>亞音頻調變</td><td>FM 調變指數 β=Δf/f_m</td><td>GQRX 音頻 FFT</td></tr>
       <tr><td>2：RF 增益</td><td>山區弱信號</td><td>接收靈敏度</td><td>S=-174+10lg(B)+NF+SNR</td><td>GQRX SNR 測量</td></tr>
       <tr><td>3：頻寬</td><td>直聯距離短</td><td>頻譜效率</td><td>PSD=P/B，Carson 規則</td><td>FFT 波寬對比</td></tr>
-      <tr><td>4：層級</td><td>40 人指揮混亂</td><td>CTCSS 分層</td><td>碼間距 ≥20Hz</td><td>瀑布圖時間軸</td></tr>
-      <tr><td>5：天線</td><td>信號突然消失</td><td>波長匹配</td><td>λ=c/f, L=λ/4×0.95</td><td>FFT 底噪診斷</td></tr>
-      <tr><td>6：干擾</td><td>陌生聲音干擾</td><td>捕捉效應</td><td>Friis 路徑衰減公式</td><td>掃頻+三角定位</td></tr>
-      <tr><td>7：中繼</td><td>地形阻擋通話</td><td>雙工頻率對</td><td>菲涅耳區計算</td><td>雙頻瀑布圖</td></tr>
+      <tr><td>4：層級</td><td>40 人指揮混亂</td><td>CTCSS 分層</td><td>碼選擇避免誤判</td><td>瀑布圖時間軸</td></tr>
+      <tr><td>5：干擾</td><td>陌生聲音干擾</td><td>捕捉效應</td><td>Friis 路徑衰減公式</td><td>掃頻+三角定位</td></tr>
+      <tr><td>6：中繼</td><td>地形阻擋通話</td><td>雙工頻率對</td><td>菲涅耳區計算</td><td>雙頻瀑布圖</td></tr>
     </table>
   </div>
 
@@ -548,7 +545,7 @@ canvas { max-width: 100%; }
       <p>一個對講機發出的 FM 信號，同時包含三層：</p>
       <ul>
         <li><strong>第 1 層（語音）：</strong>300–3000Hz，人耳可清晰聽到</li>
-        <li><strong>第 2 層（CTCSS 亞音）：</strong>67–250Hz 之一，低於人耳舒適聽覺範圍</li>
+        <li><strong>第 2 層（CTCSS 亞音）：</strong>67–250Hz 之一。這個頻段人耳其實聽得到，但會被收訊端約 300Hz 的高通濾波與通訊音頻的低頻滾降濾掉——所以「聽不太到」是被<strong>濾掉</strong>，不是耳朵聽不見</li>
         <li><strong>第 3 層（FM 載波）：</strong>145.500MHz，無線電的「傳輸馬路」</li>
       </ul>
       <p style="margin:8px 0 0;font-size:13.5px"><a href="https://winson3qq.github.io/RF-Study/courses/rf-glossary.html#ctcss">📖 白話手冊：CTCSS 是什麼（不用公式）→</a></p>
@@ -640,6 +637,7 @@ FM調變指數：
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>注意（事實）</span>CTCSS 不提供通訊保密！只要不設 CTCSS 的接收機都能聽到全部通話。</div>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 是「靜噪鑰匙」而非「加密鑰匙」——它決定接收喇叭開不開，不是頻率隔離。</div>
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>容易誤會</span>CTCSS <strong>不能</strong>讓多隊「同時」在同一頻率講話互不干擾。同時發射會因 FM 捕獲效應相撞（強者勝、弱者被吃掉）。它真正的價值是搭配<strong>輪流發話</strong>，讓多隊「分時」共用一個頻率，並各自只聽自己關心的那組。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p1"><strong>情境1：CTCSS 分時共用一頻</strong></a></div>
   </div>
 
   <!-- 情境2 -->
@@ -730,6 +728,7 @@ RF增益的dB計算：
       <tr><td>城市大樓（多反射）</td><td>15–25dB</td><td>先降後調</td><td>過多多路徑=換位置</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>「最大增益 ≠ 最好接收」。每個環境都有一個最佳增益點，用 FFT 的 SNR 就能找到。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p2"><strong>情境2：找出最佳增益點</strong></a></div>
   </div>
 
   <!-- 情境3 -->
@@ -765,13 +764,21 @@ RF增益的dB計算：
   25kHz時：  -174 + 44 + 8 + 12 = -110 dBm （理論）
   12.5kHz時：-174 + 41 + 8 + 12 = -113 dBm （理論）
 
-差距：3dB ≈ 通訊距離增加約 1.4倍
+差距：3dB（接收門限低 3dB）
+  換算成距離要看地形：
+    自由空間(理想，路徑指數 n=2)：≈ 1.4 倍
+    實際地形(n≈3~4)：多半只有 1.1~1.2 倍
+  ※這是「接收雜訊頻寬變小、門限降低」的效果；
+   並非單純「能量密度」——寬頻 FM 反而有較高的調變增益，是個取捨。
 
-Carson規則（FM頻寬計算）：
-  B_FM = 2(Δf + f_max)
+Carson規則（FM「實際佔用頻寬」，事實）：
+  B_FM = 2(Δf + f_max)，f_max＝最高語音頻率(約3kHz)
 
-  窄頻（12.5kHz限）：Δf = 2.5kHz，f_max = 3.5kHz
-  寬頻（25kHz限）：  Δf = 5kHz，  f_max = 7.5kHz</div>
+  窄頻：Δf = 2.5kHz → B ≈ 2(2.5+3) = 11kHz（放進 12.5kHz 頻道）
+  寬頻：Δf = 5kHz   → B ≈ 2(5+3)   = 16kHz（放進 25kHz 頻道）
+
+  重點：12.5 / 25kHz 是「頻道間隔」，不等於實際佔用頻寬；
+       間隔要比佔用頻寬大一些，留保護帶給鄰頻。</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX + RTL-SDR + 2 支不同頻寬設定的對講機</span>
@@ -792,7 +799,7 @@ Carson規則（FM頻寬計算）：
       <ul style="margin:4px 0 0 20px">
         <li>兩支對講機逐步後退，每 50m 記錄通話清晰度（1-5 分）</li>
         <li>記錄「通話失去清晰」的距離（清晰度降至 3 分以下）</li>
-        <li>預期：12.5kHz 清晰距離比 25kHz 遠約 30-40%</li>
+        <li>預期：12.5kHz 清晰距離比 25kHz 遠約 30-40%（自由空間量級；實際地形通常更小）</li>
       </ul>
     </div>
 
@@ -808,6 +815,11 @@ Carson規則（FM頻寬計算）：
     </figure>
     <div class="gnote">能量集中 → 功率密度更高 → 相同功率下信號更清晰。</div>
 
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>錯誤示範（設定錯誤→干擾）</span>
+      <p style="margin-top:6px">一隊把對講機誤設成 <strong>25kHz 寬頻</strong>（或麥克風增益開到爆、過度頻偏），訊號的裙邊往外溢，<strong>咬到相鄰 12.5kHz 頻道</strong>正在通聯的隊伍。</p>
+      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把寬頻那台和窄頻那台擺在相鄰頻道，瀑布圖上立刻看到寬頻的訊號柱「胖」到壓進隔壁那條——這就是鄰頻干擾的長相。處置：要求該隊改回 12.5kHz、降低麥克風增益。</p>
+    </div>
+
     <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
     <table class="tbl">
       <tr><th>情況</th><th>推薦頻寬</th><th>原因</th></tr>
@@ -817,6 +829,7 @@ Carson規則（FM頻寬計算）：
       <tr><td>強電池使用時間優先</td><td>12.5kHz</td><td>相同覆蓋所需功率更低</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>12.5kHz 窄頻是「用更少能量走更遠的路」。災害時節省電力和擴大覆蓋都靠它。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p3"><strong>情境3：寬窄頻與 Carson 計算</strong></a></div>
   </div>
 
   <!-- 情境4 -->
@@ -827,6 +840,7 @@ Carson規則（FM頻寬計算）：
 
     <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻率共享的信道容量</div>
     <div class="prose-card">
+      <p style="margin-top:0;font-size:13.5px;color:var(--ink-3)">（CTCSS 的本質與「選聽」原理已在情境1 講過，這裡聚焦<strong>多隊分層</strong>的系統設計，不重複推導。）</p>
       <p><strong>Shannon 容量公式（推論方向）：</strong></p>
       <ul>
         <li>一個頻道（145.500MHz）在同一時刻只能承載 1 個信號，不能同時多人發話</li>
@@ -857,10 +871,12 @@ CTCSS碼分配：
   ・其他層的日常報告不干擾
   ・指揮所統一掌握所有資訊
 
-CTCSS碼選擇建議（避免互調干擾）：
-  選擇頻率差距大的碼（間隔不小於20Hz）
-  例：67.0, 88.5, 110.9, 131.8 → 間隔約20Hz ✓
-  避免：67.0, 71.9, 74.4 → 間隔過小，有互調風險</div>
+CTCSS碼選擇建議（避免解碼誤判）：
+  選擇頻率差距大、且非整數倍關係的碼
+  例：67.0, 88.5, 110.9, 131.8 → 間隔夠大 ✓
+  避免：67.0, 71.9, 74.4 → 太接近，解碼器容易誤判
+  避免諧波關係（某碼 ≈ 另一碼的整數倍）造成誤觸發
+  ※這是「解碼誤判／諧波」問題，不是射頻互調(IMD)</div>
 
     <div class="sec-h"><i data-lucide="microscope"></i>SDR 驗證實驗</div>
     <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>工具 — GQRX 瀑布圖 + 4 支對講機（分別設不同 CTCSS）</span>
@@ -896,95 +912,12 @@ CTCSS碼選擇建議（避免互調干擾）：
     <div class="gnote">指揮所監聽看到全部；各樓只聽到廣播＋自己——不被其他層干擾（物理上仍是同一頻率、需輪流發話）。</div>
 
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>CTCSS 層級化 ≈ 在同一頻率上創造「虛擬分頻道」——但這是「選聽」上的虛擬分頻，物理上仍是<strong>一個頻率、同時只能一人講</strong>。必須搭配輪流發話的通訊規程才成立，不是讓各層可以同時開講。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p4"><strong>情境4：倒塌大樓分層通聯 SOP</strong></a></div>
   </div>
 
   <!-- 情境5 -->
   <div id="p5" class="scenario">
-    <h2><i data-lucide="wrench" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：天線診斷與故障定位</h2>
-    <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
-    <div class="prose-card"><p>救援第 8 小時，信號突然完全消失，電池有電，頻率沒動，找不到原因。後來發現天線被倒塌物砸歪。</p></div>
-
-    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：天線的核心作用</div>
-    <div class="prose-card">
-      <p><strong>天線的本質：將電能轉換為電磁波（或反向）</strong></p>
-      <ul>
-        <li>天線尺寸必須與波長匹配，才能高效轉換</li>
-        <li>失配時，能量反射回去 → 駐波比（SWR）升高 → 發射效率急降</li>
-        <li>天線完全損壞時，發射功率幾乎全部反射或耗散為熱</li>
-      </ul>
-      <p style="margin:8px 0 0;font-size:13.5px"><a href="https://winson3qq.github.io/RF-Study/courses/rf-glossary.html#wavelength">📖 白話手冊：波長與 λ/4 天線（不用公式）→</a></p>
-    </div>
-
-    <div class="sec-h"><i data-lucide="ruler"></i>數學公式推導</div>
-    <div class="formula">波長計算：
-  λ = c / f
-
-  c = 3×10⁸ m/s（光速）
-  f = 頻率（Hz）
-
-VHF 145MHz對講機：
-  λ = 3×10⁸ / 145×10⁶ = 2.07m
-  λ/4 ≈ 0.517m ≈ 51.7cm（四分之一波長天線）
-  λ/2 ≈ 1.035m（半波長偶極天線）
-
-UHF 435MHz對講機：
-  λ = 3×10⁸ / 435×10⁶ = 0.69m
-  λ/4 ≈ 17.2cm（手持對講機標準天線）
-
-實際天線長度修正（速度因子）：
-  L_實際 = λ/4 × 0.95（考慮波傳播速度）
-  VHF 145MHz：L ≈ 49.1cm
-  UHF 435MHz：L ≈ 16.3cm
-
-駐波比（SWR）判讀：
-  SWR = 1.0：完全匹配（理想，實際不可達）
-  SWR ≤ 1.5：優良（通訊設備標準）
-  SWR 1.5–2.0：可接受
-  SWR 2.0–3.0：有問題，需調整
-  SWR > 3.0：嚴重失配，損壞天線</div>
-
-    <div class="sec-h"><i data-lucide="microscope"></i>SDR 診斷流程</div>
-    <div class="callout info"><span class="ct"><i data-lucide="microscope"></i>快速診斷三步驟（目標：2 分鐘內定位問題）</span>
-      <p style="margin-top:8px"><strong>步驟1：FFT 有無信號（最快）</strong></p>
-      <ul style="margin:4px 0 0 20px">
-        <li>GQRX 監聽目標頻率，叫對方發話</li>
-        <li>FFT 全是底噪（-100dBm 以下）→ 天線或 RF 鏈問題</li>
-        <li>FFT 有信號但低 → 可能是距離、地形、增益問題</li>
-      </ul>
-      <p style="margin-top:8px"><strong>步驟2：換天線驗證（確認是天線問題）</strong></p>
-      <ul style="margin:4px 0 0 20px">
-        <li>拆下可疑天線，換上備用天線（或臨時天線）</li>
-        <li>對方重新發話 → FFT 看是否恢復正常峰值</li>
-        <li>恢復 ✓ → 確認是原天線損壞</li>
-      </ul>
-      <p style="margin-top:8px"><strong>步驟3：臨時天線製作驗證</strong></p>
-      <ul style="margin:4px 0 0 20px">
-        <li>電話線或單芯銅線，剪成 λ/4 長度（VHF=51cm, UHF=17cm）</li>
-        <li>接上同軸電纜中心導體</li>
-        <li>GQRX 監聽 → 應恢復到約原信號強度的 70-80%</li>
-        <li>對比原天線的 FFT 高度 → 量化性能損失</li>
-      </ul>
-      <p style="margin-top:8px"><strong>步驟4（進階）：測量 SWR 概念驗證</strong></p>
-      <ul style="margin:4px 0 0 20px">
-        <li>用 GNU Radio：監聽反射信號強度</li>
-        <li>發射功率 vs 反射功率之比 = 直觀理解 SWR</li>
-      </ul>
-    </div>
-
-    <table class="tbl">
-      <tr><th>天線狀態</th><th>FFT 峰值</th><th>判讀</th></tr>
-      <tr><td>正常</td><td><span class="readout">≈ −60 dBm</span></td><td>清晰信號峰</td></tr>
-      <tr><td>鬆動（SWR≈3）</td><td><span class="readout">≈ −75 dBm</span></td><td>衰減 15–20 dB</td></tr>
-      <tr><td>完全損壞</td><td><span class="readout">≤ −100 dBm</span></td><td>全是底噪、無峰</td></tr>
-    </table>
-    <div class="gnote">信號消失先看 FFT 而非猜測——2 分鐘內可分辨是天線問題還是設定問題。</div>
-
-    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>信號消失的第一個診斷工具是 FFT，不是猜測。2 分鐘內可定位是天線問題還是設定問題。</div>
-  </div>
-
-  <!-- 情境6 -->
-  <div id="p6" class="scenario">
-    <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境6：干擾檢測與定位</h2>
+    <h2><i data-lucide="zap" style="width:24px;height:24px;vertical-align:-4px"></i> 情境5：干擾檢測與定位</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
     <div class="prose-card"><p>救援 12 小時後，指揮所突然聽到陌生聲音插進來：「天氣很好，今天適合釣魚」。通訊協調被打斷，無法確認干擾來源。</p></div>
 
@@ -1052,6 +985,7 @@ UHF 435MHz對講機：
         <li>C 點（西邊）：RSSI = S2</li>
         <li>結論：干擾源靠近 A 點（東邊），最強信號方向即為來源方向</li>
       </ul>
+      <p style="margin-top:6px;font-size:13px;color:var(--ink-3)">※ 純 RSSI 三角定位很粗略。要準確測向（DF）需要<strong>定向天線</strong>（八木／環形）並實際移動位置——這比較適合當<strong>外場分組練習</strong>，不是教官桌上的瀑布圖示範。</p>
       <p style="margin-top:8px"><strong>步驟4：驗證換頻率的效果</strong></p>
       <ul style="margin:4px 0 0 20px">
         <li>掃描 145.0–146.0MHz 全段，找無信號的乾淨頻率</li>
@@ -1073,12 +1007,16 @@ UHF 435MHz對講機：
     </figure>
     <div class="gnote">干擾更強 → FM 捕捉效應讓它壓過我方信號。三角定位推算方向、快速換頻是最有效處置。</div>
 
-    <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>干擾不是魔鬼，用 FFT 能清楚看到它的頻率和強度，三角定位能推算方向，快速換頻是最有效的應急處置。</div>
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>錯誤示範（設定錯誤→干擾）</span>
+      <p style="margin-top:6px">把<strong>接收增益（或外接放大器）開到爆</strong>，接收機前端過載進入非線性區，兩個強台在機內混頻產生 <strong>2f₁−f₂、2f₂−f₁ 的互調(IMD)鬼影</strong>，憑空多出根本不存在的「干擾台」。很多人會誤把這當成真的有人在干擾。</p>
+      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>把增益拉到過載，瀑布圖上會冒出一排<strong>等間隔的鬼影峰</strong>；把增益調回正常，它們同時消失——證明那是「自己機器產生的」假訊號，不是空中真有干擾。處置：先降增益／加裝衰減器再判斷。</p>
+    </div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p5"><strong>情境5：干擾源測向定位（外場）</strong></a></div>
   </div>
 
-  <!-- 情境7 -->
-  <div id="p7" class="scenario">
-    <h2><i data-lucide="route" style="width:24px;height:24px;vertical-align:-4px"></i> 情境7：中繼台設計與雙工原理</h2>
+  <!-- 情境6 -->
+  <div id="p6" class="scenario">
+    <h2><i data-lucide="route" style="width:24px;height:24px;vertical-align:-4px"></i> 情境6：中繼台設計與雙工原理</h2>
     <div class="sec-h"><i data-lucide="map-pin"></i>現場困境</div>
     <div class="prose-card"><p>文山區與信義區搜救隊需要協調，直線距離 3km 但中間有山丘遮擋，直聯完全無法通話。</p></div>
 
@@ -1197,6 +1135,15 @@ UHF 435MHz對講機：
     <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>常見誤解</span>中繼台的 CTCSS 是「存取碼（開門用）」，和情境 1 用 CTCSS「選聽分隊」目的不同——但原理一樣：都是用亞音頻控制「要不要打開」。它一樣<strong>不是加密</strong>，沒設 CTCSS 的人仍聽得到中繼台轉發的內容。</div>
     <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>中繼台像一台「公用擴音器」，但要先刷對門禁卡（CTCSS）它才幫你廣播；刷錯卡或不刷，喊破喉嚨它也不理你。</div>
 
+    <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>錯誤示範（設定錯誤→干擾／打不開）</span>
+      <p style="margin-top:6px"><strong>偏移方向設反</strong>（該 + 卻設 −），或<strong>忘了開發射 Tone</strong>，是最常見兩種錯：</p>
+      <ul style="margin:4px 0 0 20px">
+        <li><strong>忘開 Tone：</strong>按 PTT 中繼台不動，常被誤判成「中繼台壞了」，其實是門禁碼沒帶。</li>
+        <li><strong>偏移設反：</strong>對講機直接發在中繼台的<strong>輸出頻率（下行）</strong>上，等於拿石頭砸自家喇叭——壓掉所有人正在收聽的轉播訊號。</li>
+      </ul>
+      <p style="margin-top:6px"><strong>教官瀑布圖示範：</strong>同時監看輸入（145.500）與輸出（146.100）兩條頻率。帶錯碼／沒帶碼 → 輸出那條<strong>不出現</strong>；偏移設反 → 輸出頻率上冒出<strong>不該有的直發訊號</strong>蓋住轉播。Tone、偏移一改對，輸出柱立刻正常——因果一目了然。</p>
+    </div>
+
     <div class="sec-h"><i data-lucide="clipboard-list"></i>現場應急應用</div>
     <table class="tbl">
       <tr><th>地形情況</th><th>中繼台部署策略</th><th>SDR 驗證方式</th></tr>
@@ -1206,6 +1153,7 @@ UHF 435MHz對講機：
       <tr><td>無法架設實體中繼</td><td>考慮衛星電話備援</td><td>SDR 監測無線電段</td></tr>
     </table>
     <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記憶方法</span>中繼台是「把低谷的信號搬到山頂再播出」，雙工頻率是「防止自己講話時堵住自己的耳朵」。</div>
+    <div class="callout task"><span class="ct"><i data-lucide="users"></i>分組練習</span>動手練習在另一頁 → <a href="practice.html#p6"><strong>情境6：正確上中繼與排錯</strong></a></div>
   </div>
 
 </div>
@@ -1224,7 +1172,7 @@ UHF 435MHz對講機：
   // 支援以 #pN 深連結直接開啟對應情境（供白話手冊的「情境」標籤連入）
   function openFromHash() {
     var id = (location.hash || '').replace(/^#/, '');
-    if (!/^p[0-7]$/.test(id)) return;
+    if (!/^p[0-6]$/.test(id)) return;
     var tabs = document.querySelectorAll('.tabs .tab');
     for (var i = 0; i < tabs.length; i++) {
       if ((tabs[i].getAttribute('onclick') || '').indexOf("'" + id + "'") >= 0) { go(id, tabs[i]); break; }
