@@ -470,151 +470,242 @@ canvas { max-width: 100%; }
   <div class="concept-grid">
 
     <div class="concept" id="ctcss" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-coral"><span class="ico"><i data-lucide="key-round"></i></span><div><div class="title">CTCSS（亞音頻）</div><div class="en">Continuous Tone-Coded Squelch System</div></div></div>
+      <div class="concept-hd hd-coral"><span class="ico"><i data-lucide="key-round"></i></span><div><div class="title">CTCSS（亞音頻）</div><div class="en">Continuous Tone-Coded Squelch</div></div></div>
       <div class="concept-bd">
-        <div class="explain">在你說話的聲音底下，對講機偷偷墊一個低到幾乎聽不見的「嗡嗡聲」當暗號。對方的機器聽到<strong>對的暗號</strong>才把喇叭打開。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像進門要刷的門禁卡——刷對卡，門（喇叭）才開；刷錯或不刷，它就不理你。</div>
-        <div class="callout warn"><span class="ct"><i data-lucide="triangle-alert"></i>別搞錯</span>它<strong>不是密碼、不能保密</strong>（沒設暗號的人照樣聽得到），也<strong>不能讓兩隊同時講不打架</strong>。真正用處是「我只想聽我這組」和「中繼台的門禁」。</div>
-      </div>
-    </div>
-
-    <div class="concept" id="gain" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="volume-2"></i></span><div><div class="title">RF 增益 / 接收靈敏度</div><div class="en">RF Gain / Sensitivity</div></div></div>
-      <div class="concept-bd">
-        <div class="explain">像把助聽器音量轉大。訊號很小時轉大有幫助，但<strong>雜訊也會一起被放大</strong>；轉過頭反而一片嘶嘶聲、甚至破音。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>收音機音量不是開到最大最清楚——太大聲只是把背景雜音也一起放大。</div>
-        <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記住</span>不是越大越好。每個距離／環境都有一個「最清楚」的甜蜜點，過頭就過載破音。</div>
+        <div class="explain">在語音底下偷偷墊一個聽不太到的低頻「暗號」；收訊端對到暗號才打開喇叭。不是加密、也不能讓多隊同時講。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像門禁卡——刷對卡門（喇叭）才開；刷錯或不刷，喊破喉嚨它也不理你。</div>
       </div>
     </div>
 
     <div class="concept" id="bandwidth" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="radio-tower"></i></span><div><div class="title">頻寬（寬頻 / 窄頻）</div><div class="en">Bandwidth · 25k / 12.5kHz</div></div></div>
+      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="radio-tower"></i></span><div><div class="title">頻寬（寬頻 / 窄頻）</div><div class="en">Bandwidth</div></div></div>
       <div class="concept-bd">
-        <div class="explain">同樣的功率，走<strong>細管（窄頻 12.5kHz）</strong>水柱更集中、衝得更遠；走<strong>粗管（寬頻 25kHz）</strong>比較分散。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>用拇指壓住水管出口（變窄），水反而噴更遠。</div>
-        <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記住</span>窄頻省電、傳更遠，是現代標準。除非對方是舊的寬頻機，否則一律用窄頻。</div>
+        <div class="explain">一個訊號在頻譜上「佔多寬」。窄頻（12.5kHz）能量集中、傳更遠；寬頻（25kHz）較分散。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>水管粗細——同樣水量，用細管（窄頻）噴更遠。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="gain" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="volume-2"></i></span><div><div class="title">增益</div><div class="en">Gain</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">把訊號放大的「<strong>倍率</strong>」（dB）；放大訊號時雜訊也一起被放大。<strong>它是放大率，不是「能收多弱」</strong>——那是靈敏度。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>收音機音量旋鈕轉大的「放大幅度」。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="sensitivity" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="ear"></i></span><div><div class="title">靈敏度</div><div class="en">Sensitivity</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">接收機能「勉強收得到」的<strong>最低訊號強度</strong>（dBm），越低越好。<strong>它是門檻，不是放大率</strong>（放大率是增益）。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>你在多安靜的環境還聽得到一根針掉地上——那個「最小聽得到」就是靈敏度。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="interference" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="zap"></i></span><div><div class="title">干擾</div><div class="en">Interference</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">任何打亂你正常收訊的不想要訊號（<strong>總稱</strong>），含同頻、鄰頻、互調等。<strong>它是「問題的總稱」</strong>，不是某一種特定機制。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>你講電話時旁邊的吵雜——來源百百種。</div>
       </div>
     </div>
 
     <div class="concept" id="capture" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="zap"></i></span><div><div class="title">捕獲效應 / 干擾</div><div class="en">Capture Effect · Interference</div></div></div>
+      <div class="concept-hd hd-honey"><span class="ico"><i data-lucide="radio"></i></span><div><div class="title">捕獲效應</div><div class="en">Capture Effect</div></div></div>
       <div class="concept-bd">
-        <div class="explain">兩個人同時在你耳邊講話，你只聽得清楚<strong>比較大聲</strong>的那個，小聲的被蓋掉。FM 對講機就是這樣——同頻同時發話，強的贏、弱的被吃掉。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>KTV 兩支麥克風搶同一首歌，只聽得到比較大聲的那支。</div>
-        <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記住</span>遇到干擾，先用（講師的）瀑布圖看它在哪、多強，再決定換頻或處理。</div>
+        <div class="explain">FM 特有現象：同一頻率上同時兩個訊號，接收機只「<strong>鎖定較強</strong>」那個、壓掉較弱的。<strong>是一種機制，不等於干擾本身</strong>。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>兩支麥克風搶同一首歌，只聽得到較大聲那支。</div>
       </div>
     </div>
 
     <div class="concept" id="repeater" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="route"></i></span><div><div class="title">中繼台 / 雙工</div><div class="en">Repeater · Duplex</div></div></div>
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="route"></i></span><div><div class="title">中繼台</div><div class="en">Repeater</div></div></div>
       <div class="concept-bd">
-        <div class="explain">山頭上的「公用大聲公」。你在山谷喊它聽到，幫你在山頭再喊一次，讓對面山谷也聽得到。它<strong>收、發用不同頻率</strong>（雙工），才不會自己吵到自己。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像演唱會的轉播大螢幕——把看不到的舞台，搬到大家都看得到的高處再播一次。</div>
-        <div class="callout tip"><span class="ct"><i data-lucide="circle-check"></i>記住</span>要它幫你喊，得先刷門禁卡（發射 CTCSS）。設定三樣：<strong>頻率＋偏移＋發射 Tone</strong>。</div>
+        <div class="explain">架在高處的<strong>轉播台</strong>：收到你的訊號，再用另一個頻率轉播出去、擴大覆蓋。<strong>它是「設備」</strong>，靠「雙工」運作。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>演唱會的轉播大螢幕——把看不到的舞台搬到高處再播一次。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="duplex" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sky"><span class="ico"><i data-lucide="arrow-left-right"></i></span><div><div class="title">雙工</div><div class="en">Duplex</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">收、發用「<strong>兩個不同頻率</strong>」同時進行的<strong>運作方式</strong>。中繼台靠它才不會自己干擾自己。它是「方式」，不是設備。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>雙線道——去程回程各走一邊、不相撞。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="duplexer" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="filter"></i></span><div><div class="title">雙工器</div><div class="en">Duplexer</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">讓中繼台「同一支天線、同時收又發」的<strong>濾波器硬體</strong>。<strong>它是「零件」</strong>，用來實作雙工。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>走廊上裝兩道單向門，進出各走各的。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="modulation" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="waves"></i></span><div><div class="title">調變</div><div class="en">Modulation</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">把資訊（聲音）「載」到電波上的<strong>通稱</strong>——改幅度=AM、改頻率=FM…。<strong>是大類</strong>，FM 只是其中一種。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>「把貨裝上車」的通稱；裝法有很多種。</div>
       </div>
     </div>
 
     <div class="concept" id="fm" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="radio"></i></span><div><div class="title">FM / 調變</div><div class="en">Frequency Modulation</div></div></div>
+      <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="radio"></i></span><div><div class="title">FM（調頻）</div><div class="en">Frequency Modulation</div></div></div>
       <div class="concept-bd">
-        <div class="explain">把聲音「載」到電波上的方法。FM＝調頻：聲音越大，電波的頻率就左右擺動越多（擺動幅度叫<strong>頻偏</strong>，擺動相對音調的比例叫<strong>調變指數 β</strong>）。對講機幾乎都用 FM。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像收音機的「FM 台」——用頻率的擺動載聲音，比 AM（調幅）更抗雜訊。</div>
+        <div class="explain">調變的「<strong>一種</strong>」：用電波頻率的左右擺動載聲音（擺動幅度=頻偏，擺動比例=調變指數 β），比 AM 抗雜訊。對講機幾乎都用它。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>收音機的「FM 台」。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="carrier" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="audio-lines"></i></span><div><div class="title">載波</div><div class="en">Carrier</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">被拿來「載」資訊的那條<strong>基礎電波</strong>（例如 145.500MHz 本身）。<strong>是「被調變的對象」</strong>，不是調變方式。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>載貨用的那台「空車」。</div>
       </div>
     </div>
 
     <div class="concept" id="fft" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="bar-chart-3"></i></span><div><div class="title">FFT / 頻譜・瀑布圖</div><div class="en">Spectrum · Waterfall</div></div></div>
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="function-square"></i></span><div><div class="title">FFT</div><div class="en">Fast Fourier Transform</div></div></div>
       <div class="concept-bd">
-        <div class="explain">把一段電波拆開，看「哪個頻率、有多強」。畫出來就是<strong>頻譜</strong>（橫=頻率、縱=強度）；把頻譜隨時間一行行往下堆，就是<strong>瀑布圖</strong>。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像把一個和弦拆成「Do Re Mi 各佔多少」——一眼看出訊號藏在哪個頻率。</div>
+        <div class="explain">把時間軸的訊號用數學換算成「各頻率各佔多少」的<strong>運算方法</strong>。<strong>它是運算，不是圖</strong>——算出來的結果叫「頻譜」。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>把一段錄音「拆解成各音高成分」的那台計算機。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="spectrum" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="bar-chart-3"></i></span><div><div class="title">頻譜</div><div class="en">Spectrum</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">FFT 算出來的<strong>結果圖</strong>：橫=頻率、縱=強度，看「<strong>某一瞬間</strong>」哪些頻率有訊號。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>一張「此刻各音高各多大聲」的長條圖。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="waterfall" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="layers"></i></span><div><div class="title">瀑布圖</div><div class="en">Waterfall</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">把一張張頻譜「<strong>隨時間往下堆疊</strong>」的動態顯示（頻率×時間×顏色），看訊號「隨時間」怎麼變。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>把每一秒的頻譜疊成一條往下流的時間長河。</div>
       </div>
     </div>
 
     <div class="concept" id="noise" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="audio-waveform"></i></span><div><div class="title">雜訊 / 底噪</div><div class="en">Noise · Noise Floor</div></div></div>
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="audio-waveform"></i></span><div><div class="title">雜訊</div><div class="en">Noise</div></div></div>
       <div class="concept-bd">
-        <div class="explain">永遠存在的背景嘶嘶聲。在頻譜上是一條毛毛的「地板」，叫<strong>底噪</strong>；訊號要冒出這條地板才聽得到。（接收機自己也會添雜訊，添多少叫<strong>噪聲指數 NF</strong>。）</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像安靜房間裡冰箱的嗡嗡聲——你得講得比它大聲，別人才聽得清楚。</div>
+        <div class="explain">不想要的隨機電氣擾動／背景嘶嘶聲——<strong>是「現象」本身</strong>。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>安靜房間裡冰箱的嗡嗡聲。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="noisefloor" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="minus"></i></span><div><div class="title">底噪</div><div class="en">Noise Floor</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">在某個接收系統／頻譜上，雜訊堆出來的那條「<strong>地板</strong>」高度（量到的水平）。<strong>訊號要高過它才分得出來</strong>；它是「水平」，不是雜訊本身。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>教室的背景音量「基準線」——你要講得比它大聲。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="nf" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="gauge"></i></span><div><div class="title">噪聲指數 NF</div><div class="en">Noise Figure</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">衡量「<strong>接收機自己</strong>額外添了多少雜訊、讓 SNR 變差幾 dB」。<strong>是元件／接收機的指標</strong>，不是環境雜訊。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>一支麥克風自己「會不會嘶嘶作響」的品質分數。</div>
       </div>
     </div>
 
     <div class="concept" id="snr" style="scroll-margin-top:16px">
       <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="signal"></i></span><div><div class="title">SNR（信噪比）</div><div class="en">Signal-to-Noise Ratio</div></div></div>
       <div class="concept-bd">
-        <div class="explain">訊號比雜訊「高出多少」（單位 dB），越大越清楚。在瀑布圖上就是「訊號峰頂」減「底噪地板」的高度差。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>重點不是你喊多大聲，而是你比背景吵雜「高出多少」——差距大才聽得懂。</div>
+        <div class="explain">訊號比底噪「<strong>高出多少</strong>」（dB），越大越清楚。瀑布圖上＝峰頂減地板。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>你的聲音比背景吵雜「高出多少」。</div>
       </div>
     </div>
 
     <div class="concept" id="psd" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-coral"><span class="ico"><i data-lucide="gauge"></i></span><div><div class="title">能量密度 / 功率密度</div><div class="en">Power Spectral Density</div></div></div>
+      <div class="concept-hd hd-coral"><span class="ico"><i data-lucide="gauge"></i></span><div><div class="title">功率密度（PSD）</div><div class="en">Power Spectral Density</div></div></div>
       <div class="concept-bd">
-        <div class="explain">同樣的發射功率，擠在越<strong>窄</strong>的頻寬裡，每 1Hz 分到的功率就越高，這叫功率（能量）密度。密度高＝訊號更容易冒出底噪、傳更遠。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>同樣的水量，用細水柱（窄頻）比灑水（寬頻）更有力、噴更遠。</div>
+        <div class="explain">每 1Hz 分到多少「<strong>功率</strong>」（W/Hz），PSD=P/B。<strong>用在「持續」訊號</strong>。窄頻→密度高→更易冒出底噪、傳更遠。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>同樣水量擠進細管，每單位截面「壓力」更大。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="esd" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-coral"><span class="ico"><i data-lucide="battery-charging"></i></span><div><div class="title">能量密度（ESD）</div><div class="en">Energy Spectral Density</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">每 1Hz 分到多少「<strong>能量</strong>」（J/Hz）。<strong>用在「短暫、有限長度」的訊號</strong>（脈衝）。能量=功率×時間——<strong>和功率密度是不同的量</strong>。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>「一次閃光」總共多亮（能量） vs「持續燈泡」每秒多亮（功率）——量的東西不同。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="overload" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="triangle-alert"></i></span><div><div class="title">過載</div><div class="en">Overload</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">輸入訊號太強，接收機前端吃不消、飽和。<strong>是「原因／狀況」</strong>，常造成失真。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>喇叭音量推到爆的「那個狀態」。</div>
       </div>
     </div>
 
     <div class="concept" id="distortion" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="triangle-alert"></i></span><div><div class="title">失真 / 過載</div><div class="en">Distortion · Overload</div></div></div>
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="waves"></i></span><div><div class="title">失真</div><div class="en">Distortion</div></div></div>
       <div class="concept-bd">
-        <div class="explain">訊號被「搞變形」了。最常見是增益開太大，接收機前端吃不消（<strong>過載</strong>），把好好的訊號壓扁、長出原本沒有的雜音與假訊號。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像喇叭音量開到爆——不是更大聲，而是破音、糊成一團。</div>
+        <div class="explain">訊號波形被「搞變形」了。<strong>是「結果」</strong>——過載只是成因之一（也可能來自非線性、削波等）。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>破音、糊掉的「那個聲音」。</div>
       </div>
     </div>
 
     <div class="concept" id="imd" style="scroll-margin-top:16px">
       <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="zap"></i></span><div><div class="title">互調（IMD）</div><div class="en">Intermodulation</div></div></div>
       <div class="concept-bd">
-        <div class="explain">兩個很強的訊號在接收機裡「打架混頻」，憑空生出空中根本不存在的<strong>假訊號（鬼影）</strong>。常被誤認成真的有人干擾。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像兩種顏料不小心混到，調出第三種你沒擠出來的顏色——那是機器自己生的，不是外面真有。</div>
+        <div class="explain">兩個強訊號在接收機裡混頻，憑空生出空中不存在的<strong>假訊號（鬼影）</strong>。常被誤認成真干擾。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>兩種顏料混出第三種你沒擠出來的顏色——機器自己生的。</div>
       </div>
     </div>
 
     <div class="concept" id="fresnel" style="scroll-margin-top:16px">
       <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="spline"></i></span><div><div class="title">菲涅耳區</div><div class="en">Fresnel Zone</div></div></div>
       <div class="concept-bd">
-        <div class="explain">電波從 A 走到 B，不是只走一條直線，而是需要一圈「橢圓形的淨空」。這圈被山丘、大樓擋到，訊號就明顯變弱——所以中繼台要架在看得到兩端的高處。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像手電筒的光不是一條線而是一個錐形——擋到光束邊緣，亮度就掉。</div>
-      </div>
-    </div>
-
-    <div class="concept" id="duplexer" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="route"></i></span><div><div class="title">雙工器</div><div class="en">Duplexer</div></div></div>
-      <div class="concept-bd">
-        <div class="explain">讓中繼台「同一支天線、同時收又發」還不會自己吵自己的濾波器。它用陷波濾波器把收、發兩個頻率隔開，提供足夠的隔離度。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像同一條走廊裝了兩道單向門，進的人和出的人各走各的、不相撞。</div>
+        <div class="explain">電波 A→B 需要一圈「橢圓形淨空」，被山丘大樓擋到就明顯變弱。所以中繼台要架高。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>手電筒的光是錐形，擋到光束邊緣亮度就掉。</div>
       </div>
     </div>
 
     <div class="concept" id="los" style="scroll-margin-top:16px">
       <div class="concept-hd hd-basic"><span class="ico"><i data-lucide="eye"></i></span><div><div class="title">視距（LOS）</div><div class="en">Line of Sight</div></div></div>
       <div class="concept-bd">
-        <div class="explain">兩支天線能不能「互相看得到」。看得到（視距內）訊號最好；中間隔著山丘、大樓擋住，訊號就大幅衰減——這也是為什麼要把中繼台架在高處。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像用手電筒打信號——你們之間沒有遮擋才看得到光，中間擋一面牆就沒了。</div>
+        <div class="explain">兩支天線能不能「<strong>互相看得到</strong>」。看得到最好；被山丘大樓遮住就大幅衰減。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>用手電筒打信號——中間有牆就沒了。</div>
       </div>
     </div>
 
     <div class="concept" id="rssi" style="scroll-margin-top:16px">
       <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="signal-high"></i></span><div><div class="title">信號強度（RSSI / S 表）</div><div class="en">Received Signal Strength</div></div></div>
       <div class="concept-bd">
-        <div class="explain">收到的訊號有多強。常用 <strong>S 表</strong>（S1 最弱到 S9 最強）或 RSSI 數值表示。用不同位置量到的強弱，可以反推訊號源大概在哪個方向。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像手機的訊號格——格數越多代表離基地台越近、收得越好。</div>
+        <div class="explain">收到的訊號有多強，用 <strong>S1–S9</strong> 或 RSSI 數值表示。不同位置量到的強弱可反推方向。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>手機的訊號格——格數越多收得越好。</div>
       </div>
     </div>
 
     <div class="concept" id="df" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="compass"></i></span><div><div class="title">測向 / 三角定位</div><div class="en">Direction Finding · Triangulation</div></div></div>
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="compass"></i></span><div><div class="title">測向（DF）</div><div class="en">Direction Finding</div></div></div>
       <div class="concept-bd">
-        <div class="explain">找出訊號（或干擾源）從哪裡來。用<strong>定向天線</strong>（如八木、環形）在不同位置量「哪個方向最強」，畫幾條方向線，交點就是訊號源大概位置。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像兩三個人各自指向同一聲響的方向，手指延伸線的交會點就是聲音來源。</div>
+        <div class="explain">用定向天線找出訊號「<strong>從哪個方向</strong>來」。<strong>只給方向、不給位置</strong>——要位置得靠三角定位。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>豎起耳朵判斷聲音「從左還是從右」。</div>
+      </div>
+    </div>
+
+    <div class="concept" id="triangulation" style="scroll-margin-top:16px">
+      <div class="concept-hd hd-scen"><span class="ico"><i data-lucide="triangle"></i></span><div><div class="title">三角定位</div><div class="en">Triangulation</div></div></div>
+      <div class="concept-bd">
+        <div class="explain">在「<strong>多個位置</strong>」各做一次測向，把幾條方向線畫出來，<strong>交會點＝訊號源的「位置」</strong>。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>兩三個人各指聲音方向，手指延長線的交點就是來源。</div>
       </div>
     </div>
 
     <div class="concept" id="pathloss" style="scroll-margin-top:16px">
-      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="trending-down"></i></span><div><div class="title">路徑衰減（Friis）</div><div class="en">Path Loss · Free-space</div></div></div>
+      <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="trending-down"></i></span><div><div class="title">路徑衰減（Friis）</div><div class="en">Path Loss</div></div></div>
       <div class="concept-bd">
-        <div class="explain">電波越走越弱。距離拉遠、頻率變高，訊號就衰減越多（自由空間裡每拉遠一倍約掉 6dB）。這是估算通訊距離的基礎。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像在空曠地喊話——越走越遠聲音越小，到一定距離就聽不到了。</div>
+        <div class="explain">電波越走越弱：距離拉遠、頻率變高就衰減越多（自由空間每遠一倍約 −6dB）。Friis 是算它的公式。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>空曠地喊話，越遠越小聲，到一定距離就聽不到。</div>
       </div>
     </div>
 
