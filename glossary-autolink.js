@@ -6,30 +6,33 @@
    內部「詞 → 錨點」對照表 TERMS 是唯一需要維護的地方。
    ============================================================ */
 (function () {
-  // 詞 → 白話手冊錨點。長詞排前面，避免「雙工器」被「雙工」搶先比中。
+  // 詞 → 白話手冊錨點。每個術語對到「自己」的卡片（概念已拆分）。長詞排前面。
   var TERMS = [
-    ['捕獲效應', 'capture'], ['捕捉效應', 'capture'], ['同頻干擾', 'capture'], ['鄰頻干擾', 'capture'],
-    ['接收靈敏度', 'gain'], ['靈敏度', 'gain'], ['RF 增益', 'gain'], ['增益', 'gain'],
-    ['能量密度', 'psd'], ['功率密度', 'psd'],
-    ['調變指數', 'fm'], ['調變', 'fm'], ['載波', 'fm'],
-    ['瀑布圖', 'fft'], ['頻譜', 'fft'],
-    ['噪聲指數', 'noise'], ['底噪', 'noise'], ['雜訊', 'noise'],
+    ['捕獲效應', 'capture'], ['捕捉效應', 'capture'],
+    ['同頻干擾', 'interference'], ['鄰頻干擾', 'interference'], ['干擾', 'interference'],
+    ['接收靈敏度', 'sensitivity'], ['靈敏度', 'sensitivity'],
+    ['RF 增益', 'gain'], ['增益', 'gain'],
+    ['功率密度', 'psd'], ['能量密度', 'esd'],
+    ['調變指數', 'fm'], ['調變', 'modulation'], ['載波', 'carrier'],
+    ['瀑布圖', 'waterfall'], ['頻譜', 'spectrum'],
+    ['噪聲指數', 'nf'], ['底噪', 'noisefloor'], ['雜訊', 'noise'],
     ['菲涅耳區', 'fresnel'], ['菲涅耳', 'fresnel'],
-    ['雙工器', 'duplexer'], ['雙工', 'repeater'], ['中繼台', 'repeater'],
+    ['雙工器', 'duplexer'], ['雙工', 'duplex'], ['中繼台', 'repeater'],
     ['路徑衰減', 'pathloss'], ['自由空間', 'pathloss'],
-    ['三角定位', 'df'], ['定向天線', 'df'], ['測向', 'df'],
+    ['三角定位', 'triangulation'], ['定向天線', 'df'], ['測向', 'df'],
     ['信號強度', 'rssi'],
     ['視距', 'los'],
-    ['過載', 'distortion'], ['失真', 'distortion'],
+    ['過載', 'overload'], ['失真', 'distortion'],
     ['互調', 'imd'],
     ['寬頻', 'bandwidth'], ['窄頻', 'bandwidth'], ['頻寬', 'bandwidth'],
     ['亞音', 'ctcss'],
     // 英文／縮寫：需大小寫相符且不在英數字中間
     ['CTCSS', 'ctcss'], ['Tone', 'ctcss'],
-    ['NBFM', 'fm'], ['NFM', 'fm'], ['FFT', 'fft'], ['FM', 'fm'],
-    ['SNR', 'snr'], ['IMD', 'imd'], ['RSSI', 'rssi'],
+    ['NBFM', 'fm'], ['NFM', 'fm'], ['FM', 'fm'],
+    ['FFT', 'fft'], ['PSD', 'psd'], ['ESD', 'esd'],
+    ['SNR', 'snr'], ['IMD', 'imd'], ['RSSI', 'rssi'], ['NF', 'nf'],
     ['Friis', 'pathloss'], ['LOS', 'los'], ['Carson', 'bandwidth'],
-    ['Overload', 'distortion'], ['Duplexer', 'duplexer'], ['NF', 'noise']
+    ['Overload', 'overload'], ['Duplexer', 'duplexer']
   ];
 
   var GLOSSARY = 'glossary.html';

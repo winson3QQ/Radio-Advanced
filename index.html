@@ -507,7 +507,7 @@ canvas { max-width: 100%; }
       <tr><th>問題</th><th>傳統教學</th><th>RF 深化學習</th></tr>
       <tr><td>CTCSS</td><td>「是 67-250Hz 的亞音」</td><td>推導 FM 調變方程 + 看 FFT 峰值驗證</td></tr>
       <tr><td>RF 增益</td><td>「越高越好」</td><td>計算靈敏度公式 + 測 SNR 找最佳點</td></tr>
-      <tr><td>頻寬</td><td>死背 12.5kHz</td><td>算能量密度 + FFT 波寬對比理解原因</td></tr>
+      <tr><td>頻寬</td><td>死背 12.5kHz</td><td>算功率密度 + FFT 波寬對比理解原因</td></tr>
       <tr><td>干擾</td><td>無法判斷</td><td>掃頻找峰值位置 + 三角定位估算來源</td></tr>
     </table>
 
@@ -670,12 +670,12 @@ canvas { max-width: 100%; }
     <div class="sec-h"><i data-lucide="map-pin"></i>現場情境</div>
     <div class="prose-card"><p>中繼台停電後隊伍改用直聯，但通話距離從 5km 驟降到不到 2km。查對講機設定，發現部分隊伍設的是 25kHz 寬頻。</p></div>
 
-    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與能量密度</div>
+    <div class="sec-h"><i data-lucide="microscope"></i>RF 理論：頻寬與功率密度</div>
     <div class="prose-card">
       <p><strong>核心物理原理：</strong></p>
       <ul>
         <li>相同發射功率，帶寬越窄 → 能量越集中 → 每 Hz 的功率密度越高</li>
-        <li>能量密度越高 → 接收機更容易從雜訊中識別信號</li>
+        <li>功率密度越高 → 接收機更容易從雜訊中識別信號</li>
         <li>識別容易 → 在更遠距離仍能清晰通話</li>
       </ul>
     </div>
@@ -724,7 +724,7 @@ canvas { max-width: 100%; }
     <table class="tbl">
       <tr><th>情況</th><th>推薦頻寬</th><th>原因</th></tr>
       <tr><td>有中繼台支援</td><td>12.5kHz（仍建議）</td><td>現代標準，節省電力</td></tr>
-      <tr><td>直聯（無中繼）</td><td>12.5kHz（強制）</td><td>能量密度高，距離更遠</td></tr>
+      <tr><td>直聯（無中繼）</td><td>12.5kHz（強制）</td><td>功率密度高，距離更遠</td></tr>
       <tr><td>與舊式對講機配合</td><td>視對方設定</td><td>需確認對方設定</td></tr>
       <tr><td>強電池使用時間優先</td><td>12.5kHz</td><td>相同覆蓋所需功率更低</td></tr>
     </table>
