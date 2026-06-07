@@ -51,7 +51,9 @@
   function nodeAllowed(node, root) {
     if (!node.nodeValue || !node.nodeValue.trim()) return false;
     var skipTag = { A: 1, BUTTON: 1, SCRIPT: 1, STYLE: 1, CODE: 1, KBD: 1,
-                    H1: 1, H2: 1, H3: 1, H4: 1, H5: 1, H6: 1 };
+                    H1: 1, H2: 1, H3: 1, H4: 1, H5: 1, H6: 1,
+                    // 略過強調字，避免連結繼承粗/斜體、粗細不一致
+                    STRONG: 1, B: 1, EM: 1, I: 1, MARK: 1 };
     var skipClass = { 'formula': 1, 'sec-h': 1, 'visual': 1, 'readout': 1, 'en': 1,
                       'eyebrow': 1, 'ct': 1, 'back-btn': 1, 'brand': 1, 'qr-url': 1,
                       'svgfig': 1, 'axis': 1, 'mono': 1 };
