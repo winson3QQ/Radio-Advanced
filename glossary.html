@@ -608,8 +608,8 @@ canvas { max-width: 100%; }
     <div class="concept" id="nf" style="scroll-margin-top:16px">
       <div class="concept-hd hd-adv"><span class="ico"><i data-lucide="gauge"></i></span><div><div class="title">噪聲指數 NF</div><div class="en">Noise Figure</div></div></div>
       <div class="concept-bd">
-        <div class="explain">衡量「<strong>接收機自己</strong>額外添了多少雜訊、讓 SNR 變差幾 dB」。<strong>是元件／接收機的指標</strong>，不是環境雜訊。</div>
-        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>一支麥克風自己「會不會嘶嘶作響」的品質分數。</div>
+        <div class="explain">衡量「<strong>接收機自己</strong>額外添了多少雜訊、讓 SNR 變差幾 dB」（越小越乾淨）。<strong>是元件／接收機的指標</strong>，不是環境雜訊。整條接收鏈裡<strong>最前面那一級（LNA 前置放大器）影響最大</strong>。</div>
+        <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>像一條傳話接力——第一個人就講不清楚（雜訊大），後面再怎麼清楚也救不回；所以低雜訊放大器要好、要擺最前面。</div>
       </div>
     </div>
 
@@ -680,7 +680,7 @@ canvas { max-width: 100%; }
     <div class="concept" id="rssi" style="scroll-margin-top:16px">
       <div class="concept-hd hd-sdr"><span class="ico"><i data-lucide="signal-high"></i></span><div><div class="title">信號強度（RSSI / S 表）</div><div class="en">Received Signal Strength</div></div></div>
       <div class="concept-bd">
-        <div class="explain">收到的訊號有多強，用 <strong>S1–S9</strong> 或 RSSI 數值表示。不同位置量到的強弱可反推方向。</div>
+        <div class="explain">收到的訊號有多強，用 <strong>S1–S9</strong>（S9 最強）或 RSSI 數值表示。報務常講的「59」是<strong>可讀度 R5 ＋ 信號 S9</strong>（RST 制），不是兩者取最高。不同位置量到的強弱可反推方向。</div>
         <div class="callout analogy"><span class="ct"><i data-lucide="lightbulb"></i>生活比喻</span>手機的訊號格——格數越多收得越好。</div>
       </div>
     </div>
