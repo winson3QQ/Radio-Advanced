@@ -1,0 +1,22 @@
+# ── 第三方二進位工具（不進 repo，改用 setup 下載）──
+/sdrpp_windows_x64/
+sdrpp_windows_x64.zip
+zadig-2.9.exe
+zadig-*.exe
+
+# ── SDR++ 執行時產生的檔案（保留 config.json，忽略暫存/錄音）──
+sdrpp_config/*
+!sdrpp_config/config.json
+*.wav
+*.iq
+*.cf32
+
+# TestTone/ 的音檔是教材資產（Demo 0 校準、Demo 3 量測用），要進版控
+!TestTone/*.wav
+
+# ── 其他 ──
+_dump.txt
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

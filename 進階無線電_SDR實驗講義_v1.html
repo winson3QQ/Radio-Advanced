@@ -1,0 +1,2161 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>進階無線電 · SDR 實驗講義 v1</title>
+
+<style>
+:root{
+  --paper:#F1F4F4; --paper-2:#FFFFFF; --paper-3:#E7ECEC;
+  --ink:#0F1A21; --ink-2:#3B4C57; --ink-3:#6A7A85;
+  --rule:#C6D0D3; --rule-soft:#DCE3E4;
+  --panel:#0A1216; --panel-2:#15242B; --panel-3:#1E333C;
+  --teal:#06788B; --amber:#9E5E08; --violet:#63399B; --crimson:#9E2118;
+  --teal-bg:#E2F0F2; --amber-bg:#F7EDDF; --violet-bg:#EEE8F6; --crimson-bg:#F8E5E3;
+  --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Hiragino Sans CNS", "Microsoft JhengHei", sans-serif;
+  --rail-w: 210px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:20px}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15.5px; line-height:1.78;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    linear-gradient(rgba(15,26,33,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,26,33,.045) 1px, transparent 1px);
+  background-size:56px 56px;
+}
+
+.shell{display:flex; align-items:flex-start; gap:0; max-width:1320px; margin:0 auto}
+
+/* ── 左側頻率尺導覽 ───────────────────────── */
+.rail{
+  position:sticky; top:0; height:100vh; width:var(--rail-w); flex:0 0 var(--rail-w);
+  background:var(--panel); color:#9FB4BD; padding:22px 0 18px;
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.rail-head{padding:0 18px 14px; border-bottom:1px solid #22343D}
+.rail-head b{display:block; color:#EAF2F4; font-size:13px; letter-spacing:.02em}
+.rail-head span{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#5D7885}
+.ruler{flex:1; overflow-y:auto; padding:12px 0 30px; position:relative; scrollbar-width:thin}
+.ruler::-webkit-scrollbar{width:5px}
+.ruler::-webkit-scrollbar-thumb{background:#243943; border-radius:3px}
+.tick{
+  display:flex; align-items:center; gap:9px; padding:5px 16px 5px 0;
+  color:#8AA3AD; text-decoration:none; font-size:12.5px; line-height:1.35;
+  border-left:2px solid transparent; position:relative;
+}
+.tick .no{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em;
+  width:34px; text-align:right; flex:0 0 34px; color:#4E6B77;
+}
+.tick:hover{color:#DCEBEF; background:#101E24}
+.tick.on{color:#fff; background:#122129; border-left-color:var(--wf-on,#63C132)}
+.tick.on .no{color:#9BD46E}
+.tick.grp{
+  margin-top:12px; pointer-events:none; color:#4C6774;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
+  padding-left:16px;
+}
+.rail-foot{padding:12px 16px 0; border-top:1px solid #22343D; display:flex; flex-direction:column; gap:6px}
+.rbtn{
+  background:#182A32; color:#BBD2D9; border:1px solid #2A424D; border-radius:3px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em; padding:7px 9px;
+  cursor:pointer; text-align:left;
+}
+.rbtn:hover{background:#21393F; color:#fff}
+.rbtn:focus-visible{outline:2px solid #63C132; outline-offset:2px}
+
+/* ── 主欄 ───────────────────────── */
+main{flex:1; min-width:0; padding:0 46px 120px; background:linear-gradient(var(--paper-2),var(--paper-2)) padding-box; border-right:1px solid var(--rule-soft); border-left:1px solid var(--rule-soft)}
+
+/* ── HERO：瀑布圖 ───────────────────────── */
+.hero{margin:0 -46px 44px; background:var(--panel); color:#E9F2F4; padding:34px 46px 0; position:relative; overflow:hidden}
+.hero h1{
+  font-size:clamp(30px,4.4vw,46px); line-height:1.02; margin:14px 0 10px;
+  font-weight:800; letter-spacing:-.025em; color:#fff;
+}
+.hero h1 em{font-style:normal; color:#7ED957}
+.eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:#5F8494}
+.hero p{color:#A7BEC7; max-width:56ch; font-size:14.5px; margin:0 0 22px}
+.wf-wrap{margin:0 -46px; position:relative; background:#04090B}
+#wf{display:block; width:100%; height:168px}
+.wf-cap{
+  position:absolute; left:46px; bottom:10px; font-family:var(--mono);
+  font-size:11px; letter-spacing:.1em; color:#CFE9D8;
+  background:rgba(4,9,11,.72); padding:3px 9px; border-left:2px solid #7ED957;
+}
+.wf-axis{
+  position:absolute; right:46px; top:8px; font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.14em; color:#4E7180; text-transform:uppercase;
+}
+
+/* ── 標題階層 ───────────────────────── */
+h2.part{
+  font-family:var(--mono); font-size:11px; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--ink-3); margin:56px 0 6px; padding-bottom:8px; border-bottom:2px solid var(--ink);
+}
+section{scroll-margin-top:16px}
+h3.exp{
+  font-size:24px; font-weight:800; letter-spacing:-.015em; margin:34px 0 4px; line-height:1.2;
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+}
+h3.exp .id{
+  font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.1em;
+  color:var(--paper-2); background:var(--ink); padding:3px 8px; border-radius:2px; flex:0 0 auto;
+}
+h4{font-size:16.5px; font-weight:700; margin:26px 0 4px; letter-spacing:-.005em}
+h5{font-size:13.5px; font-weight:700; margin:18px 0 2px; color:var(--ink-2)}
+p{margin:.55em 0}
+.lede{color:var(--ink-2); font-size:14.5px; margin:6px 0 14px}
+ul,ol{padding-left:1.3em; margin:.5em 0}
+li{margin:.25em 0}
+code{font-family:var(--mono); font-size:.9em; background:var(--paper-3); padding:1px 5px; border-radius:2px}
+hr{border:0; border-top:1px solid var(--rule-soft); margin:34px 0}
+
+/* ── 依據標籤 ───────────────────────── */
+.tag{
+  font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.1em;
+  padding:1px 5px; border-radius:2px; white-space:nowrap; vertical-align:2px;
+}
+.t-fact{background:var(--teal-bg); color:var(--teal)}
+.t-inf{background:var(--amber-bg); color:var(--amber)}
+.t-tbd{background:var(--violet-bg); color:var(--violet)}
+.t-sc{background:var(--crimson-bg); color:var(--crimson)}
+
+/* ── 提示框 ───────────────────────── */
+.box{border-left:3px solid var(--rule); background:var(--paper); padding:14px 18px; margin:18px 0; font-size:14.5px}
+.box h5{margin-top:0}
+.box.key{border-left-color:var(--teal); background:var(--teal-bg)}
+.box.warn{border-left-color:var(--amber); background:var(--amber-bg)}
+.box.sc{border-left-color:var(--crimson); background:var(--crimson-bg)}
+.box.tbd{border-left-color:var(--violet); background:var(--violet-bg)}
+.box .lbl{font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; display:block; margin-bottom:4px; opacity:.75}
+
+/* ── 設計背景框 ───────────────────────── */
+.box.why{border-left-color:#31607F; background:#E8F0F5}
+.box.why .lbl{color:#31607F; opacity:1}
+.why h6{font-size:12.5px; font-weight:700; margin:11px 0 1px; color:#31607F; letter-spacing:.01em}
+.why h6:first-of-type{margin-top:4px}
+.why p{margin:.2em 0}
+
+/* ── 現場情境框 ───────────────────────── */
+.box.field{border-left-color:#3E6B4A; background:#E9F1EA}
+.box.field .lbl{color:#3E6B4A; opacity:1}
+.field h6{font-size:12.5px; font-weight:700; margin:12px 0 3px; color:#3E6B4A}
+.field h6:first-of-type{margin-top:4px}
+.field ul{margin:.2em 0 .4em}
+.field table{font-size:13px; background:var(--paper-2)}
+.field thead th{background:#D8E5DA; color:#2C4F36}
+.field tbody tr:nth-child(even) td{background:#F4F9F5}
+.sym{font-weight:700; color:#2C4F36}
+.route{display:inline-block; font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; background:var(--paper-3); color:var(--ink-2); padding:1px 6px; border-radius:2px; white-space:nowrap}
+
+/* ── 名詞對照卡 ───────────────────────── */
+details.gl{border:1px solid var(--rule-soft); border-radius:3px; margin:10px 0; background:var(--paper-2)}
+details.gl summary{cursor:pointer; padding:11px 16px; font-weight:700; font-size:15px; list-style:none; display:flex; align-items:baseline; gap:10px}
+details.gl summary::-webkit-details-marker{display:none}
+details.gl summary::before{content:"\25B8"; color:var(--teal); font-size:11px}
+details.gl[open] summary::before{content:"\25BE"}
+details.gl summary:hover{background:var(--paper)}
+details.gl summary .hint{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--ink-3); font-weight:400; margin-left:auto; text-align:right}
+details.gl .gbody{padding:2px 16px 14px; border-top:1px solid var(--rule-soft)}
+details.gl .gbody table{margin-top:12px}
+@media print{ details.gl{page-break-inside:avoid} }
+
+/* ── 表格 ───────────────────────── */
+.tw{overflow-x:auto; margin:16px 0}
+table{border-collapse:collapse; width:100%; font-size:14px}
+th,td{border:1px solid var(--rule-soft); padding:7px 10px; text-align:left; vertical-align:middle}
+thead th{background:var(--paper-3); font-size:12px; font-weight:700; letter-spacing:.01em; color:var(--ink-2)}
+tbody tr:nth-child(even) td{background:#FAFCFC}
+td.n, th.n{text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums}
+td.base{background:var(--paper-3)!important; font-family:var(--mono); font-size:12.5px; color:var(--ink-3)}
+
+input.num, input.txt{
+  font-family:var(--mono); font-size:13.5px; font-variant-numeric:tabular-nums;
+  width:100%; min-width:56px; border:0; border-bottom:1.5px solid var(--rule);
+  background:#FCFEFE; padding:3px 4px; color:var(--teal); text-align:right;
+}
+input.txt{text-align:left; color:var(--ink)}
+input.num:focus, input.txt:focus{outline:0; border-bottom-color:var(--teal); background:var(--teal-bg)}
+input.num::placeholder{color:#B6C3C7; font-size:11.5px}
+.out{
+  font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:600;
+  color:var(--ink); display:inline-block; min-width:44px; text-align:right;
+}
+.out.dim{color:#AFBCC1; font-weight:400}
+.out.pos{color:#1F6B3E}
+.out.neg{color:var(--crimson)}
+input[type=checkbox]{width:15px; height:15px; accent-color:var(--teal); cursor:pointer}
+
+/* ── 儀器面板小工具 ───────────────────────── */
+.panel{
+  background:var(--panel); color:#CFE2E8; border-radius:4px; padding:18px 20px; margin:22px 0;
+  font-family:var(--mono);
+}
+.panel .ttl{font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:#5F8494; margin-bottom:12px}
+.panel label{font-size:11px; letter-spacing:.08em; color:#8FA9B3; display:block; margin-bottom:3px}
+.panel input{
+  font-family:var(--mono); background:#050C0F; border:1px solid #2A424D; color:#7ED957;
+  padding:6px 8px; font-size:15px; border-radius:2px; width:100%; text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.panel input:focus{outline:0; border-color:#7ED957}
+.pgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:14px}
+.readout{background:#050C0F; border:1px solid #22343D; border-radius:2px; padding:8px 10px}
+.readout .k{font-size:9.5px; letter-spacing:.14em; color:#5F8494; text-transform:uppercase}
+.readout .v{font-size:19px; color:#7ED957; font-variant-numeric:tabular-nums; line-height:1.3}
+.readout .u{font-size:11px; color:#4E7180}
+
+.verdict{
+  display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  padding:3px 9px; border-radius:2px; margin-top:8px;
+}
+.v-ok{background:#DBF0E2; color:#1F6B3E}
+.v-no{background:var(--crimson-bg); color:var(--crimson)}
+.v-idle{background:var(--paper-3); color:var(--ink-3)}
+
+canvas.chart{width:100%; height:280px; display:block; background:var(--paper-2); border:1px solid var(--rule-soft); border-radius:3px}
+
+.chk{list-style:none; padding:0}
+.chk li{display:flex; gap:10px; align-items:flex-start; padding:5px 0; border-bottom:1px dashed var(--rule-soft)}
+.chk li label{flex:1; cursor:pointer}
+
+/* ── 頂部工具列 ───────────────────────── */
+.bar{
+  position:sticky; top:0; z-index:40; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  background:rgba(241,244,244,.94); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule); padding:9px 46px; margin:0 -46px 0;
+}
+.bar .stat{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-3); margin-right:auto}
+.bar .stat b{color:var(--teal)}
+.bbtn{
+  font-family:var(--mono); font-size:11px; letter-spacing:.07em; padding:6px 11px;
+  border:1px solid var(--rule); background:var(--paper-2); color:var(--ink-2);
+  border-radius:3px; cursor:pointer;
+}
+.bbtn:hover{border-color:var(--teal); color:var(--teal)}
+.bbtn.solid{background:var(--ink); color:var(--paper-2); border-color:var(--ink)}
+.bbtn.solid:hover{background:var(--teal); border-color:var(--teal); color:#fff}
+.bbtn:focus-visible{outline:2px solid var(--teal); outline-offset:2px}
+
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
+  background:var(--panel); color:#CFE9D8; font-family:var(--mono); font-size:12px;
+  padding:10px 18px; border-radius:3px; border-left:3px solid #7ED957;
+  transition:transform .25s ease; z-index:99; pointer-events:none;
+}
+.toast.up{transform:translateX(-50%) translateY(0)}
+
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; margin:14px 0 0}
+.legend span{display:flex; gap:6px; align-items:center}
+
+/* ── 響應式 ───────────────────────── */
+@media (max-width:900px){
+  .rail{display:none}
+  main{padding:0 20px 90px; border:0}
+  .hero{margin:0 -20px 32px; padding:26px 20px 0}
+  .wf-wrap{margin:0 -20px}
+  .wf-cap{left:20px}
+  .wf-axis{right:20px}
+  .bar{padding:9px 20px; margin:0 -20px}
+  body{background-size:40px 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
+
+/* ── 列印 ───────────────────────── */
+@media print{
+  @page{margin:14mm}
+  body{background:#fff; font-size:10.5pt; line-height:1.6}
+  .rail,.bar,.toast,.wf-wrap,.hero p,.rail-foot{display:none!important}
+  main{padding:0; border:0}
+  .hero{background:#fff; color:#000; margin:0 0 12mm; padding:0; border-bottom:2px solid #000}
+  .hero h1{color:#000; font-size:22pt}
+  .hero h1 em{color:#000}
+  .eyebrow{color:#555}
+  section{page-break-inside:avoid}
+  h3.exp{page-break-after:avoid; font-size:14pt}
+  h3.exp .id{background:#000; color:#fff}
+  table{page-break-inside:avoid; font-size:9pt}
+  input.num,input.txt{border-bottom:1px solid #999; background:#fff; color:#000}
+  .panel{background:#fff; color:#000; border:1px solid #999}
+  .panel .ttl,.panel label,.readout .k{color:#555}
+  .panel input,.readout{background:#fff; border:1px solid #999}
+  .readout .v,.panel input{color:#000}
+  canvas.chart{border:1px solid #999}
+  .box{background:#fff; border-left:3px solid #000}
+}
+body.sheet-only .prose{display:none}
+body.sheet-only .box{display:none}
+body.sheet-only .keep{display:block}
+</style>
+
+<div class="shell">
+
+<aside class="rail">
+  <div class="rail-head">
+    <span>Lab Manual v1</span>
+    <b>進階無線電 · SDR 實驗</b>
+  </div>
+  <nav class="ruler" id="ruler"></nav>
+  <div class="rail-foot">
+    <button class="rbtn" id="r-export">↓ 匯出實驗數據</button>
+    <button class="rbtn" id="r-import">↑ 匯入實驗數據</button>
+  </div>
+</aside>
+
+<main>
+
+<div class="bar">
+  <div class="stat" id="stat">已填 <b id="filled">0</b> 格 · 資料僅存在本頁</div>
+  <button class="bbtn" id="b-sheet">切換記錄單模式</button>
+  <button class="bbtn" id="b-print">列印 / 存 PDF</button>
+  <button class="bbtn solid" id="b-export">匯出 JSON</button>
+</div>
+
+<header class="hero">
+  <span class="eyebrow">Software Defined Radio · Field Lab</span>
+  <h1>把選單上的數字<br>變成<em>看得見的電波</em></h1>
+  <p>十一個實驗，把手持機每一個可調參數對應到瀑布圖上的一個可觀察現象。所有量測都是相對比較，不需要頻譜分析儀。</p>
+  <div class="wf-wrap">
+    <canvas id="wf" width="1200" height="168" aria-label="模擬瀑布圖，展示窄頻、寬頻與過調變訊號的寬度差異"></canvas>
+    <div class="wf-cap" id="wfcap">待機 · 僅有底噪</div>
+    <div class="wf-axis">↓ 時間 &nbsp;·&nbsp; → 頻率</div>
+  </div>
+</header>
+
+<section id="s-intro">
+  <h2 class="part">前言 · 標註規則與供應鏈聲明</h2>
+
+  <div class="prose">
+  <p>本講義所有敘述均標註依據，請講師授課時一併說明，並要求學員在自己的記錄中沿用同一套標註習慣。</p>
+  <div class="legend">
+    <span><b class="tag t-fact">FACT</b> 有規範、文件或物理公式支持</span>
+    <span><b class="tag t-inf">推論</b> 由事實推導，需實測驗證</span>
+    <span><b class="tag t-tbd">待查</b> 需依現場條件或最新法規補齊</span>
+    <span><b class="tag t-sc">供應鏈</b> 中國來源，資安須留意</span>
+  </div>
+  </div>
+
+  <div class="box sc">
+    <span class="lbl">供應鏈安全聲明</span>
+    <p>本講義建議之器材均標註品牌所屬國與製造地，建議排除中國品牌與中國製造之 USB 連接裝置與含韌體器材。</p>
+    <p>若因成本必須使用 <b>RTL-SDR（中國組裝 <span class="tag t-fact">FACT</span>，RTL-SDR Blog 官方公告載明代工廠與倉庫位於中國）</b>，請務必：使用<b>課堂專用電腦</b>、不連內網、不存放個人與單位資料、課後不插入其他電腦——並且<b>把這件事本身當成教材講出來</b>。供應鏈風險是「進階無線電」應該教的內容。</p>
+  </div>
+</section>
+
+<!-- ══════════ 第零部 ══════════ -->
+<section id="s-0">
+  <h2 class="part">第零部 · 環境建置與共同基準</h2>
+
+  <h4>器材清單</h4>
+  <div class="tw"><table>
+    <thead><tr><th>品項</th><th>建議</th><th>產地</th><th>備註</th></tr></thead>
+    <tbody>
+      <tr><td>SDR 接收機</td><td>SDRplay RSP1B</td><td>英國 <span class="tag t-fact">FACT</span></td><td>14-bit ADC，動態範圍佳</td></tr>
+      <tr><td>SDR（替代）</td><td>RTL-SDR Blog V3</td><td><b style="color:var(--crimson)">中國組裝</b> <span class="tag t-sc">供應鏈</span></td><td>8-bit；V4 已於 2026 年 EOL 停產 <span class="tag t-fact">FACT</span></td></tr>
+      <tr><td>手持機 A / B</td><td>Yaesu / Icom / Kenwood / Alinco</td><td>日本</td><td>需具備 W/N、CTCSS/DCS、TOT、VOX、OFFSET 選單</td></tr>
+      <tr><td>天線</td><td><b>原廠橡皮 · 伸縮 · 其他</b></td><td>依現有</td><td>本講義天線實驗僅用這三類</td></tr>
+      <tr><td>假負載</td><td>Diamond DL-30N / Bird</td><td>日本 / 美國</td><td>發射實驗必備</td></tr>
+      <tr><td>步進衰減器</td><td>Mini-Circuits / Pasternack</td><td>美國</td><td>若無，用實驗 7 的極化錯位法替代</td></tr>
+      <tr><td>音訊分析</td><td>Audacity</td><td>開源，非中國</td><td>實驗 5 分析亞音用</td></tr>
+      <tr><td>SDR 軟體</td><td>SDR++ / SDR#</td><td>開源 / 非中國</td><td>本講義以 SDR++ 為例</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box warn prose">
+    <span class="lbl">教室配置 <span class="tag t-inf">推論</span></span>
+    <p>近距離發射會讓 SDR 前端<b>嚴重過載</b>，產生大量假訊號，學員會誤以為那是真的。三種解法擇一：</p>
+    <ul>
+      <li><b>方案 A（最佳）</b>：發射端置於隔壁教室或走廊</li>
+      <li><b>方案 B</b>：SDR <b>完全不接天線</b>，僅靠殘餘拾取，發射端保持 3 公尺以上</li>
+      <li><b>方案 C</b>：SDR 前端串接 20–40 dB 衰減器</li>
+    </ul>
+    <p>若瀑布圖出現大量規律排列的訊號、或訊號糊成一片，多半是過載，不是真的收到那麼多電台。先加衰減再繼續。</p>
+    <p><b>但不要只是避開它。</b>過載是課堂上唯一能安全重現的「假訊號」，<b>實驗 11-B 會刻意製造一次</b>，讓學員親眼看到假訊號長什麼樣、又怎麼消失。</p>
+  </div>
+
+  <h4>SDR 標準設定（所有實驗共用）</h4>
+  <div class="tw"><table>
+    <thead><tr><th>項目</th><th>設定值</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>取樣率</td><td>2.4 MSPS（RTL）/ 2 MHz（RSP）</td><td></td></tr>
+      <tr><td>FFT 點數</td><td>65536</td><td>頻格間距 ≈ 2.4 MHz ÷ 65536 ≈ <b>37 Hz</b> <span class="tag t-fact">FACT</span>。實際解析頻寬還要乘上窗函數的等效雜訊頻寬（Hann 約 1.5 倍）<span class="tag t-fact">FACT</span></td></tr>
+      <tr><td>窗函數</td><td>Hann（一般）/ Blackman-Harris（看強訊號裙擺）</td><td></td></tr>
+      <tr><td>瀑布圖速度</td><td>中速</td><td>太快看不出時間軸的意義</td></tr>
+      <tr><td>解調模式 / 頻寬</td><td>NFM，窄頻 11 kHz / 寬頻 16 kHz</td><td>依 Carson 法則 <span class="tag t-fact">FACT</span></td></tr>
+      <tr><td>增益</td><td><b>關閉自動增益（AGC）</b></td><td>開著 AGC 一切相對量測都失效</td></tr>
+      <tr><td>色階 Min/Max</td><td><b>實驗 0 校準後全程固定</b></td><td>所有量測可比較的前提</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="exp"><span class="id">實驗 0</span>建立基準線</h3>
+  <p class="lede">目的：讓學員理解「瀑布圖的顏色不是絕對功率」，並建立本課程所有量測的共同基準。</p>
+
+  <ol class="prose">
+    <li>SDR 接天線，調到一段<b>空白頻率</b>（建議業餘 2m 頻段內無人使用處，現場確認 <span class="tag t-tbd">待查</span>）</li>
+    <li>記錄底噪（noise floor）</li>
+    <li>拔掉天線換上 50 Ω 假負載，再記錄一次</li>
+    <li>兩者差值 = 你所在環境的<b>人為雜訊（man-made noise）</b></li>
+    <li>調整色階 Min = 底噪 − 5 dB、Max = 底噪 + 60 dB，之後<b>全程不再更動</b></li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th>量測項目</th><th class="n" style="width:150px">讀值 (dBFS)</th><th style="width:210px">計算</th></tr></thead>
+    <tbody>
+      <tr><td>接天線時的底噪</td><td class="n"><input class="num" data-k="e0_ant" placeholder="−00.0"></td><td rowspan="2" class="base" style="vertical-align:middle">環境人為雜訊<br><span class="out" id="e0_diff">—</span> dB</td></tr>
+      <tr><td>接假負載時的底噪</td><td class="n"><input class="num" data-k="e0_dl" placeholder="−00.0"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>瀑布圖顏色由你設定的色階決定。同一訊號，色階拉高看起來變窄、拉低看起來變寬——<b>「看起來的寬度」不是佔用頻寬</b></li>
+      <li>SDR 顯示 dBFS（相對滿刻度），<b>不是 dBm</b>。未校正的 SDR 只能做相對比較 <span class="tag t-fact">FACT</span></li>
+      <li>把 FFT 點數從 65536 改成 1024，底噪會<b>上升約 18 dB</b>（10·log(65536/1024) ≈ 18 dB <span class="tag t-fact">FACT</span>）。這不是機器變差，是每個頻格收集到的雜訊功率變多了</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ 名詞對照表 ══════════ -->
+<section id="s-gloss">
+  <h2 class="part">名詞對照表 · 六組最容易混淆的詞</h2>
+  <p class="lede prose">這些詞在中文裡都長得很像，但指的是完全不同層次的東西。建議在第一堂課就發下去，之後每個實驗回頭指一次。點標題展開。</p>
+
+  <details class="gl" open>
+    <summary>1 · 四個都叫「頻寬」的東西<span class="hint">實驗 0 · 1 · 3 · 4 · 6</span></summary>
+    <div class="gbody">
+      <p>它們的關係是<b>由外往內、層層包含</b>：取樣率 ⊇ Span ⊇ 佔用頻寬 ⊇ RBW。</p>
+      <div class="tw"><table>
+        <thead><tr><th>名稱</th><th>是什麼</th><th>誰決定</th><th>改了會怎樣</th></tr></thead>
+        <tbody>
+          <tr><td class="base">取樣率<br>Sample rate</td><td>硬體一次能捕捉的最大頻率範圍</td><td>硬體與驅動</td><td>決定 Span 的天花板。2.4 MSPS 的 SDR，Span 不可能超過約 2.4 MHz <span class="tag t-fact">FACT</span></td></tr>
+          <tr><td class="base">Span<br>跨距 / 顯示範圍</td><td>螢幕上一次看得到多寬</td><td><b>你，純顯示設定</b></td><td>只改變看到的範圍，<b>不改變接收機的任何實體行為</b></td></tr>
+          <tr><td class="base">佔用頻寬<br>Occupied BW</td><td>訊號本身的物理寬度</td><td>發射端的調變</td><td>跟你怎麼看它完全無關</td></tr>
+          <tr><td class="base">解析頻寬<br>RBW</td><td>每一個頻格的寬度</td><td>頻格間距 ＝ 取樣率 ÷ FFT 點數<br>實際 RBW ＝ 頻格間距 × 窗函數等效雜訊頻寬</td><td>決定兩個靠很近的訊號能不能分開</td></tr>
+        </tbody>
+      </table></div>
+      <div class="box warn" style="margin-bottom:0">
+        <span class="lbl">跟傳統儀器相反的一點</span>
+        <p>在<b>掃描式頻譜分析儀</b>上，Span 和 RBW 是連動的：Span 開大，RBW 自動變粗，掃描也變慢。但在 <b>FFT 式的 SDR</b> 上，Span 只是把同一批 FFT 資料放大縮小來看，<b>RBW 完全不受影響</b> <span class="tag t-fact">FACT</span>。所以在 SDR 上「Zoom 進去」不會看到更多細節——細節在一開始就由 FFT 點數決定了。用慣傳統儀器的人最容易在這裡踩坑。</p>
+      </div>
+    </div>
+  </details>
+
+  <details class="gl">
+    <summary>2 · 三種「訊號強度」單位<span class="hint">實驗 0 · 2 · 7 · 10</span></summary>
+    <div class="gbody">
+      <div class="tw"><table>
+        <thead><tr><th>單位</th><th>基準點</th><th>能不能互相換算</th></tr></thead>
+        <tbody>
+          <tr><td class="base">dBFS</td><td>相對於 ADC 滿刻度（Full Scale）</td><td><b>SDR 顯示的就是這個。</b>未經校正時<b>不能</b>換算成 dBm，只能做相對比較</td></tr>
+          <tr><td class="base">dBm</td><td>相對於 1 毫瓦的絕對功率</td><td>絕對值。需要經過校正的儀器才能給出</td></tr>
+          <tr><td class="base">S 表讀值</td><td>業餘無線電的主觀刻度</td><td>HF 上 S9 = −73 dBm；VHF/UHF 上 S9 = −93 dBm <span class="tag t-fact">FACT</span>（IARU Region 1 建議值）。每一格 S 理論上 6 dB，但<b>各廠牌的 S 表幾乎都不準</b></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-bottom:0">另外容易混的：<b>dB</b> 是比值（沒有單位），<b>dBm</b> 是絕對功率。「我的訊號有 30 dB」是沒有意義的句子，除非講清楚是相對於什麼。</p>
+    </div>
+  </details>
+
+  <details class="gl">
+    <summary>3 · 頻偏、佔用頻寬、頻道間隔、步進<span class="hint">實驗 1 · 3 · 4</span></summary>
+    <div class="gbody">
+      <div class="tw"><table>
+        <thead><tr><th>名稱</th><th>典型值</th><th>意義</th></tr></thead>
+        <tbody>
+          <tr><td class="base">最大頻偏<br>Deviation</td><td>±5 kHz（寬）<br>±2.5 kHz（窄）</td><td>FM 載波被音訊推離中心頻率的最大量。<b>W/N 選單真正在調的就是這個</b></td></tr>
+          <tr><td class="base">佔用頻寬</td><td>約 16 kHz（寬）<br>約 11 kHz（窄）</td><td>由 Carson 法則算出：2 ×（最大頻偏 + 最高調變音頻）<span class="tag t-fact">FACT</span></td></tr>
+          <tr><td class="base">頻道間隔<br>Channel spacing</td><td>25 kHz 或 12.5 kHz</td><td><b>行政劃分</b>，不是物理量。要比佔用頻寬留有餘裕，以免鄰台互相干擾</td></tr>
+          <tr><td class="base">頻率步進<br>Step</td><td>2.5 / 5 / 6.25 / 12.5 / 25 kHz</td><td>旋鈕每轉一格跳多少。<b>設錯就永遠調不到某些頻率</b></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-bottom:0">記憶方式：<b>頻偏</b>是物理、<b>佔用頻寬</b>是物理的結果、<b>頻道間隔</b>是行政規劃、<b>步進</b>是使用者介面。</p>
+    </div>
+  </details>
+
+  <details class="gl">
+    <summary>4 · 三種「讓喇叭安靜」的機制<span class="hint">實驗 5 · 7</span></summary>
+    <div class="gbody">
+      <div class="tw"><table>
+        <thead><tr><th>機制</th><th>解決的問題</th><th>判斷依據</th><th>擋得掉誰</th></tr></thead>
+        <tbody>
+          <tr><td class="base">雜訊靜噪<br>Noise squelch (SQL)</td><td>沒訊號時 FM 輸出滿載白噪音，很吵</td><td>解調後高頻雜訊的能量</td><td>擋掉「沒有訊號」，但擋不掉任何人</td></tr>
+          <tr><td class="base">亞音靜噪<br>CTCSS / DCS</td><td>共用頻道時不想聽到別的群組</td><td>對方有沒有送出正確的次音頻或碼</td><td>擋掉「不是我這群的人」，但<b>不擋任何竊聽者</b></td></tr>
+          <tr><td class="base">靜音<br>Mute</td><td>單純不想聽</td><td>你按了按鍵</td><td>擋掉全部聲音</td></tr>
+        </tbody>
+      </table></div>
+      <div class="box sc" style="margin-bottom:0">
+        <span class="lbl">最重要的一句</span>
+        <p>這三者<b>全部都只作用在「你自己的喇叭」</b>。發射出去的電波沒有任何一項受到影響，SDR 或掃描接收機照收不誤。<b>沒有任何一項提供保密性。</b></p>
+      </div>
+    </div>
+  </details>
+
+  <details class="gl">
+    <summary>5 · 中繼台的四個頻率名詞<span class="hint">實驗 6</span></summary>
+    <div class="gbody">
+      <div class="tw"><table>
+        <thead><tr><th>名稱</th><th>對誰而言</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td class="base">輸出頻率<br>Output / Downlink</td><td>中繼台發、你收</td><td><b>這就是你在機器上輸入的那個頻率</b>，也是頻率表上公布的數字</td></tr>
+          <tr><td class="base">輸入頻率<br>Input / Uplink</td><td>你發、中繼台收</td><td>輸出頻率加上位移量。機器自動幫你算，所以你不會看到它</td></tr>
+          <tr><td class="base">位移<br>Offset / Shift</td><td>兩者的差</td><td>2m 常見 ±600 kHz、70cm 常見 ±5 MHz <span class="tag t-tbd">待查</span></td></tr>
+          <tr><td class="base">簡易通信<br>Simplex</td><td>收發同頻</td><td>不經中繼台的直接通聯。按 REVERSE 就是在測試能不能改用簡易通信</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </details>
+
+  <details class="gl">
+    <summary>6 · 天線增益的三種寫法<span class="hint">實驗 10</span></summary>
+    <div class="gbody">
+      <div class="tw"><table>
+        <thead><tr><th>單位</th><th>比較基準</th><th>換算</th></tr></thead>
+        <tbody>
+          <tr><td class="base">dBi</td><td>理想的等向性輻射體（isotropic radiator），一個數學上的點，現實中不存在</td><td>基準</td></tr>
+          <tr><td class="base">dBd</td><td>半波偶極天線（dipole），一個真實存在的天線</td><td><b>dBi = dBd + 2.15</b> <span class="tag t-fact">FACT</span></td></tr>
+          <tr><td class="base">dB（單獨出現）</td><td>沒有基準</td><td>只能表示「相對於另一次量測」。<b>本講義的天線實驗全部用這種</b></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-bottom:0">行銷上的常見手法：標 dBi 的數字天生比 dBd 大 2.15，所以廣告幾乎都寫 dBi。看到「9 dBi 高增益天線」時，換算成 dBd 只有 6.85。<span class="tag t-inf">推論</span> 若廠商連基準都沒標，通常不值得採信。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ 第一部 ══════════ -->
+<section id="s-1">
+  <h2 class="part">第一部 · 頻率與功率</h2>
+
+  <h3 class="exp"><span class="id">實驗 1</span>頻率與頻率步進</h3>
+  <p class="lede">對應選單：VFO 頻率、STEP。目的：建立「頻率＝瀑布圖水平位置」的直覺，解決最常見的「對不上頻率」。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>早期的無線電是一個頻道一顆石英晶體，換頻道要換晶體。1970 年代頻率合成器（PLL synthesizer）讓機器可以連續調頻之後，反而出現新問題——頻譜是行政劃分成一格一格的，連續可調很容易調到兩個頻道之間的縫隙，結果對兩邊都造成干擾，自己卻誰也叫不到。</p>
+    <h6>設計原理</h6>
+    <p>步進讓旋鈕只能停在頻道格線上。之所以要提供多種步進值，是因為不同業務的頻道間隔不同：25 kHz 是舊制、12.5 kHz 是窄頻化之後的商用陸地行動、6.25 kHz 更窄、航空 AM 用 8.33 kHz、FM 廣播用 100 kHz。</p>
+    <h6>使用場景</h6>
+    <p>快速轉旋鈕搜尋頻道時不會落空；跨區或跨國使用時切換成當地的頻道規劃。反過來說，<b>拿到別人的機器第一件事就是確認步進</b>，這比檢查天線還優先。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>跟外單位協同，對方報「145.0125」，你的旋鈕在 145.000 和 145.025 之間就是跳不進去</li>
+      <li>拿到的頻率表是 6.25 kHz 規劃，你的機器出廠預設 25 kHz</li>
+      <li>同一隊人，車機和手持機步進設定不同，結果有人叫得到有人叫不到</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">聽得到對方，但對方完全沒聽到你</td><td>你的發射頻率差了幾 kHz</td><td>用 SDR 比對兩人載波中心是否對齊</td><td>改步進後重新輸入完整頻率</td></tr>
+        <tr><td class="sym">旋鈕轉不到頻率表上的數字</td><td>步進太粗</td><td>看 STEP 選單目前值</td><td>改成 12.5 或 6.25 kHz</td></tr>
+        <tr><td class="sym">記憶頻道正常，手動輸入就不通</td><td>記憶頻道存的是正確頻率，VFO 受步進限制</td><td>比對兩者顯示的頻率</td><td>先用記憶頻道應急，事後改步進</td></tr>
+        <tr><td class="sym">對方聲音略失真且偏小</td><td>頻率偏了約半個頻道</td><td>SDR 上看兩個訊號是否錯開</td><td>同上</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <ol class="prose">
+    <li>SDR 中心頻率 145.000 MHz，Span 100 kHz</li>
+    <li>手持機 A 接假負載＋衰減器，設 145.000 MHz、最低功率，短按 PTT</li>
+    <li>依序改為 145.0125 / 145.025 / 145.050 MHz，各按一次 PTT</li>
+    <li>把 STEP 改成 25 kHz，嘗試調到 145.0125 MHz —— <b>調不到</b></li>
+    <li>STEP 改成 12.5 kHz，再試一次</li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th>手持機顯示頻率</th><th>STEP 設定</th><th>瀑布圖實際位置 (MHz)</th><th style="width:96px">是否對齊</th></tr></thead>
+    <tbody>
+      <tr><td class="base">145.0000</td><td class="base">25 kHz</td><td class="n"><input class="num" data-k="e1_a" placeholder="145.0000"></td><td><input class="txt" data-k="e1_ax" placeholder="是/否"></td></tr>
+      <tr><td class="base">145.0125</td><td class="base">25 kHz</td><td class="n"><input class="num" data-k="e1_b" placeholder="145.0000"></td><td><input class="txt" data-k="e1_bx" placeholder="是/否"></td></tr>
+      <tr><td class="base">145.0125</td><td class="base">12.5 kHz</td><td class="n"><input class="num" data-k="e1_c" placeholder="145.0000"></td><td><input class="txt" data-k="e1_cx" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>台灣常見步進：2.5 / 5 / 6.25 / 12.5 / 25 kHz <span class="tag t-tbd">待查</span>（各機種選項不同，請依現場機器補齊）</li>
+      <li>頻道間隔與步進是兩件事：步進決定「能不能調到」，頻道間隔決定「該不該用」</li>
+      <li><b>實務排錯</b>：聽得到對方卻叫不到，第一個要檢查的就是步進與頻率末位數字</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 2</span>發射功率 H / M / L</h3>
+  <p class="lede">對應選單：TX POWER。目的：打破「功率越大越好」的迷思。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>三個互相衝突的需求：電池續航、機殼散熱、以及「不要無謂地擴大自己的干擾半徑」。滿功率發射的手持機，電池可能只撐得住原本的三分之一時間。</p>
+    <h6>設計原理</h6>
+    <p>無線電規則的通則精神是使用<b>足以完成通信的最低功率</b>，各國業餘規則多有對應條文 <span class="tag t-tbd">待查</span>（台灣具體條文請講師確認）。功率檔位讓操作者能主動遵守這個原則，而不是只能全開或關機。</p>
+    <h6>使用場景</h6>
+    <p>市區近距離用 L 省電；山區、災區、透過中繼台用 H。有一個少被提到的用途：<b>對方就在你旁邊時用 H 反而會讓他的接收機阻塞（desense），聽起來破破的</b>——這時候降功率才聽得清楚。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>災時第一天興奮地全開 H，第二天中午電池就見底，而備用電池還在車上</li>
+      <li>指揮所內兩台機器相距兩公尺，用 H 互叫反而破音難辨</li>
+      <li>中繼台叫不到，直覺想加功率，但真正的問題其實在別處</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">電池撐不到半天</td><td>一直用 H，且發射次數多</td><td>回想發射時間；守聽本身耗電有限，<b>發射才是耗電大戶</b></td><td>近距離改 L，長篇改分段</td></tr>
+        <tr><td class="sym">近距離的人說你聲音破裂、背景嘶嘶</td><td>你太強，造成對方接收機阻塞（desense）</td><td>請對方走遠幾步測試，或你改 L 再試</td><td>降到 L 或 M</td></tr>
+        <tr><td class="sym">中繼台叫不到</td><td><b>先不要加功率</b></td><td>依序查亞音、位移、天線、位置</td><td>移到窗邊或舉高，通常比加功率有效得多</td></tr>
+        <tr><td class="sym">機殼發燙，講久了對方說訊號變弱</td><td>過熱保護降功率</td><td>摸機殼、看電池電壓</td><td>降功率、縮短單次通話</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="prose">SDR 設定固定，手持機 A 固定位置、<b>固定使用原廠天線</b>。依 H → M → L 各發射 5 秒。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>檔位</th><th class="n">標稱功率 (W)</th><th class="n">峰值 (dBFS)</th><th class="n">底噪 (dBFS)</th><th class="n">SNR (dB)</th><th class="n">相對 H (dB)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">H</td><td class="n"><input class="num" data-k="e2_hw" placeholder="5.0"></td><td class="n"><input class="num" data-k="e2_hp" placeholder="−00.0"></td><td class="n"><input class="num" data-k="e2_hn" placeholder="−00.0"></td><td class="n"><span class="out" id="e2_hs">—</span></td><td class="n"><span class="out dim">0</span></td></tr>
+      <tr><td class="base">M</td><td class="n"><input class="num" data-k="e2_mw" placeholder="2.0"></td><td class="n"><input class="num" data-k="e2_mp" placeholder="−00.0"></td><td class="n"><input class="num" data-k="e2_mn" placeholder="−00.0"></td><td class="n"><span class="out" id="e2_ms">—</span></td><td class="n"><span class="out" id="e2_mr">—</span></td></tr>
+      <tr><td class="base">L</td><td class="n"><input class="num" data-k="e2_lw" placeholder="0.5"></td><td class="n"><input class="num" data-k="e2_lp" placeholder="−00.0"></td><td class="n"><input class="num" data-k="e2_ln" placeholder="−00.0"></td><td class="n"><span class="out" id="e2_ls">—</span></td><td class="n"><span class="out" id="e2_lr">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="panel">
+    <div class="ttl">功率 ↔ 距離 換算器</div>
+    <div class="pgrid">
+      <div><label>高功率 (W)</label><input id="pw_hi" type="number" value="5" step="0.1"></div>
+      <div><label>低功率 (W)</label><input id="pw_lo" type="number" value="0.5" step="0.1"></div>
+      <div class="readout"><div class="k">功率差</div><div class="v" id="pw_db">10.0</div><div class="u">dB</div></div>
+      <div class="readout"><div class="k">自由空間距離倍數</div><div class="v" id="pw_x">3.16</div><div class="u">×</div></div>
+    </div>
+    <p style="font-size:11.5px; color:#7594A0; margin:12px 0 0; line-height:1.7">自由空間路徑損耗：距離加倍 = 訊號降低 6.02 dB。距離倍數 = 10^(dB/20)。實際地形環境的損耗指數更高，增益更少。</p>
+  </div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清（本節重點）</span>
+    <ul>
+      <li>H 對 L 若為 5 W / 0.5 W，差值應接近 <b>10 dB</b> <span class="tag t-fact">FACT</span>，而<b>底噪完全不動</b></li>
+      <li>10 dB 的功率提升，自由空間下通訊距離只增加約 <b>3.2 倍</b> <span class="tag t-fact">FACT</span></li>
+      <li>對照組：實驗 10 會顯示，<b>換一支天線的改善量往往超過 10 dB</b>。這就是「天線的投資報酬率遠高於功率」的實證</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ 第二部 ══════════ -->
+<section id="s-2">
+  <h2 class="part">第二部 · 頻寬、頻偏與音質</h2>
+
+  <h3 class="exp"><span class="id">實驗 3</span>寬窄頻 W / N 與 FM 頻偏</h3>
+  <p class="lede">對應選單：W/N、WIDE/NARROW。目的：釐清「機器上的頻寬設定，實際上調的是頻偏」。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>頻譜不夠用。同一段頻譜，用 25 kHz 間隔能容納的頻道數只有 12.5 kHz 的一半。隨著無線電使用者暴增，主管機關必須想辦法在不新增頻譜的前提下擠出更多頻道。</p>
+    <h6>設計原理</h6>
+    <p>把最大頻偏從 ±5 kHz 砍到 ±2.5 kHz，佔用頻寬就從約 16 kHz 降到約 11 kHz，頻道間隔因此可以縮成一半。<b>代價是通信品質</b>：FM 的解調增益隨頻偏下降，接收端的音量與訊噪比大約掉 6 dB <span class="tag t-inf">推論</span>。這是頻譜效率與通信品質的直接交換，沒有免費的午餐。</p>
+    <h6>使用場景</h6>
+    <p>都會區高密度的商用頻道普遍已經窄頻化（美國 FCC 於 2013 年強制 VHF/UHF 陸地行動業務改用窄頻 <span class="tag t-fact">FACT</span>；台灣的對應規定 <span class="tag t-tbd">待查</span>）。長距離、重音質的業餘操作仍常用寬頻。<b>災時跨單位協同要特別注意這一項</b>——不同單位的機器設定不一致，聲音會小到聽不清楚，而且雙方都以為是對方訊號弱。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>跨單位協同：一邊用寬頻、一邊用窄頻，聽起來一個太大聲一個太小聲</li>
+      <li>隊上有人換了新機器，出廠預設跟大家不同</li>
+      <li><b>最麻煩的情況</b>：你用自己的兩台機器測試都正常，因為它們設定一致，聽不出問題</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">對方聲音很小，音量要開到底</td><td>你用寬頻收、對方用窄頻發</td><td>SDR 上看對方訊號比你的窄</td><td>你改成窄頻接收</td></tr>
+        <tr><td class="sym">對方聲音破裂、過載</td><td>你用窄頻收、對方用寬頻發</td><td>SDR 上看對方訊號比你的寬</td><td>你改成寬頻接收</td></tr>
+        <tr><td class="sym">只有某幾個人有問題</td><td>那幾台機器設定不同</td><td>逐台比對 W/N 選單</td><td>全隊統一，並<b>寫進通聯計畫書面文件</b></td></tr>
+        <tr><td class="sym">自己怎麼測都正常，但別人一直抱怨</td><td>收發都是你自己的機器，設定一致所以測不出來</td><td>用 SDR 或第三方單位的機器聽</td><td>這正是課堂要配一台 SDR 的理由</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="prose">SDR Span 50 kHz、FFT 65536。用<b>正常音量</b>持續說話 10 秒，分別在寬頻與窄頻各做一次。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>設定</th><th class="n">標稱頻偏</th><th class="n">實測 −20 dB 寬度 (kHz)</th><th class="n">Carson 理論頻寬 (kHz)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">寬頻 W</td><td class="n base">±5 kHz <span class="tag t-fact">FACT</span></td><td class="n"><input class="num" data-k="e3_w" placeholder="0.0"></td><td class="n base">16.0</td></tr>
+      <tr><td class="base">窄頻 N</td><td class="n base">±2.5 kHz <span class="tag t-fact">FACT</span></td><td class="n"><input class="num" data-k="e3_n" placeholder="0.0"></td><td class="n base">11.0</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="panel">
+    <div class="ttl">Carson 頻寬計算器</div>
+    <div class="pgrid">
+      <div><label>最大頻偏 Δf (kHz)</label><input id="cr_dev" type="number" value="5" step="0.1"></div>
+      <div><label>最高調變音頻 (kHz)</label><input id="cr_af" type="number" value="3" step="0.1"></div>
+      <div class="readout"><div class="k">佔用頻寬</div><div class="v" id="cr_bw">16.0</div><div class="u">kHz</div></div>
+      <div class="readout"><div class="k">建議頻道間隔</div><div class="v" id="cr_sp">25</div><div class="u">kHz</div></div>
+    </div>
+    <p style="font-size:11.5px; color:#7594A0; margin:12px 0 0">佔用頻寬 ≈ 2 × (最大頻偏 + 最高調變音頻)</p>
+  </div>
+
+  <h5>收發不匹配</h5>
+  <div class="tw"><table>
+    <thead><tr><th>發射端</th><th>接收端</th><th>預期聽感</th><th>實測描述</th></tr></thead>
+    <tbody>
+      <tr><td class="base">寬 W</td><td class="base">窄 N</td><td>破音、失真、音量偏大</td><td><input class="txt" data-k="e3_m1"></td></tr>
+      <tr><td class="base">窄 N</td><td class="base">寬 W</td><td>音量明顯偏小</td><td><input class="txt" data-k="e3_m2"></td></tr>
+      <tr><td class="base">寬 W</td><td class="base">寬 W</td><td>正常</td><td><input class="txt" data-k="e3_m3"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清（本節重點）</span>
+    <ul>
+      <li>面板寫「頻寬」，但 FM 沒有「頻寬」這個可調參數。<b>W/N 同時改了兩件事</b>：發射端的最大頻偏，以及接收端的中頻濾波器頻寬</li>
+      <li>Carson 法則：佔用頻寬 ≈ 2 ×（最大頻偏 + 最高調變音頻）<span class="tag t-fact">FACT</span></li>
+      <li>這解釋了為什麼 25 kHz 頻道間隔配寬頻、12.5 kHz 配窄頻</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 4</span>麥克風增益與過偏移</h3>
+  <p class="lede">對應選單：MIC GAIN / MIC SENS。目的：用視覺化方式證明「講話大聲會干擾鄰頻」。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>不同人講話音量差好幾倍，同一個人在安靜辦公室和吵雜工地講話也差很多。如果不處理，有人的訊號調變不足（對方要拼命調音量才聽得到），有人過調變（音質破裂而且干擾鄰頻）。</p>
+    <h6>設計原理</h6>
+    <p>麥克風增益調整音訊輸入的靈敏度，讓不同使用者的調變度趨於一致；後面再由<b>頻偏限制器（deviation limiter）</b>做最後把關，確保不會超出法定頻寬。兩級設計的用意是：增益負責「調到剛好」，限制器負責「絕對不超線」。</p>
+    <h6>使用場景</h6>
+    <p>車上或機具旁噪音大時要調低，避免把環境噪音也一起送出去；使用喉震麥克風或骨傳導耳機時可能要調高。<b>換一支麥克風就要重新調一次</b>，這是常被忽略的步驟。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>換上耳掛麥或喉震麥之後，對方突然說聽不清楚</li>
+      <li>在發電機、抽水機或直升機旁通聯，環境噪音蓋過人聲</li>
+      <li>災時緊張，講話音量不自覺變大——這在演習裡幾乎測不出來，實戰時才發生</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">對方說你聲音太小</td><td>增益太低，或嘴離麥克風太遠</td><td>SDR 上看訊號寬度是否明顯偏窄</td><td>調高增益；嘴距離 2–5 公分</td></tr>
+        <tr><td class="sym">對方說你破音、字聽不清</td><td>過調變</td><td>SDR 上看是否溢出鄰頻道</td><td>調低增益、嘴離遠一點、音量放正常</td></tr>
+        <tr><td class="sym">背景噪音蓋過人聲</td><td>增益太高，環境音也被送出去</td><td><b>不說話時按住 PTT</b>，看 SDR 上有沒有調變</td><td>降低增益；改用指向性或抗噪麥克風</td></tr>
+        <tr><td class="sym">換了麥克風之後全部走樣</td><td>不同麥克風輸出位準差異很大</td><td>—</td><td>每換一支就重新調一次，並記錄下來</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="prose">SDR Span 100 kHz，<b>先在螢幕上標出中心頻率兩側 ±25 kHz 的鄰頻道位置</b>，再開始量測。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>MIC GAIN</th><th>說話音量</th><th class="n">−20 dB 寬度 (kHz)</th><th style="width:120px">是否溢出鄰頻道</th></tr></thead>
+    <tbody>
+      <tr><td class="base">低</td><td class="base">正常</td><td class="n"><input class="num" data-k="e4_a"></td><td><input class="txt" data-k="e4_ax" placeholder="是/否"></td></tr>
+      <tr><td class="base">低</td><td class="base">大聲</td><td class="n"><input class="num" data-k="e4_b"></td><td><input class="txt" data-k="e4_bx" placeholder="是/否"></td></tr>
+      <tr><td class="base">高</td><td class="base">正常</td><td class="n"><input class="num" data-k="e4_c"></td><td><input class="txt" data-k="e4_cx" placeholder="是/否"></td></tr>
+      <tr><td class="base">高</td><td class="base">大聲</td><td class="n"><input class="num" data-k="e4_d"></td><td><input class="txt" data-k="e4_dx" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>大部分機種內建<b>頻偏限制器</b>，所以不會無限變寬，但仍會產生失真與旁瓣 <span class="tag t-inf">推論</span></li>
+      <li>這是實務上最常見的違規：<b>自己聽不出來，但鄰頻道的人被干擾</b></li>
+      <li>正確講話方式：嘴離麥克風 2–5 公分，正常音量 <span class="tag t-fact">FACT</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ 第三部 ══════════ -->
+<section id="s-3">
+  <h2 class="part">第三部 · 信令與通聯控制</h2>
+
+  <h3 class="exp"><span class="id">實驗 5</span>亞音編碼與解碼（CTCSS / DCS）</h3>
+  <p class="lede">對應選單：TONE / CTCSS / T SQL / DCS，以及分開設定的 TX TONE 與 RX TONE。<b>本課程最重要的觀念釐清：亞音不是加密。</b></p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>1960 年代商用陸地行動無線電的頻道嚴重不足，主管機關讓多家公司<b>共用同一個頻率</b>（community repeater）。計程車行的值機員不想整天聽到隔壁水電行的通話，但頻率就是分不出來。</p>
+    <h6>設計原理</h6>
+    <p>在語音頻帶（約 300–3000 Hz）<b>下方</b>塞一個 67–254 Hz 的連續音，接收端用低通濾波器把它取出來比對，對得上才開喇叭。之所以放在語音底下，是因為那段頻率人耳幾乎聽不到、也不會干擾通話內容，而且用簡單的濾波器就能分離。Motorola 稱之為 Private Line（PL）、GE 稱 Channel Guard（CG）<span class="tag t-fact">FACT</span>，這是這兩個俗名的由來。</p>
+    <p><b>DCS 為什麼後來出現</b>：CTCSS 只有 38 到 50 組，而且相近的音調容易互相誤觸發。DCS 改用連續的數位碼流，可用組數多出數倍，抗誤觸發也較好。</p>
+    <h6>使用場景</h6>
+    <p>共用頻道的群組區分；中繼台用亞音防止遠方的同頻電台或雜訊誤啟動——沒有亞音的話，一陣雷擊雜訊就可能讓中繼台空轉發射。</p>
+    <div class="box sc" style="margin:12px 0 0">
+      <span class="lbl">「Private Line」這個名字造成的長期誤解</span>
+      <p>這是一個<b>商標名稱</b>，不是技術描述。它從設計之初就<b>不提供任何保密性</b>，目的只是讓你的喇叭安靜。半世紀以來無數使用者因為這個名字誤以為自己在用私人頻道——這正是實驗 5 要親手打破的迷思。</p>
+    </div>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>到現場才發現中繼台怎麼樣都叫不開</li>
+      <li>你聽得到別人，別人聽不到你（或反過來），兩邊都以為是對方的問題</li>
+      <li>新隊員抄設定時把 TX 和 RX 亞音抄成同一欄</li>
+      <li><b>最危險的一種</b>：以為設了亞音就是「私人頻道」，開始討論人員位置、物資數量、傷患資訊</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">中繼台完全不開</td><td>TX 亞音沒設或設錯</td><td>查中繼台資料的亞音；注意有些台的 TX 與 RX 亞音不同</td><td>補設 TX 亞音</td></tr>
+        <tr><td class="sym">你聽不到別人，但 SDR 收得到</td><td>你的 RX 亞音設錯</td><td><b>暫時關掉 RX 亞音</b>再聽一次</td><td>關掉或改成正確的碼</td></tr>
+        <tr><td class="sym">別人聽不到你，你卻聽得到他</td><td>你的 TX 亞音沒設</td><td>請對方暫時關掉 RX 亞音測試</td><td>補設 TX 亞音</td></tr>
+        <tr><td class="sym">設了 DCS 仍然不通</td><td>正反碼（N / I）設錯</td><td>兩種都試一次</td><td>改成正確極性</td></tr>
+        <tr><td class="sym">不知道對方用什麼亞音</td><td>—</td><td>用 SDR 錄音，Audacity 看頻譜反查</td><td>這同時也證明了它毫無保密性</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box sc" style="margin:12px 0 0">
+      <span class="lbl">通聯紀律</span>
+      <p>任何人員位置、傷患個資、物資數量、指揮意圖，<b>都不得在業餘或免執照頻段以明語傳送</b>，不論是否設了亞音。需要保密的內容請改用其他通道。</p>
+    </div>
+  </div>
+
+  <h5>5-1　編碼與解碼的區別</h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:40px">#</th><th>手持機 A（發射）</th><th>手持機 B（接收）</th><th style="width:110px">B 是否出聲</th><th style="width:120px">SDR 是否收到</th></tr></thead>
+    <tbody>
+      <tr><td class="base">①</td><td class="base">TX 無亞音</td><td class="base">RX 無亞音</td><td><input class="txt" data-k="e5_1b" placeholder="是/否"></td><td><input class="txt" data-k="e5_1s" placeholder="是/否"></td></tr>
+      <tr><td class="base">②</td><td class="base">TX 88.5 Hz</td><td class="base">RX 無亞音</td><td><input class="txt" data-k="e5_2b" placeholder="是/否"></td><td><input class="txt" data-k="e5_2s" placeholder="是/否"></td></tr>
+      <tr><td class="base">③</td><td class="base">TX 88.5 Hz</td><td class="base">RX 88.5 Hz</td><td><input class="txt" data-k="e5_3b" placeholder="是/否"></td><td><input class="txt" data-k="e5_3s" placeholder="是/否"></td></tr>
+      <tr><td class="base">④</td><td class="base">TX 88.5 Hz</td><td class="base">RX 100.0 Hz</td><td><input class="txt" data-k="e5_4b" placeholder="是/否"></td><td><input class="txt" data-k="e5_4s" placeholder="是/否"></td></tr>
+      <tr><td class="base">⑤</td><td class="base">TX 無亞音</td><td class="base">RX 88.5 Hz</td><td><input class="txt" data-k="e5_5b" placeholder="是/否"></td><td><input class="txt" data-k="e5_5s" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose">預期結果 <span class="tag t-fact">FACT</span>：情境 ④⑤ 的 B 機<b>不出聲</b>，但 SDR 在全部五種情境下都<b>完整收到訊號與語音內容</b>。</p>
+
+  <h5>5-2　用 SDR 反查對方使用的亞音</h5>
+  <ol class="prose">
+    <li>SDR 以 NFM 解調，關閉音頻高通與去加重（de-emphasis）；不支援則直接錄製解調後音訊</li>
+    <li>手持機 A 設 TX 亞音，按住 PTT 但<b>不說話</b>，持續 10 秒，錄成 WAV</li>
+    <li>用 Audacity 開啟 → 選取音軌 → 分析 → 繪製頻譜</li>
+    <li>在 <b>60–260 Hz</b> 區間找到水平亮線，讀出頻率</li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th class="n">機器設定的亞音 (Hz)</th><th class="n">Audacity 量到 (Hz)</th><th class="n">誤差 (Hz)</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">88.5</td><td class="n"><input class="num" data-k="e5_t1"></td><td class="n"><span class="out" id="e5_d1">—</span></td></tr>
+      <tr><td class="n base">100.0</td><td class="n"><input class="num" data-k="e5_t2"></td><td class="n"><span class="out" id="e5_d2">—</span></td></tr>
+      <tr><td class="n base">123.0</td><td class="n"><input class="num" data-k="e5_t3"></td><td class="n"><span class="out" id="e5_d3">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>5-3　DCS 數位編碼靜噪</h5>
+  <p class="prose">步驟同 5-2，但改設 DCS 碼（例如 D023N）。預期在頻譜圖上看到的不是單一亮線，而是<b>低頻連續數位碼流，速率 134.4 bps</b> <span class="tag t-fact">FACT</span>。進階：比較 <b>D023N（正碼）</b> 與 <b>D023I（反碼）</b>，B 機設 D023N 時只有正碼能開啟靜噪。</p>
+
+  <div class="box key">
+    <span class="lbl">觀念釐清 · 務必強調</span>
+    <ul>
+      <li>CTCSS 標準音頻約 <b>67.0 – 254.1 Hz</b>，常見 38 組或 50 組 <span class="tag t-fact">FACT</span></li>
+      <li>亞音的作用是<b>選擇性靜噪</b>：避免聽到同頻其他群組、以及開啟中繼台</li>
+      <li><b>亞音提供零保密性。</b>任何 SDR 或掃描接收機都能完整收聽，而且能在 30 秒內反查出你用哪個亞音</li>
+      <li><b>對民防與緊急通聯的意義</b>：不要把亞音當作「私人頻道」。任何需要保密的內容，都不應在業餘或免執照頻段以明語傳送</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 6</span>中繼台位移與反轉</h3>
+  <p class="lede">對應選單：SHIFT / OFFSET / DUP、REVERSE。目的：讓「雙頻工作」變成螢幕上看得見的一次跳躍。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>手持機功率小、天線短、又常貼在人體旁邊，直接通聯距離往往只有幾公里。但把一台大功率、天線架在山上或高樓的機器拿來即時轉發，同樣兩支手持機就能跨越整個縣市。</p>
+    <h6>設計原理</h6>
+    <p>中繼台必須<b>同時</b>收和發。如果收發同頻，發射出去的訊號會立刻被自己的接收機收到，形成自激——就像麥克風對著喇叭。所以收發必須分開頻率，中間再用<b>雙工器（duplexer）</b>做隔離，讓同一支天線能同時工作。</p>
+    <p><b>位移量為什麼是那些數字</b>：要夠遠，讓雙工器的濾波器分得開；又不能太遠，否則會超出天線與功率放大器的可用頻寬。2m 的 600 kHz、70cm 的 5 MHz 是長期形成的區域慣例，各國並不相同 <span class="tag t-tbd">待查</span>。</p>
+    <h6>使用場景</h6>
+    <p>日常遠距通聯、災時跨區協調。<b>REVERSE 的設計目的常被忽略</b>：按一個鍵就能檢查「對方是不是其實就在旁邊」，如果直接聽得到就改用簡易通信，把中繼台這個共用資源讓給真正需要的人。災時中繼台若失效或壅塞，這個判斷能力就是備援方案的起點。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>到外縣市支援，要使用當地不熟悉的中繼台</li>
+      <li>中繼台壅塞或故障，必須即時判斷能不能改直通</li>
+      <li>手動輸入頻率時忘了設位移，機器沒有任何警告</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">聽得到中繼台，按 PTT 卻毫無反應</td><td>位移沒設、方向設反、或亞音沒設</td><td>用 SDR 看你按 PTT 時<b>實際發在哪個頻率</b></td><td>依序檢查位移量 → 方向 → 亞音</td></tr>
+        <tr><td class="sym">按 REVERSE 後仍然聽得到對方</td><td>對方就在直通範圍內</td><td>—</td><td>改用簡易通信，把中繼台讓給遠處的人</td></tr>
+        <tr><td class="sym">中繼台有開，但沒人聽懂你說什麼</td><td>你進得去，但訊號品質差</td><td>請台上的人回報你的可讀度</td><td>換位置、舉高、改天線；加功率是最後手段</td></tr>
+        <tr><td class="sym">2m 正常，換到 70cm 就不通</td><td>兩個頻段的位移量不同</td><td>查頻率表</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="prose"><b>SDR Span 設寬一點（建議 2 MHz）</b>，讓收發兩個頻率同時出現在畫面上。先在螢幕標出兩個位置，再按 PTT。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>設定</th><th class="n">顯示頻率 (MHz)</th><th class="n">按 PTT 時實際發射頻率 (MHz)</th><th class="n">位移量 (kHz)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">OFFSET −600 kHz</td><td class="n base">145.700</td><td class="n"><input class="num" data-k="e6_a" placeholder="145.100"></td><td class="n"><span class="out" id="e6_da">—</span></td></tr>
+      <tr><td class="base">OFFSET −600 kHz ＋ REVERSE</td><td class="n base">145.700</td><td class="n"><input class="num" data-k="e6_b" placeholder="145.700"></td><td class="n"><span class="out" id="e6_db">—</span></td></tr>
+      <tr><td class="base">OFFSET 關閉（簡易通信）</td><td class="n base">145.700</td><td class="n"><input class="num" data-k="e6_c" placeholder="145.700"></td><td class="n"><span class="out" id="e6_dc">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box tbd prose">
+    <span class="lbl">待查 · 開課前補齊</span>
+    <p>常見位移量：2m 頻段 ±600 kHz、70cm 頻段 ±5 MHz <span class="tag t-tbd">待查</span>。請依台灣實際中繼台清單確認當地的頻率、位移方向與所需亞音。</p>
+  </div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>中繼台是<b>全雙工</b>：同時在一個頻率收、另一個頻率發。你的手持機是<b>半雙工</b>，配合中繼台做頻率位移</li>
+      <li><b>REVERSE 的實務用途</b>：按下 REVERSE 後若仍能直接聽到對方，代表對方就在附近，<b>可以不用中繼台直接通聯</b>——省中繼台資源，也是災時中繼台失效的備援判斷方法</li>
+      <li>中繼台通常還需要正確的<b>亞音</b>才會開啟（銜接實驗 5）</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 7</span>靜噪門檻的客觀量測</h3>
+  <p class="lede">對應選單：SQL / SQUELCH LEVEL。目的：用 SDR 當「客觀儀器」，量出主觀的靜噪門檻對應到多少訊號強度。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>FM 接收機有一個特性：<b>沒有訊號時，解調輸出的是滿載的白噪音</b>，非常吵。沒有靜噪的話，長時間守聽在生理上幾乎不可能——值機員撐不到兩小時。</p>
+    <h6>設計原理</h6>
+    <p>利用 FM 的<b>捕獲效應（capture effect）</b>：有訊號進來時，解調輸出裡約 3 kHz 以上的高頻雜訊會被大幅壓抑。靜噪電路就是偵測這段高頻雜訊的能量，雜訊低於門檻就判定「有訊號來了」，打開喇叭。這叫做雜訊靜噪（noise squelch）。</p>
+    <h6>使用場景</h6>
+    <p>值機守聽、車機長時間開機、車隊或搜救隊的背景待命。</p>
+    <h6>它的先天限制</h6>
+    <p>它是<b>用雜訊量、而不是用訊號內容</b>來判斷。所以門檻設太緊時，會把「還聽得懂、只是比較吵」的弱訊號一起切掉——而弱訊號往往正是最需要被聽到的那一個。這正是實驗 7 要用 SDR 量出來的東西。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>值機席整夜守聽，靜噪設太鬆會被雜音磨到失去專注力</li>
+      <li>搜救隊在山區，隊員的訊號剛好在門檻邊緣反覆開開關關</li>
+      <li>車機行進中訊號起伏，時斷時續</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">完全聽不到任何人，但確定有人在通聯</td><td>SQL 設太高</td><td><b>先把 SQL 轉到 0</b>，聽看看有沒有東西</td><td>調到剛好壓住雜音的那一格，不要再多</td></tr>
+        <tr><td class="sym">訊號斷斷續續，只聽到片段</td><td>訊號在靜噪門檻邊緣反覆開關</td><td>SDR 上看 SNR 是否在臨界值附近</td><td>降低 SQL；同時改善天線與位置</td></tr>
+        <tr><td class="sym">白天正常，晚上一直誤開</td><td>環境雜訊隨時間變化</td><td>看 SDR 底噪高度是否上升</td><td>重新設定 SQL，或改用亞音靜噪</td></tr>
+        <tr><td class="sym">一直有雜音，值機很累</td><td>SQL 太低</td><td>—</td><td>慢慢調高到雜音剛好消失，<b>停在那一格</b></td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin:10px 0 0"><b>災時原則</b>：守聽時寧可吵一點，也不要漏接。最需要被聽到的求救訊號，往往就是最弱的那一個。<span class="tag t-inf">推論</span></p>
+  </div>
+
+  <div class="box prose">
+    <span class="lbl">設計說明</span>
+    <p>本實驗需要可控的訊號衰減。若無步進衰減器，採用<b>天線與極化當作衰減器</b>的方法，同時預習實驗 10。</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>衰減方法（由強到弱）</th><th class="n">預估衰減 <span class="tag t-inf">推論</span></th><th class="n">實測 SDR 峰值 (dBFS)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">伸縮天線全長 ＋ H 功率</td><td class="n base">0 dB（基準）</td><td class="n"><input class="num" data-k="e7_a"></td></tr>
+      <tr><td class="base">改用原廠橡皮天線</td><td class="n base">−3 ~ −10 dB</td><td class="n"><input class="num" data-k="e7_b"></td></tr>
+      <tr><td class="base">功率改 L 檔</td><td class="n base">−10 dB</td><td class="n"><input class="num" data-k="e7_c"></td></tr>
+      <tr><td class="base">接收天線轉 90°（極化錯位）</td><td class="n base">−10 ~ −20 dB</td><td class="n"><input class="num" data-k="e7_d"></td></tr>
+      <tr><td class="base">隔牆 / 放進金屬櫃 / 加距離</td><td class="n base">視情況</td><td class="n"><input class="num" data-k="e7_e"></td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>靜噪門檻對照表</h5>
+  <div class="tw"><table>
+    <thead><tr><th class="n">B 機 SQL 設定</th><th class="n">剛好能開啟靜噪時的 SDR SNR (dB)</th><th style="width:170px">此時是否還聽得懂內容</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">0（全開）</td><td class="n base">—</td><td><input class="txt" data-k="e7_s0"></td></tr>
+      <tr><td class="n base">1</td><td class="n"><input class="num" data-k="e7_q1"></td><td><input class="txt" data-k="e7_s1"></td></tr>
+      <tr><td class="n base">3</td><td class="n"><input class="num" data-k="e7_q3"></td><td><input class="txt" data-k="e7_s3"></td></tr>
+      <tr><td class="n base">5</td><td class="n"><input class="num" data-k="e7_q5"></td><td><input class="txt" data-k="e7_s5"></td></tr>
+      <tr><td class="n base">9</td><td class="n"><input class="num" data-k="e7_q9"></td><td><input class="txt" data-k="e7_s9"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">觀念釐清（本節重點）</span>
+    <ul>
+      <li><b>靜噪不會讓你收得更遠。</b>它只決定「多弱的訊號才要讓喇叭出聲」，<b>不改變接收機的靈敏度</b></li>
+      <li>靜噪設太高 → 弱訊號的求救通聯<b>你會完全聽不到</b>；設 0 → 一直有雜音，長時間值機會疲勞</li>
+      <li><b>災時建議</b>：值機守聽時，靜噪設在「剛好壓住雜音」的最低值，寧可吵一點也不要漏接 <span class="tag t-inf">推論</span></li>
+      <li>進階觀察：在 SQL 剛好打不開的那一級，<b>SDR 上其實還看得很清楚，語音也還聽得懂</b>——人耳與 SDR 的能力超過靜噪電路的判斷</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 8</span>發射逾時計時器 TOT</h3>
+  <p class="lede">對應選單：TOT / TIME-OUT TIMER。目的：引入「瀑布圖的縱軸是時間」這個觀念。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p><b>卡麥（stuck mic）</b>。麥克風掉進座椅縫、背包裡的手持機被書本壓住、車門夾到線材——PTT 一旦被壓住，這台機器會持續發射直到電池耗盡。後果是整個頻道被癱瘓（別人完全叫不進來），而且發射末級持續滿載運作會過熱燒毀。</p>
+    <h6>設計原理</h6>
+    <p>一個很簡單的計時器：發射超過設定時間就強制斷開，而且通常<b>要求放開 PTT 才能重新發射</b>——這個細節很關鍵，因為卡麥的狀態下 PTT 是不會被放開的，所以機器會一直停在斷開狀態，不會自動恢復繼續癱瘓頻道。</p>
+    <h6>使用場景</h6>
+    <p>車機、隨身攜帶的手持機。中繼台也有自己的 TOT，多了一層目的：防止有人長篇獨佔共用資源。</p>
+    <h6>災時的取捨</h6>
+    <p>設太短會打斷長篇的災情回報，設太長或關閉則一旦誤觸就癱瘓頻道。這是個沒有標準答案的參數，要依實際運作模式決定 <span class="tag t-inf">推論</span>。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>手持機放進背包，被水壺或書本壓住 PTT</li>
+      <li>車機麥克風掉進座椅縫，駕駛完全沒察覺</li>
+      <li>災情回報講到一半被切斷，還以為是機器壞了</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">講到一半突然斷，要放開 PTT 才能再發</td><td>TOT 觸發</td><td>看 TOT 設定值</td><td>調長；同時養成分段回報的習慣</td></tr>
+        <tr><td class="sym">頻道被人長時間佔住，完全叫不進去</td><td>有人卡麥</td><td>用 SDR 看那個訊號<b>有沒有調變</b>——純載波沒有語音，就是卡麥</td><td>改用備用頻率；用手機或簡訊通知對方</td></tr>
+        <tr><td class="sym">機器莫名發燙、電池急速消耗</td><td>自己卡麥了</td><td>看 TX 指示燈是否亮著</td><td>檢查背包、麥克風線材、車門夾線</td></tr>
+        <tr><td class="sym">中繼台把你切掉</td><td>中繼台自己的 TOT</td><td>—</td><td>分段講，每段之間放開 PTT</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin:10px 0 0"><b>回報習慣</b>：長篇災情務必分段，每段結束放開 PTT 一到兩秒，讓緊急事項有機會插話。這個習慣比 TOT 設多少更重要。</p>
+  </div>
+  <p class="prose">瀑布圖速度調到<b>中低速</b>，讓螢幕能顯示 60 秒以上的歷史。按住 PTT 持續說話不放開，觀察訊號被切斷的時間點。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th class="n">TOT 設定</th><th class="n">瀑布圖上訊號實際長度 (秒)</th><th style="width:110px">有無提示音</th><th style="width:190px">切斷後需放開 PTT 才能再發射？</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">30 秒</td><td class="n"><input class="num" data-k="e8_30"></td><td><input class="txt" data-k="e8_30t" placeholder="有/無"></td><td><input class="txt" data-k="e8_30r" placeholder="是/否"></td></tr>
+      <tr><td class="n base">60 秒</td><td class="n"><input class="num" data-k="e8_60"></td><td><input class="txt" data-k="e8_60t" placeholder="有/無"></td><td><input class="txt" data-k="e8_60r" placeholder="是/否"></td></tr>
+      <tr><td class="n base">OFF</td><td class="n"><input class="num" data-k="e8_off"></td><td><input class="txt" data-k="e8_offt" placeholder="有/無"></td><td><input class="txt" data-k="e8_offr" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>TOT 的實務目的：防止 PTT 被壓住（背包、車門）造成<b>頻道被長時間佔用</b>、保護功率放大器末級過熱。中繼台也有自己的 TOT</li>
+      <li><b>災時的取捨</b>：設太短會打斷長篇災情回報；設太長或關閉，一旦誤觸就會癱瘓整個頻道。建議 60–120 秒 <span class="tag t-inf">推論</span></li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 9</span>VOX 聲控發射</h3>
+  <p class="lede">對應選單：VOX、VOX GAIN、VOX DELAY、ANTI-VOX。目的：用瀑布圖時間軸量出 VOX 的啟動延遲與掛尾時間。</p>
+  <div class="box why prose">
+    <span class="lbl">這個參數為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>有些場合根本騰不出手按 PTT：駕駛、飛行、攀爬、搬運傷患、雙手操作器材。VOX 最早的應用領域之一就是飛機的機內通話系統。</p>
+    <h6>設計原理</h6>
+    <p>偵測麥克風的音訊能量，超過門檻就自動發射；低於門檻後還要再等一段<b>掛尾時間（VOX delay）</b>才停止。掛尾時間的存在，是為了避免講話中間的自然停頓被誤判成「講完了」而把訊號切掉。</p>
+    <p><b>ANTI-VOX 解決的是另一個問題</b>：自己的喇叭發出聲音，又被自己的麥克風收到，觸發自己的 VOX，形成無限迴圈。ANTI-VOX 把喇叭訊號反相注入偵測電路，讓它被抵銷掉。</p>
+    <h6>使用場景</h6>
+    <p>機車通聯、消防與救援的雙手作業、工程作業中的即時聯絡。正確用法是<b>搭配耳機麥克風</b>，而不是機身麥克風。</p>
+    <h6>它的代價</h6>
+    <p>句首容易被吃掉，而且靈敏度設太高會在你不知情的情況下持續發射——這不只是操作問題，更是<b>資安與紀律問題</b>：現場的所有對話都會被送上頻道。實驗 9 就是要用瀑布圖把這件事抓出來給學員看。</p>
+  </div>
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>騎機車移動、搬運傷患、攀爬、雙手操作破壞器材</li>
+      <li><b>最嚴重的一種</b>：指揮所內的機器誤開 VOX，整場作戰會議被廣播到頻道上，而且說話的人完全不知情</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">對方說你第一個字聽不到</td><td>VOX 啟動延遲</td><td>SDR 量開口到發射的時間差</td><td>講話前先發一個短音，再進入正文</td></tr>
+        <tr><td class="sym">沒按 PTT 卻在發射</td><td>VOX 靈敏度太高</td><td>看 TX 指示燈；用 SDR 確認是否真的發出去</td><td>降低靈敏度、改用耳機麥克風，或直接關閉 VOX</td></tr>
+        <tr><td class="sym">講到一半被切</td><td>掛尾時間太短</td><td>SDR 量停止說話到斷訊的時間</td><td>調長 VOX DELAY</td></tr>
+        <tr><td class="sym">聽到自己的回音，且持續發射停不下來</td><td>喇叭聲音觸發自己的 VOX</td><td>—</td><td>開啟 ANTI-VOX，或改用耳機</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box sc" style="margin:12px 0 0">
+      <span class="lbl">通聯紀律</span>
+      <p><b>指揮所、值機席、任何會進行內部討論的位置，一律關閉 VOX。</b>這不是操作偏好，是資安要求。VOX 只在需要雙手作業的移動人員身上開啟，且必須搭配耳機麥克風。</p>
+    </div>
+  </div>
+  <p class="prose">瀑布圖速度調<b>快</b>（要看得出零點幾秒的差別）。說一句「這裡是測試，測試」後保持安靜，觀察訊號出現與消失的時間點。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>VOX 靈敏度</th><th>VOX DELAY</th><th class="n">開口→發射延遲 (秒)</th><th class="n">停止→斷訊掛尾 (秒)</th><th style="width:130px">是否被噪音誤觸發</th></tr></thead>
+    <tbody>
+      <tr><td class="base">低</td><td class="base">短</td><td class="n"><input class="num" data-k="e9_a1"></td><td class="n"><input class="num" data-k="e9_a2"></td><td><input class="txt" data-k="e9_a3" placeholder="是/否"></td></tr>
+      <tr><td class="base">中</td><td class="base">中</td><td class="n"><input class="num" data-k="e9_b1"></td><td class="n"><input class="num" data-k="e9_b2"></td><td><input class="txt" data-k="e9_b3" placeholder="是/否"></td></tr>
+      <tr><td class="base">高</td><td class="base">中</td><td class="n"><input class="num" data-k="e9_c1"></td><td class="n"><input class="num" data-k="e9_c2"></td><td><input class="txt" data-k="e9_c3" placeholder="是/否"></td></tr>
+      <tr><td class="base">高</td><td class="base">長</td><td class="n"><input class="num" data-k="e9_d1"></td><td class="n"><input class="num" data-k="e9_d2"></td><td><input class="txt" data-k="e9_d3" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+
+  <p class="prose"><b>誤觸發實測</b>：VOX 靈敏度設最高，不說話，在旁邊製造環境噪音（翻紙、拉椅子、播放背景音樂），觀察瀑布圖上是否出現無意義的短促發射。</p>
+
+  <div class="box key">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>VOX 的兩個缺陷都能在瀑布圖上直接看到：<b>句首被吃掉</b>（訊號出現時你已講了 0.1–0.3 秒 <span class="tag t-inf">推論</span>），以及<b>誤觸發</b>（靈敏度太高時，環境噪音會讓你在不知情的情況下持續發射——這是嚴重的資安與紀律問題）</li>
+      <li><b>ANTI-VOX</b>：防止喇叭發出的聲音又觸發自己的 VOX，造成無限迴圈</li>
+      <li><b>災時建議</b>：VOX 適合需要雙手作業時使用，但<b>指揮台與值機席不建議使用</b>。正確用法是搭配耳機麥克風，而非機身麥克風 <span class="tag t-inf">推論</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ 第四部 ══════════ -->
+<section id="s-4">
+  <h2 class="part">第四部 · 天線實驗（原廠 / 伸縮 / 其他）</h2>
+  <p class="lede prose">本部不使用天線分析儀、不需自製天線，全部用 SDR 的<b>相對訊號強度</b>完成。所有量測都是相對比較，不報絕對數值。</p>
+
+  <h3 class="exp"><span class="id">實驗 10-0</span>建立可重複的量測條件</h3>
+  <p class="lede">這一步做不好，後面所有天線數據都是垃圾。請務必先做。</p>
+
+  <h5>固定不變的條件（全程不准動）</h5>
+  <ul class="chk" id="chk10">
+    <li><input type="checkbox" data-k="c10_1" id="c1"><label for="c1">SDR 增益設定，且<b>已關閉自動增益 AGC</b></label></li>
+    <li><input type="checkbox" data-k="c10_2" id="c2"><label for="c2">SDR 色階 Min / Max</label></li>
+    <li><input type="checkbox" data-k="c10_3" id="c3"><label for="c3">FFT 點數與取樣率</label></li>
+    <li><input type="checkbox" data-k="c10_4" id="c4"><label for="c4">發射機功率檔位</label></li>
+    <li><input type="checkbox" data-k="c10_5" id="c5"><label for="c5">發射機與接收機的距離與相對位置</label></li>
+    <li><input type="checkbox" data-k="c10_6" id="c6"><label for="c6">發射機握持方式（放在三腳架或非金屬支架，<b>不要用手拿</b>）</label></li>
+    <li><input type="checkbox" data-k="c10_7" id="c7"><label for="c7">教室內人員位置（人體會影響訊號）</label></li>
+  </ul>
+  <p class="prose"><b>唯一變數：天線。</b></p>
+
+  <h5>重複性檢查</h5>
+  <p class="prose">先用原廠天線發射 3 次，確認重複性在 ±2 dB 以內。若跳動超過 ±3 dB，代表條件沒固定好，請重來。</p>
+
+  <div class="panel">
+    <div class="ttl">重複性檢查器</div>
+    <div class="pgrid">
+      <div><label>第 1 次 (dBFS)</label><input class="rep" id="rp1" type="number" step="0.1" placeholder="−00.0"></div>
+      <div><label>第 2 次 (dBFS)</label><input class="rep" id="rp2" type="number" step="0.1" placeholder="−00.0"></div>
+      <div><label>第 3 次 (dBFS)</label><input class="rep" id="rp3" type="number" step="0.1" placeholder="−00.0"></div>
+      <div class="readout"><div class="k">平均</div><div class="v" id="rp_avg">—</div><div class="u">dBFS</div></div>
+      <div class="readout"><div class="k">最大離散</div><div class="v" id="rp_spread">—</div><div class="u">dB</div></div>
+    </div>
+    <div id="rp_verdict" class="verdict v-idle">尚未輸入</div>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 10-1</span>三支天線的相對增益比較</h3>
+  <p class="lede">發射端固定（原廠天線、固定功率、固定位置），<b>只更換 SDR 接收端的天線</b>。每支發射 3 次取平均。</p>
+
+  <h5>145 MHz</h5>
+  <div class="tw"><table>
+    <thead><tr><th>接收天線</th><th class="n">第 1 次</th><th class="n">第 2 次</th><th class="n">第 3 次</th><th class="n">平均 (dBFS)</th><th class="n">相對原廠 (dB)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">原廠橡皮天線</td>
+        <td class="n"><input class="num g145" data-k="a145_s1"></td><td class="n"><input class="num g145" data-k="a145_s2"></td><td class="n"><input class="num g145" data-k="a145_s3"></td>
+        <td class="n"><span class="out" id="a145_avg">—</span></td><td class="n"><span class="out dim">0</span></td></tr>
+      <tr><td class="base">伸縮天線（全伸長）</td>
+        <td class="n"><input class="num g145" data-k="b145_s1"></td><td class="n"><input class="num g145" data-k="b145_s2"></td><td class="n"><input class="num g145" data-k="b145_s3"></td>
+        <td class="n"><span class="out" id="b145_avg">—</span></td><td class="n"><span class="out" id="b145_rel">—</span></td></tr>
+      <tr><td class="base">其他天線 <input class="txt" data-k="c145_name" placeholder="型號" style="width:auto; display:inline-block; min-width:90px"></td>
+        <td class="n"><input class="num g145" data-k="c145_s1"></td><td class="n"><input class="num g145" data-k="c145_s2"></td><td class="n"><input class="num g145" data-k="c145_s3"></td>
+        <td class="n"><span class="out" id="c145_avg">—</span></td><td class="n"><span class="out" id="c145_rel">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>435 MHz</h5>
+  <div class="tw"><table>
+    <thead><tr><th>接收天線</th><th class="n">第 1 次</th><th class="n">第 2 次</th><th class="n">第 3 次</th><th class="n">平均 (dBFS)</th><th class="n">相對原廠 (dB)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">原廠橡皮天線</td>
+        <td class="n"><input class="num g435" data-k="a435_s1"></td><td class="n"><input class="num g435" data-k="a435_s2"></td><td class="n"><input class="num g435" data-k="a435_s3"></td>
+        <td class="n"><span class="out" id="a435_avg">—</span></td><td class="n"><span class="out dim">0</span></td></tr>
+      <tr><td class="base">伸縮天線（全伸長）</td>
+        <td class="n"><input class="num g435" data-k="b435_s1"></td><td class="n"><input class="num g435" data-k="b435_s2"></td><td class="n"><input class="num g435" data-k="b435_s3"></td>
+        <td class="n"><span class="out" id="b435_avg">—</span></td><td class="n"><span class="out" id="b435_rel">—</span></td></tr>
+      <tr><td class="base">其他天線</td>
+        <td class="n"><input class="num g435" data-k="c435_s1"></td><td class="n"><input class="num g435" data-k="c435_s2"></td><td class="n"><input class="num g435" data-k="c435_s3"></td>
+        <td class="n"><span class="out" id="c435_avg">—</span></td><td class="n"><span class="out" id="c435_rel">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li><b>原廠橡皮天線是嚴重電氣縮短（electrically shortened）的天線</b>，為體積犧牲效率，實際效率往往遠低於全尺寸 1/4 波長天線 <span class="tag t-fact">FACT</span>（電氣縮短使輻射電阻降低而導致效率下降）</li>
+      <li>對照實驗 2：若換天線帶來的增益超過 10 dB，<b>等於白賺一次 5 W → 50 W 的功率提升</b>，而且完全合法、不耗電、不發熱</li>
+      <li>一支天線在兩個頻段的表現可能完全不同。<b>雙頻天線是妥協設計</b>，很少在兩個頻段都最佳</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 10-2</span>伸縮天線長度 vs 共振頻率</h3>
+  <p class="lede">本課程最能建立物理直覺的實驗。發射端固定頻率，接收端用伸縮天線，每次伸長約 5 公分量一次。</p>
+
+  <div class="panel">
+    <div class="ttl">波長計算器</div>
+    <div class="pgrid">
+      <div><label>頻率 (MHz)</label><input id="wl_f" type="number" value="145" step="0.1"></div>
+      <div class="readout"><div class="k">全波長 λ</div><div class="v" id="wl_full">206.9</div><div class="u">cm</div></div>
+      <div class="readout"><div class="k">1/4 λ</div><div class="v" id="wl_q">49.1</div><div class="u">cm</div></div>
+      <div class="readout"><div class="k">1/2 λ</div><div class="v" id="wl_h">98.3</div><div class="u">cm</div></div>
+      <div class="readout"><div class="k">3/4 λ</div><div class="v" id="wl_3q">147.4</div><div class="u">cm</div></div>
+    </div>
+    <p style="font-size:11.5px; color:#7594A0; margin:12px 0 0">L(cm) = 7125 / f(MHz)，其中 7125 = 30000 × 0.95 ÷ 4，0.95 為導體速度因數 <span style="color:#9BD46E">FACT</span></p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th class="n">伸縮長度 (cm)</th><th class="n">145 MHz 強度 (dBFS)</th><th class="n">435 MHz 強度 (dBFS)</th></tr></thead>
+    <tbody id="len-rows"></tbody>
+  </table></div>
+
+  <canvas class="chart" id="ch-len" width="900" height="280" aria-label="伸縮天線長度與訊號強度關係圖"></canvas>
+
+  <div class="box key prose">
+    <span class="lbl">預期結果與觀念</span>
+    <ul>
+      <li>145 MHz 的訊號強度應在 <b>49 cm 附近</b>達到最大值 <span class="tag t-inf">推論</span>，需實測驗證</li>
+      <li>435 MHz 除了 16.4 cm（1/4 λ）之外，在 <b>49 cm（3/4 λ）</b>附近也應出現一個峰值 <span class="tag t-inf">推論</span>。<br><b>但要先跟學員說清楚</b>：3/4 λ 的饋入點阻抗與輻射方向圖都不如 1/4 λ 乾淨（主瓣會往高仰角偏），所以<b>這個峰值通常較弱、也較不明顯</b>。實際雙頻天線多半還要加匹配線圈才好用——這正是雙頻天線是妥協設計的原因</li>
+      <li>天線長度不是越長越好，是<b>要跟波長成特定比例</b>。這個實驗把 λ = 300 / f 從公式變成手上的感覺</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 10-3</span>極化</h3>
+  <p class="lede">發射端天線保持垂直固定，接收天線從垂直開始每 15° 轉一次，量到水平。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th class="n">接收天線傾角</th><th class="n">訊號強度 (dBFS)</th><th class="n">相對垂直 (dB)</th><th class="n">理論值 20·log(cos θ)</th></tr></thead>
+    <tbody id="pol-rows"></tbody>
+  </table></div>
+
+  <canvas class="chart" id="ch-pol" width="900" height="280" aria-label="極化傾角與訊號衰減關係圖，含理論曲線"></canvas>
+
+  <div class="box key">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>理論上完全極化錯位（90°）的衰減應<b>超過 20 dB</b>，理想狀態下趨近無限大 <span class="tag t-fact">FACT</span></li>
+      <li><b>但實測通常只有 10–20 dB。</b>差距來自多路徑反射改變極化、室內散射、以及天線本身不是理想線性極化</li>
+      <li><b>這個「理論與實測不符」本身就是最好的教材</b>：它證明了電波在真實環境中會經過反射、繞射與散射</li>
+      <li><b>實務意義</b>：手持機拿斜的、放在口袋裡，等於平白損失 10 dB 以上。<b>災時通聯請把天線保持垂直</b></li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 10-4</span>人體效應與握持方式</h3>
+  <p class="lede">發射端與接收端都固定，只改變發射端的握持方式。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>情境</th><th class="n">訊號強度 (dBFS)</th><th class="n">相對基準 (dB)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">放在非金屬支架，無人接觸（基準）</td><td class="n"><input class="num h4" data-k="h4_base"></td><td class="n"><span class="out dim">0</span></td></tr>
+      <tr><td class="base">用手正常握住機身</td><td class="n"><input class="num h4" data-k="h4_hand"></td><td class="n"><span class="out" id="h4_hand_r">—</span></td></tr>
+      <tr><td class="base">貼近臉頰（實際通話姿勢）</td><td class="n"><input class="num h4" data-k="h4_face"></td><td class="n"><span class="out" id="h4_face_r">—</span></td></tr>
+      <tr><td class="base">放在口袋內</td><td class="n"><input class="num h4" data-k="h4_pkt"></td><td class="n"><span class="out" id="h4_pkt_r">—</span></td></tr>
+      <tr><td class="base">放在金屬桌面上</td><td class="n"><input class="num h4" data-k="h4_mtl"></td><td class="n"><span class="out" id="h4_mtl_r">—</span></td></tr>
+      <tr><td class="base">手握住天線本體</td><td class="n"><input class="num h4" data-k="h4_ant"></td><td class="n"><span class="out" id="h4_ant_r">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>手持機的橡皮天線是 <b>1/4 波長單極天線</b>，需要<b>地平面（ground plane）</b>才能正常工作。手持機的「地」就是機殼＋你的手＋你的身體 <span class="tag t-fact">FACT</span></li>
+      <li>所以<b>人體既是天線的一部分，也是損耗來源</b>——這是手持機效率遠低於車機的根本原因</li>
+      <li><b>握住天線本體</b>會嚴重破壞阻抗匹配，這是操作大忌</li>
+      <li>實務建議：通話時把手持機拿離身體、天線保持垂直、盡量舉高</li>
+    </ul>
+  </div>
+
+  <h3 class="exp"><span class="id">實驗 10-5</span>高度與遮蔽</h3>
+  <div class="tw"><table>
+    <thead><tr><th>情境</th><th class="n">訊號強度 (dBFS)</th><th class="n">相對基準 (dB)</th></tr></thead>
+    <tbody>
+      <tr><td class="base">發射機放在地板上</td><td class="n"><input class="num h5g" data-k="h5_floor"></td><td class="n"><span class="out" id="h5_floor_r">—</span></td></tr>
+      <tr><td class="base">桌面高度（約 75 cm，基準）</td><td class="n"><input class="num h5g" data-k="h5_desk"></td><td class="n"><span class="out dim">0</span></td></tr>
+      <tr><td class="base">舉高過頭（約 200 cm）</td><td class="n"><input class="num h5g" data-k="h5_high"></td><td class="n"><span class="out" id="h5_high_r">—</span></td></tr>
+      <tr><td class="base">中間站一個人</td><td class="n"><input class="num h5g" data-k="h5_body"></td><td class="n"><span class="out" id="h5_body_r">—</span></td></tr>
+      <tr><td class="base">移到牆後</td><td class="n"><input class="num h5g" data-k="h5_wall"></td><td class="n"><span class="out" id="h5_wall_r">—</span></td></tr>
+      <tr><td class="base">移到金屬門後</td><td class="n"><input class="num h5g" data-k="h5_door"></td><td class="n"><span class="out" id="h5_door_r">—</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose"><b>「天線高度是最便宜的增益」</b>——這個實驗的數據通常比實驗 2 的功率差異更驚人 <span class="tag t-inf">推論</span>。銜接災時實務：找高處、找空曠處，比買大功率機器有效得多。</p>
+
+  <h3 class="exp"><span class="id">實驗 10-6</span>綜合：天線 vs 功率的投資報酬率</h3>
+  <p class="lede">下表數據自動取自實驗 2 與實驗 10。<b>這張表就是整堂課的結論。</b></p>
+
+  <div class="tw"><table>
+    <thead><tr><th>改變項目</th><th class="n">實測增益 (dB)</th><th>成本</th><th>合法性</th></tr></thead>
+    <tbody>
+      <tr><td class="base">功率 L → H</td><td class="n"><span class="out" id="sum_pw">—</span></td><td>耗電、發熱、縮短電池壽命</td><td>需在執照許可範圍內</td></tr>
+      <tr><td class="base">原廠天線 → 伸縮天線（145 MHz）</td><td class="n"><span class="out" id="sum_ant">—</span></td><td>一次性、低成本</td><td>無限制</td></tr>
+      <tr><td class="base">天線從水平轉正垂直</td><td class="n"><span class="out" id="sum_pol">—</span></td><td><b>零成本</b></td><td>無限制</td></tr>
+      <tr><td class="base">從地板舉到過頭高</td><td class="n"><span class="out" id="sum_h">—</span></td><td><b>零成本</b></td><td>無限制</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════ 第五部 · 訊號真偽 ══════════ -->
+<section id="s-fake">
+  <h2 class="part">第五部 · 訊號真偽辨識</h2>
+  <p class="lede prose">前面所有實驗都假設「你看到的訊號是真的」。這一部要拆掉這個假設。<b>能不能判斷「我聽到的東西從哪來」，是初級與進階的分水嶺。</b></p>
+
+  <h3 class="exp"><span class="id">實驗 11</span>假訊號與鄰頻辨識</h3>
+
+  <div class="box why prose">
+    <span class="lbl">為什麼要有這一節</span>
+    <h6>要解決的問題</h6>
+    <p>現場最消耗時間的不是「收不到」，而是<b>「收到了，但不知道那是什麼」</b>。學員在沒有判別工具的情況下，只能靠猜，而且往往猜錯方向——最典型的就是明明是鄰頻干擾，卻花二十分鐘反覆檢查自己的頻率。</p>
+    <h6>設計原理</h6>
+    <p>三個萬用判別動作可以區分絕大多數狀況，而且都不需要額外儀器：<b>加衰減、移動中心頻率、換假負載</b>。這三招背後對應的是三種不同的物理路徑，所以能把成因切開。</p>
+    <h6>教學順序的用意</h6>
+    <p>11-A 放在最前面，因為<b>鄰頻重疊是設定造成的，在現場遠比互調與鏡像常見</b>，而且改設定就能解決。11-B 與 11-C 才是硬體層次的問題。</p>
+  </div>
+
+  <h4>11-0　三個萬用判別動作</h4>
+  <p class="prose">這三張表建議印出來貼在 SDR 旁邊。整個實驗 11 就是在練習使用它們。</p>
+
+  <h5>動作 1 · 串接 10 dB 衰減器</h5>
+  <div class="tw"><table>
+    <thead><tr><th>訊號降了多少</th><th>結論</th></tr></thead>
+    <tbody>
+      <tr><td class="base">約 10 dB</td><td>真訊號，從天線進來的</td></tr>
+      <tr><td class="base">約 30 dB 或直接消失</td><td><b>三階互調產物</b>（互調產物隨輸入以 3 倍斜率變化 <span class="tag t-fact">FACT</span>）</td></tr>
+      <tr><td class="base">完全沒變</td><td>不是從天線進來的：機內產生，或音訊線拾取</td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>動作 2 · 把中心頻率移動 100 kHz</h5>
+  <div class="tw"><table>
+    <thead><tr><th>那個訊號怎麼動</th><th>結論</th></tr></thead>
+    <tbody>
+      <tr><td class="base">絕對頻率不動</td><td>真訊號</td></tr>
+      <tr><td class="base">跟著螢幕中心走</td><td>本地振盪器洩漏（DC spike），根本不是訊號</td></tr>
+      <tr><td class="base">往反方向移動兩倍距離</td><td>零中頻架構的 I/Q 鏡像</td></tr>
+      <tr><td class="base">在任何頻率都出現，完全不動</td><td>中頻直通（IF breakthrough）</td></tr>
+      <tr><td class="base">跳到不規則的新位置</td><td>混疊（aliasing）或互調</td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>動作 3 · 拔掉天線，換上 50 Ω 假負載</h5>
+  <p class="prose">還聽得到 → 機殼洩漏、電源線輻射，或音訊線拾取，與天線無關。<b>再把音量轉到最小</b>：聲音仍在，就是音訊電路被射頻汙染，不是接收機收到的。</p>
+
+  <hr>
+
+  <h4>11-A　鄰頻重疊（現場最常見，優先練這一個）</h4>
+  <p class="lede">用兩台手持機在相鄰頻道同時發射，觀察捕獲效應如何讓你的頻道「整個變成別人的」。</p>
+
+  <div class="box warn prose">
+    <span class="lbl">為什麼這個最容易誤判</span>
+    <p>FM 有<b>捕獲效應（capture effect）</b>：兩個訊號同時進來時，較強的那個會壓制較弱的。<b>完全捕獲通常需要約 6–10 dB 的強度優勢</b>；優勢不足時會聽到兩者交替或互相破壞 <span class="tag t-inf">推論</span>，實際門檻依鑑頻器設計而異 <span class="tag t-tbd">待查</span>。所以你聽到的不是兩個人混在一起，而是<b>你的頻道整個變成別人的通話</b>——學員的第一反應通常是「我調錯頻率了嗎」，然後開始檢查頻率，方向就此偏掉。</p>
+    <p>再疊上<b>遠近效應（near-far problem）</b>：鄰頻那個人可能就在指揮所裡離你十公尺，你要通聯的對象在五公里外，兩者強度可以差六十到八十 dB <span class="tag t-inf">推論</span>。任何接收機的鄰道抑制都撐不住這種落差（各機種實際規格請查手冊 <span class="tag t-tbd">待查</span>）。</p>
+  </div>
+
+  <div class="panel">
+    <div class="ttl">保護頻帶計算器</div>
+    <div class="pgrid">
+      <div><label>頻道間隔 (kHz)</label><input id="gb_sp" type="number" value="12.5" step="0.5"></div>
+      <div><label>最大頻偏 (kHz)</label><input id="gb_dev" type="number" value="5" step="0.1"></div>
+      <div class="readout"><div class="k">佔用頻寬</div><div class="v" id="gb_occ">16.0</div><div class="u">kHz</div></div>
+      <div class="readout"><div class="k">保護頻帶</div><div class="v" id="gb_guard">−3.5</div><div class="u">kHz</div></div>
+    </div>
+    <div id="gb_verdict" class="verdict v-idle">—</div>
+    <p style="font-size:11.5px; color:#7594A0; margin:12px 0 0">保護頻帶 = 頻道間隔 − 佔用頻寬。佔用頻寬依 Carson 法則取最高音頻 3 kHz 計算。保護頻帶為負，代表你的訊號寬度已經超過整個頻道間隔，<span style="color:#E0784F">物理上不可能不干擾鄰居</span>。</p>
+  </div>
+
+  <h5>實驗步驟</h5>
+  <ol class="prose">
+    <li>SDR 中心 145.000 MHz，Span 100 kHz，<b>螢幕上標出 145.0125 與 145.025 兩個位置</b></li>
+    <li><b>手持機 A（你的通聯對象）</b>：145.000 MHz，功率 L，<b>放遠一點</b>或加衰減，模擬遠方的人</li>
+    <li><b>手持機 B（鄰頻的人）</b>：先設 145.0125 MHz，功率 L，<b>放近一點</b>，模擬旁邊的人</li>
+    <li><b>接收端</b>：另一台機器或用 SDR 解調，停在 145.000 MHz，先設<b>寬頻 W</b></li>
+    <li>讓 A 持續說話，中途讓 B 也開始說話。記錄你聽到誰</li>
+    <li>依下表逐項改變條件，每次都記錄 SDR 上兩個訊號是否在畫面上就已經相交</li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th>鄰頻間隔</th><th>接收頻寬</th><th class="n">保護頻帶 (kHz)</th><th style="width:150px">你聽到誰</th><th style="width:130px">SDR 上是否相交</th></tr></thead>
+    <tbody>
+      <tr><td class="base">12.5 kHz</td><td class="base">寬頻 W</td><td class="n base">−3.5</td><td><input class="txt" data-k="f11a_1"></td><td><input class="txt" data-k="f11a_1x" placeholder="是/否"></td></tr>
+      <tr><td class="base">12.5 kHz</td><td class="base">窄頻 N</td><td class="n base">+1.5</td><td><input class="txt" data-k="f11a_2"></td><td><input class="txt" data-k="f11a_2x" placeholder="是/否"></td></tr>
+      <tr><td class="base">25 kHz</td><td class="base">寬頻 W</td><td class="n base">+9.0</td><td><input class="txt" data-k="f11a_3"></td><td><input class="txt" data-k="f11a_3x" placeholder="是/否"></td></tr>
+      <tr><td class="base">25 kHz</td><td class="base">窄頻 N</td><td class="n base">+14.0</td><td><input class="txt" data-k="f11a_4"></td><td><input class="txt" data-k="f11a_4x" placeholder="是/否"></td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>遠近效應加測</h5>
+  <p class="prose">回到 12.5 kHz ／ 寬頻 的最糟組合，只改變 B 的強度，觀察門檻在哪裡。</p>
+  <div class="tw"><table>
+    <thead><tr><th>B（鄰頻）的狀態</th><th class="n">SDR 上 B 比 A 強多少 (dB)</th><th style="width:150px">你聽到誰</th></tr></thead>
+    <tbody>
+      <tr><td class="base">B 遠、功率 L</td><td class="n"><input class="num" data-k="f11a_n1"></td><td><input class="txt" data-k="f11a_r1"></td></tr>
+      <tr><td class="base">B 近、功率 L</td><td class="n"><input class="num" data-k="f11a_n2"></td><td><input class="txt" data-k="f11a_r2"></td></tr>
+      <tr><td class="base">B 近、功率 H</td><td class="n"><input class="num" data-k="f11a_n3"></td><td><input class="txt" data-k="f11a_r3"></td></tr>
+      <tr><td class="base">B 近、功率 H、天線垂直對齊</td><td class="n"><input class="num" data-k="f11a_n4"></td><td><input class="txt" data-k="f11a_r4"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box field prose">
+    <span class="lbl">現場情境與排錯</span>
+    <h6>真實會遇到的情況</h6>
+    <ul>
+      <li>指揮所裡有兩三個群組各用相鄰頻道，坐得很近，彼此把對方蓋掉</li>
+      <li>拿到 12.5 kHz 規劃的頻率表，但機器出廠預設是寬頻，於是<b>整隊人一起干擾兩側鄰頻而毫無自覺</b></li>
+      <li>你的頻道突然變成另一組人的通話，內容完全不相干</li>
+    </ul>
+    <div class="tw"><table>
+      <thead><tr><th>症狀</th><th>最可能原因</th><th>怎麼確認</th><th>處置</th></tr></thead>
+      <tbody>
+        <tr><td class="sym">頻道整個變成別人的通話</td><td>鄰頻的人比你的對象強太多，捕獲效應</td><td>SDR 看那個訊號的<b>中心頻率在哪</b></td><td>接收改窄頻；請對方換頻道；或把兩人的位置拉開</td></tr>
+        <tr><td class="sym">只有在某人講話時才被蓋掉</td><td>那個人在鄰頻，且離你很近</td><td>請他走遠三十公尺再試</td><td>重新規劃頻道間隔，或分開位置</td></tr>
+        <tr><td class="sym">鄰頻的人一直抱怨你干擾，你自己完全無感</td><td>你設寬頻在窄頻規劃上</td><td>用保護頻帶計算器算一次</td><td>改窄頻。<b>這是你的問題不是他的</b></td></tr>
+        <tr><td class="sym">換窄頻接收後聲音變小但乾淨了</td><td>正常現象</td><td>—</td><td>調高音量即可，不要退回寬頻</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清（本節重點）</span>
+    <ul>
+      <li><b>頻道間隔是行政劃分，佔用頻寬是物理事實。</b>當物理事實大於行政劃分，干擾是必然的，不是機率問題</li>
+      <li>捕獲效應讓干擾以「換人」而不是「混音」的形式出現，這是誤判的根源</li>
+      <li><b>單向抱怨要特別警覺</b>：如果只有別人說你干擾、你卻沒感覺，多半是你的發射設定有問題</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <h4>11-B　接收機過載與互調（刻意製造一次）</h4>
+  <p class="lede">這是課堂上唯一能安全重現的「憑空出現的電台」。先製造它，再消滅它。</p>
+
+  <ol class="prose">
+    <li>SDR 增益（RF gain / LNA）先設在正常值，記錄瀑布圖上訊號數量</li>
+    <li>把手持機拿近，用 H 功率短按 PTT，同時<b>把 SDR 增益開到最大</b></li>
+    <li>觀察瀑布圖上出現一堆<b>等距排列</b>的訊號</li>
+    <li>依序執行三個萬用判別動作，記錄結果</li>
+  </ol>
+
+  <div class="tw"><table>
+    <thead><tr><th>判別動作</th><th style="width:190px">真訊號的反應</th><th style="width:190px">你觀察到的反應</th></tr></thead>
+    <tbody>
+      <tr><td class="base">串 10 dB 衰減器</td><td class="base">降約 10 dB</td><td><input class="txt" data-k="f11b_1"></td></tr>
+      <tr><td class="base">降低 SDR 增益 10 dB</td><td class="base">SNR 幾乎不變</td><td><input class="txt" data-k="f11b_2"></td></tr>
+      <tr><td class="base">中心頻率移 100 kHz</td><td class="base">絕對頻率不動</td><td><input class="txt" data-k="f11b_3"></td></tr>
+      <tr><td class="base">換上假負載</td><td class="base">訊號消失</td><td><input class="txt" data-k="f11b_4"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key prose">
+    <span class="lbl">觀念釐清</span>
+    <ul>
+      <li>三階互調產物隨輸入功率以 <b>3 倍斜率</b>變化，所以輸入降 10 dB，它降 30 dB <span class="tag t-fact">FACT</span>。這個 3 比 1 的關係就是判別的依據</li>
+      <li><b>增益開大不會讓你收得更遠</b>（實驗 2 已證明 SNR 不變），但會讓你收到一堆不存在的東西。這是「增益不是萬能」的第二個證據</li>
+      <li>8-bit 的 SDR（RTL-SDR、HackRF）<b>瞬時量化動態範圍約 48 dB</b>（6.02 × 8 位元 <span class="tag t-fact">FACT</span>）。<br><b>但這不等於你在瀑布圖上看到的動態範圍</b>——FFT 的處理增益會把顯示動態範圍拉高許多（65536 點相對於全取樣率約多出 45 dB <span class="tag t-inf">推論</span>）。真正的限制是<b>前端在強訊號下何時進入非線性</b>，這才是 8-bit 機器比 14-bit 更容易產生假訊號的原因</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <h4>11-C　機內假訊號與音訊拾取</h4>
+  <p class="lede">不需要任何發射，純接收就能觀察。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>要找的東西</th><th>怎麼找</th><th style="width:170px">你觀察到的</th></tr></thead>
+    <tbody>
+      <tr><td class="base">本振洩漏（DC spike）</td><td>看螢幕正中央那根固定尖峰，移動中心頻率看它會不會跟著走</td><td><input class="txt" data-k="f11c_1"></td></tr>
+      <tr><td class="base">零中頻 I/Q 鏡像</td><td>找一個強訊號，看中心頻率另一側對稱位置有沒有鬼影</td><td><input class="txt" data-k="f11c_2"></td></tr>
+      <tr><td class="base">USB 與電腦雜訊</td><td>接假負載，掃描整個頻段，找等距排列的細窄尖峰</td><td><input class="txt" data-k="f11c_3"></td></tr>
+      <tr><td class="base">音訊線拾取射頻</td><td>接假負載且把<b>音量轉到最小</b>，仍聽得到聲音就是</td><td><input class="txt" data-k="f11c_4"></td></tr>
+      <tr><td class="base">環境電磁干擾源</td><td>靠近 LED 燈具、充電器、開關電源，看底噪與梳狀諧波</td><td><input class="txt" data-k="f11c_5"></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box tbd prose">
+    <span class="lbl">待查 · 開課前補齊</span>
+    <p>鏡像頻率的位置是「真身 ± 2 倍中頻」<span class="tag t-fact">FACT</span>，但各機種的中頻不同 <span class="tag t-tbd">待查</span>。請講師查閱教學用 SDR 與手持機的規格書，把實際數值填入，學員才能自己算出鏡像會落在哪裡。</p>
+  </div>
+
+  <div class="box key prose">
+    <span class="lbl">本節收斂</span>
+    <p>把三個判別動作練到變成反射動作，學員在現場遇到任何「不該存在的訊號」時，都能在一分鐘內把範圍縮到一兩種可能。<b>這比記住所有假訊號的名字有用得多。</b></p>
+  </div>
+</section>
+
+<!-- ══════════ 現場排錯總表 ══════════ -->
+<section id="s-tshoot">
+  <h2 class="part">現場排錯總表 · 從症狀出發</h2>
+  <p class="lede prose">前面的實驗是<b>從參數出發</b>，但現場永遠是<b>從症狀出發</b>。這一節把順序倒過來，並且刻意把檢查步驟排成「由快到慢、由免費到昂貴」——先做完全不花成本的動作，最後才考慮加功率或換裝備。建議印出來壓在值機席桌墊下。</p>
+
+  <h4>症狀 A · 我叫不到對方（對方完全沒反應）</h4>
+  <div class="tw"><table>
+    <thead><tr><th style="width:44px">順序</th><th>檢查什麼</th><th>怎麼做</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">1</td><td>頻率與步進</td><td>核對頻率末位數字；確認步進能落在該頻率上</td><td class="base"><span class="route">實驗 1</span></td></tr>
+      <tr><td class="n base">2</td><td>發射亞音</td><td>中繼台或群組是否需要 TX 亞音，有沒有設</td><td class="base"><span class="route">實驗 5</span></td></tr>
+      <tr><td class="n base">3</td><td>中繼台位移與方向</td><td>用 SDR 看按 PTT 時實際發在哪個頻率</td><td class="base"><span class="route">實驗 6</span></td></tr>
+      <tr><td class="n base">4</td><td>天線</td><td>鎖緊了嗎？是這個頻段的天線嗎？</td><td class="base"><span class="route">實驗 10-1</span></td></tr>
+      <tr><td class="n base">5</td><td>天線姿態</td><td>保持垂直、不要握到天線本體、拿離身體</td><td class="base"><span class="route">實驗 10-3 · 10-4</span></td></tr>
+      <tr><td class="n base">6</td><td>位置</td><td>移到窗邊、走出建物、舉高過頭</td><td class="base"><span class="route">實驗 10-5</span></td></tr>
+      <tr><td class="n base">7</td><td>功率檔位</td><td>確認不是卡在 L</td><td class="base"><span class="route">實驗 2</span></td></tr>
+      <tr><td class="n base">8</td><td>電池電壓</td><td>電壓低時發射功率會下降</td><td class="base"><span class="route">實驗 2</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose"><b>順序的用意</b>：第 1 到 3 項只要動選單，第 4 到 6 項只要動身體，兩者都不花任何成本，而且解決了大多數狀況。<b>把「加功率」放在第 7 順位是刻意的</b>——它是最常被第一個想到、卻最少真正有效的動作。</p>
+
+  <h4>症狀 B · 我聽不到對方（但知道他在發射）</h4>
+  <div class="tw"><table>
+    <thead><tr><th style="width:44px">順序</th><th>檢查什麼</th><th>怎麼做</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">1</td><td>音量與靜噪</td><td><b>先把 SQL 轉到 0</b>，確認喇叭有雜音（代表接收機活著）</td><td class="base"><span class="route">實驗 7</span></td></tr>
+      <tr><td class="n base">2</td><td>接收亞音</td><td>暫時關掉 RX 亞音再聽一次</td><td class="base"><span class="route">實驗 5</span></td></tr>
+      <tr><td class="n base">3</td><td>頻率與步進</td><td>核對頻率末位數字</td><td class="base"><span class="route">實驗 1</span></td></tr>
+      <tr><td class="n base">4</td><td>中繼台 REVERSE</td><td>確認自己聽的是輸出頻率而不是輸入頻率</td><td class="base"><span class="route">實驗 6</span></td></tr>
+      <tr><td class="n base">5</td><td>寬窄頻設定</td><td>與對方比對 W/N</td><td class="base"><span class="route">實驗 3</span></td></tr>
+      <tr><td class="n base">6</td><td>天線與位置</td><td>同症狀 A 的第 4 到 6 項</td><td class="base"><span class="route">實驗 10</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>症狀 C · 聽得到，但聲音怪</h4>
+  <div class="tw"><table>
+    <thead><tr><th>聽起來的樣子</th><th>最可能原因</th><th>處置</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="sym">音量正常但破裂、字聽不清</td><td>對方過調變，或你窄頻收、對方寬頻發</td><td>請對方降低音量／嘴離遠一點；或你改寬頻</td><td class="base"><span class="route">實驗 3 · 4</span></td></tr>
+      <tr><td class="sym">要把音量開到最大才聽得到</td><td>你寬頻收、對方窄頻發</td><td>你改窄頻接收</td><td class="base"><span class="route">實驗 3</span></td></tr>
+      <tr><td class="sym">背景噪音大過人聲</td><td>對方麥克風增益太高</td><td>請對方降低增益或換抗噪麥克風</td><td class="base"><span class="route">實驗 4</span></td></tr>
+      <tr><td class="sym">斷斷續續，只聽到片段字句</td><td>訊號在靜噪門檻邊緣反覆開關</td><td>降低 SQL；改善天線與位置</td><td class="base"><span class="route">實驗 7</span></td></tr>
+      <tr><td class="sym">移動時忽強忽弱、有金屬顫音</td><td>多路徑衰落</td><td>移動一到兩公尺常常就恢復；停下來再講</td><td class="base"><span class="route">實驗 10-3</span></td></tr>
+      <tr><td class="sym">只聽到嘶嘶聲，中間偶爾有人聲</td><td>訊號極弱，已接近底噪</td><td>提高天線、換天線；請對方加功率</td><td class="base"><span class="route">實驗 10-5 · 2</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>症狀 D · 頻道異常（不是單一個人的問題）</h4>
+  <div class="tw"><table>
+    <thead><tr><th>現象</th><th>最可能原因</th><th>怎麼確認</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="sym">頻道被長時間佔住，沒人說話</td><td>有人卡麥</td><td>SDR 看該訊號<b>有無調變</b>；純載波＝卡麥</td><td class="base"><span class="route">實驗 8</span></td></tr>
+      <tr><td class="sym">聽到不相干的對話、環境音</td><td>有人 VOX 誤觸發</td><td>對方通常不知情，需另一管道通知</td><td class="base"><span class="route">實驗 9</span></td></tr>
+      <tr><td class="sym">中繼台自己空轉發射</td><td>雜訊或遠方同頻電台誤啟動</td><td>SDR 看輸入頻率上有沒有東西</td><td class="base"><span class="route">實驗 5 · 6</span></td></tr>
+      <tr><td class="sym">SDR 上一堆等距排列的訊號</td><td><b>你的接收機過載</b>，不是真的有那麼多電台</td><td>加衰減器或降低增益，假訊號會消失</td><td class="base"><span class="route">第零部</span></td></tr>
+      <tr><td class="sym">整段頻譜底噪明顯升高</td><td>附近有寬頻干擾源（開關電源、LED、充電樁）</td><td>換位置測試；接假負載比對</td><td class="base"><span class="route">實驗 0</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>症狀 E · 我的機器自己有問題</h4>
+  <div class="tw"><table>
+    <thead><tr><th>現象</th><th>最可能原因</th><th>處置</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="sym">機殼發燙，電池急速消耗</td><td>卡麥，正在持續發射</td><td>看 TX 指示燈；檢查背包與麥克風線</td><td class="base"><span class="route">實驗 8</span></td></tr>
+      <tr><td class="sym">電池半天就沒電</td><td>一直用 H 檔發射</td><td>近距離改 L；長篇改分段</td><td class="base"><span class="route">實驗 2</span></td></tr>
+      <tr><td class="sym">講久了對方說訊號變弱</td><td>過熱保護降功率</td><td>降功率、縮短單次通話</td><td class="base"><span class="route">實驗 2</span></td></tr>
+      <tr><td class="sym">換了麥克風後所有人都抱怨</td><td>輸出位準不同，增益沒重調</td><td>重新調整 MIC GAIN 並記錄</td><td class="base"><span class="route">實驗 4</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>症狀 F · 我聽到不該存在的東西</h4>
+  <p class="prose">這一組的共同特徵是「頻率對不上」。<b>檢查順序刻意把鄰頻重疊放在最前面</b>——它是設定造成的，比硬體極限常見得多，而且改設定就能解決。</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:44px">順序</th><th>先懷疑什麼</th><th>怎麼確認</th><th style="width:78px">參照</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">1</td><td><b>鄰頻重疊</b>：你的頻道整個變成別人的通話</td><td>SDR 上看那個訊號的<b>中心在哪</b>。若在隔壁頻道，就是它</td><td class="base"><span class="route">實驗 11-A</span></td></tr>
+      <tr><td class="n base">2</td><td>寬窄頻設定與頻道規劃不符</td><td>用保護頻帶計算器算一次，看是不是負數</td><td class="base"><span class="route">實驗 3 · 11-A</span></td></tr>
+      <tr><td class="n base">3</td><td>對方過調變潑灑（splatter）</td><td>SDR 上該訊號異常寬，且對方一大聲就變寬</td><td class="base"><span class="route">實驗 4</span></td></tr>
+      <tr><td class="n base">4</td><td>接收機過載或互調</td><td><b>串 10 dB 衰減器</b>：掉 30 dB 或消失就是互調</td><td class="base"><span class="route">實驗 11-B</span></td></tr>
+      <tr><td class="n base">5</td><td>鏡像、中頻直通、零中頻鏡像</td><td><b>中心頻率移 100 kHz</b>，看假訊號怎麼跟著動</td><td class="base"><span class="route">實驗 11-C</span></td></tr>
+      <tr><td class="n base">6</td><td>音訊線拾取射頻</td><td><b>音量轉到最小</b>。聲音還在就不是接收機來的</td><td class="base"><span class="route">實驗 11-C</span></td></tr>
+      <tr><td class="n base">7</td><td>對流層超折射帶進遠方同頻電台</td><td>訊號明顯衰落飄移，數小時後自行消失</td><td class="base"><span class="route">—</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">給學員的三個通則</span>
+    <ul>
+      <li><b>先做免費的動作。</b>改選單、轉正天線、走到窗邊，這三件事解決的問題比買任何裝備都多。</li>
+      <li><b>單向不通，先懷疑亞音；雙向不通，先懷疑頻率。</b>這一句可以省下大量的猜測時間。</li>
+      <li><b>有 SDR 的時候，先看再猜。</b>「對方到底有沒有發射」「發在哪個頻率」「訊號寬不寬」這三個問題，用 SDR 三秒鐘就有答案，用嘴巴問可能繞十分鐘。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ 第五部 ══════════ -->
+<section id="s-5">
+  <h2 class="part">第六部 · 綜合驗收</h2>
+
+  <h3 class="exp"><span class="id">實驗 12</span>盲測排錯</h3>
+  <p class="lede">講師事先在一台手持機上設定 3–5 個「故障」，學員只能用 SDR 與另一台手持機診斷。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>故障設定</th><th>症狀</th><th class="n">對應實驗</th><th style="width:90px">本次採用</th></tr></thead>
+    <tbody>
+      <tr><td class="base">步進設成 25 kHz</td><td>調不到目標頻率</td><td class="n base">1</td><td><input type="checkbox" data-k="q1"></td></tr>
+      <tr><td class="base">功率卡在 L 檔</td><td>訊號比別人弱 10 dB</td><td class="n base">2</td><td><input type="checkbox" data-k="q2"></td></tr>
+      <tr><td class="base">設成窄頻但對方是寬頻</td><td>對方聲音很小</td><td class="n base">3</td><td><input type="checkbox" data-k="q3"></td></tr>
+      <tr><td class="base">MIC GAIN 過高</td><td>訊號異常寬、對方說破音</td><td class="n base">4</td><td><input type="checkbox" data-k="q4"></td></tr>
+      <tr><td class="base">RX 亞音設錯</td><td>聽不到別人，但 SDR 收得到</td><td class="n base">5</td><td><input type="checkbox" data-k="q5"></td></tr>
+      <tr><td class="base">TX 亞音沒設</td><td>中繼台不開啟</td><td class="n base">5</td><td><input type="checkbox" data-k="q6"></td></tr>
+      <tr><td class="base">OFFSET 方向設反</td><td>中繼台不開啟，SDR 上發射頻率錯誤</td><td class="n base">6</td><td><input type="checkbox" data-k="q7"></td></tr>
+      <tr><td class="base">靜噪設太高</td><td>收不到弱訊號，但 SDR 上看得見</td><td class="n base">7</td><td><input type="checkbox" data-k="q8"></td></tr>
+      <tr><td class="base">TOT 設 10 秒</td><td>講話講到一半被切</td><td class="n base">8</td><td><input type="checkbox" data-k="q9"></td></tr>
+      <tr><td class="base">VOX 開著且靈敏度過高</td><td>沒按 PTT 卻一直在發射</td><td class="n base">9</td><td><input type="checkbox" data-k="q10"></td></tr>
+      <tr><td class="base">天線沒鎖緊 / 用錯頻段天線</td><td>訊號弱、SWR 高</td><td class="n base">10</td><td><input type="checkbox" data-k="q11"></td></tr>
+      <tr><td class="base">在 12.5 kHz 頻道規劃上設成寬頻</td><td>鄰頻的人抱怨被干擾，自己完全無感</td><td class="n base">3 · 11-A</td><td><input type="checkbox" data-k="q12"></td></tr>
+      <tr><td class="base">SDR 增益開到最大（過載）</td><td>瀑布圖上出現一堆不存在的電台</td><td class="n base">11-B</td><td><input type="checkbox" data-k="q13"></td></tr>
+    </tbody>
+  </table></div>
+
+  <p class="prose"><b>評分方式建議</b>：每題要求學員寫出「症狀 → 用哪個實驗的方法 → SDR 上的證據 → 結論」，重點在<b>推理過程</b>而非猜中答案。</p>
+</section>
+
+<!-- ══════════ 附錄 ══════════ -->
+<section id="s-app">
+  <h2 class="part">附錄</h2>
+
+  <h4>附錄 A · 安全規範</h4>
+  <ol>
+    <li><b>執照</b>：所有發射操作必須由持有業餘無線電執照者進行，且在執照許可的頻段與功率內 <span class="tag t-fact">FACT</span></li>
+    <li><b>假負載</b>：室內近距離發射實驗，優先使用假負載＋衰減器，避免對外輻射</li>
+    <li><b>RF 曝露</b>：發射時不得觸摸天線，不得將天線指向近距離的人員頭部</li>
+    <li><b>保護末級</b>：絕對不要在未接天線也未接假負載的情況下按 PTT</li>
+    <li><b>頻率選擇</b>：實驗前先守聽，確認頻率未被使用；避開緊急呼叫頻率與中繼台輸入頻率</li>
+    <li><span class="tag t-tbd">待查</span> 請講師於開課前確認最新的 NCC 業餘無線電相關規定與當地中繼台頻率規劃</li>
+  </ol>
+
+  <h4>附錄 B · 低成本擴充（非必要，但強烈建議）</h4>
+  <p><b>B-1　反地平線（counterpoise）</b>：一條 49 公分電線＋一個鱷魚夾（2m 頻段），夾在天線底座金屬環上垂下。比較接上 vs 不接的訊號差異。這一條電線提供了橡皮天線缺乏的地平面 <span class="tag t-inf">推論</span>，改善量級視環境而定。</p>
+  <p><b>B-2　假負載當作「零輻射基準」</b>：發射端改接假負載，此時 SDR 上仍看得到的訊號 = 機殼洩漏 + 電源線輻射。很好的「什麼叫做屏蔽」教材。</p>
+
+  <h4>附錄 C · 待查清單（開課前補齊）</h4>
+  <ul class="chk">
+    <li><input type="checkbox" data-k="tbd1" id="t1"><label for="t1">台灣現行業餘無線電頻段與功率限制的最新規定</label></li>
+    <li><input type="checkbox" data-k="tbd2" id="t2"><label for="t2">當地可用的中繼台頻率、位移量與亞音</label></li>
+    <li><input type="checkbox" data-k="tbd3" id="t3"><label for="t3">教學用手持機的實際標稱功率（H/M/L 各為多少瓦）</label></li>
+    <li><input type="checkbox" data-k="tbd4" id="t4"><label for="t4">教學用手持機的步進選項與 TOT / VOX 可設定範圍</label></li>
+    <li><input type="checkbox" data-k="tbd5" id="t5"><label for="t5">教室所在位置的環境雜訊底（實驗 0 的基準值）</label></li>
+    <li><input type="checkbox" data-k="tbd6" id="t6"><label for="t6">各實驗的預期讀值範圍（第一次試教後回填）</label></li>
+  </ul>
+
+  <hr>
+  <p style="font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink-3)">進階無線電 · SDR 實驗講義 v1 · 文件結束</p>
+</section>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ── 資料層：優先用 artifact 持久儲存，否則存在記憶體 ── */
+var KEY='sdr_lab_v1';
+var store={};
+var dirty=false;
+
+function canPersist(){ return typeof window!=='undefined' && window.storage && typeof window.storage.set==='function'; }
+
+async function load(){
+  if(!canPersist()) return;
+  try{
+    var r=await window.storage.get(KEY);
+    if(r && r.value){ store=JSON.parse(r.value); applyStore(); }
+  }catch(e){ /* 沒有舊資料，正常 */ }
+}
+var saveTimer=null;
+function save(){
+  dirty=true;
+  if(!canPersist()) return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async function(){
+    try{ await window.storage.set(KEY, JSON.stringify(store)); }catch(e){}
+  },600);
+}
+
+function applyStore(){
+  document.querySelectorAll('[data-k]').forEach(function(el){
+    var k=el.dataset.k;
+    if(!(k in store)) return;
+    if(el.type==='checkbox') el.checked=!!store[k];
+    else el.value=store[k];
+  });
+  recalc();
+}
+
+/* ── 動態產生列：實驗 10-2 長度表 ── */
+var LENS=[10,15,20,25,30,35,40,45,50,55];
+var lenBody=document.getElementById('len-rows');
+LENS.forEach(function(L){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td class="n base">'+L+'</td>'+
+    '<td class="n"><input class="num len145" data-k="L145_'+L+'" data-len="'+L+'"></td>'+
+    '<td class="n"><input class="num len435" data-k="L435_'+L+'" data-len="'+L+'"></td>';
+  lenBody.appendChild(tr);
+});
+
+/* ── 動態產生列：實驗 10-3 極化表 ── */
+var ANGLES=[0,15,30,45,60,75,90];
+var polBody=document.getElementById('pol-rows');
+ANGLES.forEach(function(a){
+  var th=a>=90?-99:20*Math.log10(Math.cos(a*Math.PI/180));
+  var thTxt=a>=90?'−∞':th.toFixed(1);
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td class="n base">'+a+'°'+(a===0?'（垂直）':(a===90?'（水平）':''))+'</td>'+
+    '<td class="n"><input class="num pol" data-k="P_'+a+'" data-ang="'+a+'"></td>'+
+    '<td class="n"><span class="out" id="Prel_'+a+'">'+(a===0?'0':'—')+'</span></td>'+
+    '<td class="n base">'+thTxt+'</td>';
+  polBody.appendChild(tr);
+});
+
+/* ── 工具 ── */
+function v(k){ var x=parseFloat(store[k]); return isFinite(x)?x:null; }
+function setOut(id,val,unit,signed){
+  var el=document.getElementById(id); if(!el) return;
+  if(val===null||!isFinite(val)){ el.textContent='—'; el.className='out'; return; }
+  var s=(signed&&val>0?'+':'')+val.toFixed(1)+(unit||'');
+  el.textContent=s;
+  el.className='out'+(signed?(val>0.05?' pos':(val<-0.05?' neg':'')):'');
+}
+function avg(ks){
+  var a=ks.map(v).filter(function(x){return x!==null;});
+  return a.length? a.reduce(function(p,c){return p+c;},0)/a.length : null;
+}
+
+/* ── 計算 ── */
+function recalc(){
+  /* 實驗 0 */
+  var ant=v('e0_ant'), dl=v('e0_dl');
+  setOut('e0_diff',(ant!==null&&dl!==null)?ant-dl:null,'',true);
+
+  /* 實驗 2 */
+  ['h','m','l'].forEach(function(t){
+    var p=v('e2_'+t+'p'), n=v('e2_'+t+'n');
+    setOut('e2_'+t+'s',(p!==null&&n!==null)?p-n:null);
+  });
+  var hp=v('e2_hp');
+  ['m','l'].forEach(function(t){
+    var p=v('e2_'+t+'p');
+    setOut('e2_'+t+'r',(p!==null&&hp!==null)?p-hp:null,'',true);
+  });
+
+  /* 實驗 5 亞音誤差 */
+  [[1,88.5],[2,100.0],[3,123.0]].forEach(function(pair){
+    var m=v('e5_t'+pair[0]);
+    setOut('e5_d'+pair[0], m!==null? m-pair[1] : null,'',true);
+  });
+
+  /* 實驗 6 位移量 */
+  [['a',145.700],['b',145.700],['c',145.700]].forEach(function(p){
+    var f=v('e6_'+p[0]);
+    var el=document.getElementById('e6_d'+p[0]);
+    if(f===null){ el.textContent='—'; el.className='out'; return; }
+    var d=(f-p[1])*1000;
+    el.textContent=(d>0?'+':'')+d.toFixed(0);
+    el.className='out'+(Math.abs(d)>1?' neg':'');
+  });
+
+  /* 實驗 10-1 */
+  [['145'],['435']].forEach(function(band){
+    var b=band[0];
+    var base=avg(['a'+b+'_s1','a'+b+'_s2','a'+b+'_s3']);
+    setOut('a'+b+'_avg',base);
+    ['b','c'].forEach(function(row){
+      var m=avg([row+b+'_s1',row+b+'_s2',row+b+'_s3']);
+      setOut(row+b+'_avg',m);
+      setOut(row+b+'_rel',(m!==null&&base!==null)?m-base:null,'',true);
+    });
+  });
+
+  /* 實驗 10-3 相對值 */
+  var p0=v('P_0');
+  ANGLES.forEach(function(a){
+    if(a===0) return;
+    var pv=v('P_'+a);
+    setOut('Prel_'+a,(pv!==null&&p0!==null)?pv-p0:null,'',true);
+  });
+
+  /* 實驗 10-4 / 10-5 */
+  var hb=v('h4_base');
+  [['hand'],['face'],['pkt'],['mtl'],['ant']].forEach(function(x){
+    var q=v('h4_'+x[0]);
+    setOut('h4_'+x[0]+'_r',(q!==null&&hb!==null)?q-hb:null,'',true);
+  });
+  var db=v('h5_desk');
+  [['floor'],['high'],['body'],['wall'],['door']].forEach(function(x){
+    var q=v('h5_'+x[0]);
+    setOut('h5_'+x[0]+'_r',(q!==null&&db!==null)?q-db:null,'',true);
+  });
+
+  /* 實驗 10-6 總結 */
+  var lp=v('e2_lp');
+  setOut('sum_pw',(hp!==null&&lp!==null)?hp-lp:null,'',true);
+  var a145=avg(['a145_s1','a145_s2','a145_s3']), b145=avg(['b145_s1','b145_s2','b145_s3']);
+  setOut('sum_ant',(a145!==null&&b145!==null)?b145-a145:null,'',true);
+  var p90=v('P_90');
+  setOut('sum_pol',(p0!==null&&p90!==null)?p0-p90:null,'',true);
+  var fl=v('h5_floor'), hi=v('h5_high');
+  setOut('sum_h',(fl!==null&&hi!==null)?hi-fl:null,'',true);
+
+  /* 統計已填格數 */
+  var n=0;
+  Object.keys(store).forEach(function(k){
+    var val=store[k];
+    if(val===true) n++;
+    else if(typeof val==='string' && val.trim()!=='') n++;
+  });
+  document.getElementById('filled').textContent=n;
+
+  drawLen(); drawPol();
+}
+
+/* ── 綁定輸入 ── */
+document.querySelectorAll('[data-k]').forEach(function(el){
+  var ev = el.type==='checkbox' ? 'change' : 'input';
+  el.addEventListener(ev,function(){
+    store[el.dataset.k] = el.type==='checkbox' ? el.checked : el.value;
+    recalc(); save();
+  });
+});
+
+/* ── 面板小工具 ── */
+function bind(ids,fn){ ids.forEach(function(i){ var e=document.getElementById(i); if(e) e.addEventListener('input',fn); }); fn(); }
+
+bind(['pw_hi','pw_lo'],function(){
+  var hi=parseFloat(document.getElementById('pw_hi').value);
+  var lo=parseFloat(document.getElementById('pw_lo').value);
+  if(!(hi>0&&lo>0)){ document.getElementById('pw_db').textContent='—'; document.getElementById('pw_x').textContent='—'; return; }
+  var db=10*Math.log10(hi/lo);
+  document.getElementById('pw_db').textContent=db.toFixed(1);
+  document.getElementById('pw_x').textContent=Math.pow(10,db/20).toFixed(2);
+});
+
+bind(['cr_dev','cr_af'],function(){
+  var d=parseFloat(document.getElementById('cr_dev').value);
+  var a=parseFloat(document.getElementById('cr_af').value);
+  if(!(isFinite(d)&&isFinite(a))) return;
+  var bw=2*(d+a);
+  document.getElementById('cr_bw').textContent=bw.toFixed(1);
+  document.getElementById('cr_sp').textContent = bw<=12.5?'12.5' : (bw<=25?'25':'>25');
+});
+
+bind(['gb_sp','gb_dev'],function(){
+  var sp=parseFloat(document.getElementById('gb_sp').value);
+  var dv=parseFloat(document.getElementById('gb_dev').value);
+  var vd=document.getElementById('gb_verdict');
+  if(!(isFinite(sp)&&isFinite(dv))){ vd.className='verdict v-idle'; vd.textContent='—'; return; }
+  var occ=2*(dv+3), g=sp-occ;
+  document.getElementById('gb_occ').textContent=occ.toFixed(1);
+  document.getElementById('gb_guard').textContent=(g<0?'\u2212':'')+Math.abs(g).toFixed(1);
+  if(g<0){ vd.className='verdict v-no'; vd.textContent='必然重疊 \u00b7 佔用頻寬已超過頻道間隔 '+Math.abs(g).toFixed(1)+' kHz'; }
+  else if(g<3){ vd.className='verdict v-no'; vd.textContent='高風險 \u00b7 保護頻帶僅 '+g.toFixed(1)+' kHz，稍微過調變就會溢出'; }
+  else{ vd.className='verdict v-ok'; vd.textContent='正常 \u00b7 保護頻帶 '+g.toFixed(1)+' kHz'; }
+});
+
+bind(['wl_f'],function(){
+  var f=parseFloat(document.getElementById('wl_f').value);
+  if(!(f>0)) return;
+  var q=7125/f;
+  document.getElementById('wl_q').textContent=q.toFixed(1);
+  document.getElementById('wl_h').textContent=(q*2).toFixed(1);
+  document.getElementById('wl_3q').textContent=(q*3).toFixed(1);
+  document.getElementById('wl_full').textContent=(q*4).toFixed(1);
+  drawLen();
+});
+
+bind(['rp1','rp2','rp3'],function(){
+  var a=['rp1','rp2','rp3'].map(function(i){return parseFloat(document.getElementById(i).value);}).filter(isFinite);
+  var av=document.getElementById('rp_avg'), sp=document.getElementById('rp_spread'), vd=document.getElementById('rp_verdict');
+  if(a.length<3){ av.textContent='—'; sp.textContent='—'; vd.className='verdict v-idle'; vd.textContent='尚未輸入三次讀值'; return; }
+  var m=a.reduce(function(p,c){return p+c;},0)/3;
+  var spread=Math.max.apply(null,a)-Math.min.apply(null,a);
+  av.textContent=m.toFixed(1); sp.textContent=spread.toFixed(1);
+  if(spread<=2){ vd.className='verdict v-ok'; vd.textContent='通過 · 離散 ≤ 2 dB，可以開始量測'; }
+  else if(spread<=3){ vd.className='verdict v-ok'; vd.textContent='勉強通過 · 離散 ' + spread.toFixed(1) + ' dB，建議再固定條件'; }
+  else{ vd.className='verdict v-no'; vd.textContent='不通過 · 離散 ' + spread.toFixed(1) + ' dB > 3 dB，條件沒固定好，請重來'; }
+});
+
+/* ── 圖表：共用座標 ── */
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function setupCanvas(c){
+  var r=window.devicePixelRatio||1, w=c.clientWidth||900, h=280;
+  c.width=w*r; c.height=h*r;
+  var x=c.getContext('2d'); x.setTransform(r,0,0,r,0,0);
+  x.clearRect(0,0,w,h);
+  return {x:x,w:w,h:h};
+}
+function axes(x,w,h,pad,xmin,xmax,ymin,ymax,xlab,ylab,xticks){
+  x.strokeStyle=css('--rule-soft'); x.lineWidth=1;
+  x.fillStyle=css('--ink-3'); x.font='11px '+css('--mono');
+  var i;
+  for(i=0;i<=4;i++){
+    var yy=pad.t+(h-pad.t-pad.b)*i/4;
+    x.beginPath(); x.moveTo(pad.l,yy); x.lineTo(w-pad.r,yy); x.stroke();
+    var vlab=ymax-(ymax-ymin)*i/4;
+    x.textAlign='right'; x.fillText(vlab.toFixed(0),pad.l-7,yy+3.5);
+  }
+  x.textAlign='center';
+  xticks.forEach(function(t){
+    var xx=pad.l+(w-pad.l-pad.r)*(t-xmin)/(xmax-xmin);
+    x.fillText(String(t),xx,h-pad.b+16);
+  });
+  x.strokeStyle=css('--ink-3');
+  x.beginPath(); x.moveTo(pad.l,pad.t); x.lineTo(pad.l,h-pad.b); x.lineTo(w-pad.r,h-pad.b); x.stroke();
+  x.fillStyle=css('--ink-3'); x.font='10px '+css('--mono');
+  x.textAlign='right'; x.fillText(xlab,w-pad.r,h-4);
+  x.textAlign='left'; x.fillText(ylab,pad.l-34,pad.t-8);
+}
+function series(x,pts,pad,w,h,xmin,xmax,ymin,ymax,color,dash){
+  if(pts.length<1) return;
+  x.save();
+  x.strokeStyle=color; x.lineWidth=2; x.setLineDash(dash||[]);
+  x.beginPath();
+  pts.forEach(function(p,i){
+    var px=pad.l+(w-pad.l-pad.r)*(p[0]-xmin)/(xmax-xmin);
+    var py=pad.t+(h-pad.t-pad.b)*(ymax-p[1])/(ymax-ymin);
+    i?x.lineTo(px,py):x.moveTo(px,py);
+  });
+  x.stroke(); x.setLineDash([]);
+  x.fillStyle=color;
+  pts.forEach(function(p){
+    var px=pad.l+(w-pad.l-pad.r)*(p[0]-xmin)/(xmax-xmin);
+    var py=pad.t+(h-pad.t-pad.b)*(ymax-p[1])/(ymax-ymin);
+    x.beginPath(); x.arc(px,py,3.2,0,7); x.fill();
+  });
+  x.restore();
+}
+function legend(x,items,px,py){
+  x.font='11px '+css('--mono'); x.textAlign='left';
+  items.forEach(function(it,i){
+    var yy=py+i*16;
+    x.fillStyle=it[1]; x.fillRect(px,yy-7,14,3);
+    x.fillStyle=css('--ink-2'); x.fillText(it[0],px+20,yy-2);
+  });
+}
+function empty(x,w,h,msg){
+  x.fillStyle=css('--ink-3'); x.font='12px '+css('--sans');
+  x.textAlign='center'; x.fillText(msg,w/2,h/2);
+}
+
+/* ── 圖表 1：長度 vs 強度 ── */
+function drawLen(){
+  var c=document.getElementById('ch-len'); if(!c) return;
+  var s=setupCanvas(c), x=s.x, w=s.w, h=s.h, pad={l:44,r:16,t:22,b:30};
+  var d145=[], d435=[];
+  LENS.forEach(function(L){
+    var a=v('L145_'+L); if(a!==null) d145.push([L,a]);
+    var b=v('L435_'+L); if(b!==null) d435.push([L,b]);
+  });
+  var all=d145.concat(d435).map(function(p){return p[1];});
+  if(!all.length){ empty(x,w,h,'填入伸縮長度對應的訊號強度後，此處自動繪圖'); return; }
+  var ymin=Math.floor((Math.min.apply(null,all)-4)/5)*5;
+  var ymax=Math.ceil((Math.max.apply(null,all)+4)/5)*5;
+  if(ymax-ymin<10) ymax=ymin+10;
+  axes(x,w,h,pad,5,60,ymin,ymax,'伸縮長度 (cm)','dBFS',LENS);
+
+  /* 理論 1/4λ 與 3/4λ 標記 */
+  var f=parseFloat(document.getElementById('wl_f').value)||145;
+  [[7125/f,'λ/4'],[7125/f*3,'3λ/4']].forEach(function(m){
+    if(m[0]<5||m[0]>60) return;
+    var px=pad.l+(w-pad.l-pad.r)*(m[0]-5)/55;
+    x.save(); x.strokeStyle='#9E5E08'; x.setLineDash([4,4]); x.lineWidth=1.5;
+    x.beginPath(); x.moveTo(px,pad.t); x.lineTo(px,h-pad.b); x.stroke();
+    x.setLineDash([]); x.fillStyle='#9E5E08'; x.font='10px '+css('--mono');
+    x.textAlign='left'; x.fillText(m[1]+' = '+m[0].toFixed(1)+'cm',px+4,pad.t+11);
+    x.restore();
+  });
+
+  series(x,d145,pad,w,h,5,60,ymin,ymax,'#06788B');
+  series(x,d435,pad,w,h,5,60,ymin,ymax,'#63399B',[6,4]);
+  legend(x,[['145 MHz','#06788B'],['435 MHz','#63399B']],w-118,pad.t+12);
+}
+
+/* ── 圖表 2：極化 ── */
+function drawPol(){
+  var c=document.getElementById('ch-pol'); if(!c) return;
+  var s=setupCanvas(c), x=s.x, w=s.w, h=s.h, pad={l:44,r:16,t:22,b:30};
+  var p0=v('P_0'), meas=[];
+  if(p0!==null){
+    ANGLES.forEach(function(a){
+      var pv=v('P_'+a);
+      if(pv!==null) meas.push([a,pv-p0]);
+    });
+  }
+  var theory=[];
+  for(var a=0;a<=88;a+=2){
+    var t=20*Math.log10(Math.cos(a*Math.PI/180));
+    theory.push([a,Math.max(t,-32)]);
+  }
+  var ymin=-32, ymax=4;
+  if(meas.length){
+    var mn=Math.min.apply(null,meas.map(function(p){return p[1];}));
+    ymin=Math.min(-32,Math.floor((mn-3)/5)*5);
+  }
+  axes(x,w,h,pad,0,90,ymin,ymax,'接收天線傾角 (度)','相對 dB',ANGLES);
+  series(x,theory.map(function(p){return p;}),pad,w,h,0,90,ymin,ymax,'#B9C6CB',[5,4]);
+  if(meas.length) series(x,meas,pad,w,h,0,90,ymin,ymax,'#9E2118');
+  else empty(x,w,h*1.55,'填入各傾角讀值後，實測曲線會疊在理論曲線上');
+  legend(x,[['理論 20·log(cos θ)','#B9C6CB'],['實測','#9E2118']],pad.l+12,pad.t+12);
+}
+
+/* ── HERO 瀑布圖 ── */
+(function(){
+  var c=document.getElementById('wf'); if(!c) return;
+  var ctx=c.getContext('2d');
+  var W=c.width, H=c.height;
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cap=document.getElementById('wfcap');
+
+  /* 經典瀑布色階 */
+  function cmap(t){
+    t=Math.max(0,Math.min(1,t));
+    var stops=[[0,4,10,18],[0.30,10,52,110],[0.52,20,150,168],[0.70,99,193,50],[0.85,240,196,48],[0.95,214,74,31],[1,255,255,255]];
+    for(var i=1;i<stops.length;i++){
+      if(t<=stops[i][0]){
+        var a=stops[i-1], b=stops[i];
+        var k=(t-a[0])/(b[0]-a[0]);
+        return 'rgb('+Math.round(a[1]+(b[1]-a[1])*k)+','+Math.round(a[2]+(b[2]-a[2])*k)+','+Math.round(a[3]+(b[3]-a[3])*k)+')';
+      }
+    }
+    return 'rgb(255,255,255)';
+  }
+
+  /* 教學腳本：窄頻 → 停 → 寬頻 → 停 → 過調變 */
+  var script=[
+    {d:52, w:0.014, amp:0.80, cap:'窄頻 N · 頻偏 ±2.5 kHz · 佔用頻寬約 11 kHz'},
+    {d:16, w:0,     amp:0,    cap:'放開 PTT · 只剩底噪'},
+    {d:52, w:0.030, amp:0.84, cap:'寬頻 W · 頻偏 ±5 kHz · 佔用頻寬約 16 kHz'},
+    {d:16, w:0,     amp:0,    cap:'放開 PTT · 只剩底噪'},
+    {d:58, w:0.062, amp:0.92, cap:'MIC GAIN 過高 · 過偏移，已溢出鄰頻道'},
+    {d:16, w:0,     amp:0,    cap:'放開 PTT · 只剩底噪'}
+  ];
+  var idx=0, frame=0;
+
+  function row(st){
+    var img=ctx.createImageData(W,1);
+    for(var px=0;px<W;px++){
+      var fx=(px/W)-0.5;
+      var n=0.16+Math.random()*0.07;
+      if(st.amp>0){
+        var g=Math.exp(-(fx*fx)/(2*st.w*st.w));
+        n+=st.amp*g*(0.86+Math.random()*0.14);
+        /* 過調變時加旁瓣 */
+        if(st.w>0.05){
+          n+=st.amp*0.30*Math.exp(-(Math.abs(fx)-st.w*2.1)*(Math.abs(fx)-st.w*2.1)/(2*0.0006))*Math.random();
+        }
+      }
+      var col=cmap(n);
+      var m=col.match(/\d+/g);
+      img.data[px*4]=+m[0]; img.data[px*4+1]=+m[1]; img.data[px*4+2]=+m[2]; img.data[px*4+3]=255;
+    }
+    return img;
+  }
+
+  function step(){
+    var st=script[idx];
+    ctx.drawImage(c,0,1);
+    ctx.putImageData(row(st),0,0);
+    frame++;
+    if(frame>=st.d){ frame=0; idx=(idx+1)%script.length; cap.textContent=script[idx].cap; }
+  }
+
+  /* 先填滿一屏 */
+  ctx.fillStyle='#04090B'; ctx.fillRect(0,0,W,H);
+  for(var i=0;i<H;i++) step();
+  cap.textContent=script[idx].cap;
+
+  if(!reduce){
+    var timer=null;
+    function loop(){ step(); }
+    timer=setInterval(loop,58);
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden){ clearInterval(timer); }
+      else{ timer=setInterval(loop,58); }
+    });
+  }
+})();
+
+/* ── 導覽尺 ── */
+var NAV=[
+  ['grp','前置',null],
+  ['s-intro','標註規則與供應鏈','—'],
+  ['s-0','環境建置與基準','0'],
+  ['s-gloss','名詞對照表','—'],
+  ['grp','頻率與功率',null],
+  ['s-1','頻率步進 · 發射功率','1–2'],
+  ['grp','頻寬與音質',null],
+  ['s-2','寬窄頻 · 麥克風增益','3–4'],
+  ['grp','信令與控制',null],
+  ['s-3','亞音 · 位移 · 靜噪 · TOT · VOX','5–9'],
+  ['grp','天線',null],
+  ['s-4','原廠 / 伸縮 / 其他','10'],
+  ['grp','訊號真偽',null],
+  ['s-fake','假訊號與鄰頻辨識','11'],
+  ['s-tshoot','現場排錯總表','—'],
+  ['grp','驗收',null],
+  ['s-5','盲測排錯','12'],
+  ['s-app','附錄','A–C']
+];
+var ruler=document.getElementById('ruler');
+NAV.forEach(function(n){
+  if(n[0]==='grp'){
+    var g=document.createElement('div'); g.className='tick grp'; g.textContent=n[1];
+    ruler.appendChild(g); return;
+  }
+  var a=document.createElement('a');
+  a.className='tick'; a.href='#'+n[0]; a.dataset.sec=n[0];
+  a.innerHTML='<span class="no">'+n[2]+'</span><span>'+n[1]+'</span>';
+  ruler.appendChild(a);
+});
+var ticks=Array.prototype.slice.call(ruler.querySelectorAll('.tick[data-sec]'));
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    ticks.forEach(function(t){ t.classList.toggle('on', t.dataset.sec===e.target.id); });
+  });
+},{rootMargin:'-10% 0px -70% 0px'});
+document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+
+/* ── 匯出 / 匯入 / 列印 ── */
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('up');
+  setTimeout(function(){ t.classList.remove('up'); },2400);
+}
+function exportJSON(){
+  var payload={ doc:'進階無線電 SDR 實驗講義 v1', saved:new Date().toISOString(), data:store };
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='SDR實驗記錄_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(url);
+  toast('已匯出實驗數據');
+}
+function importJSON(){
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='.json,application/json';
+  inp.onchange=function(){
+    var f=inp.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      try{
+        var j=JSON.parse(fr.result);
+        store=j.data||j;
+        applyStore(); save();
+        toast('已匯入實驗數據');
+      }catch(e){ toast('匯入失敗：檔案格式不正確'); }
+    };
+    fr.readAsText(f);
+  };
+  inp.click();
+}
+document.getElementById('b-export').addEventListener('click',exportJSON);
+document.getElementById('r-export').addEventListener('click',exportJSON);
+document.getElementById('r-import').addEventListener('click',importJSON);
+function openAllDetails(){ document.querySelectorAll('details.gl').forEach(function(d){ d.open=true; }); }
+window.addEventListener('beforeprint',openAllDetails);
+document.getElementById('b-print').addEventListener('click',function(){ openAllDetails(); setTimeout(function(){ window.print(); },60); });
+document.getElementById('b-sheet').addEventListener('click',function(){
+  document.body.classList.toggle('sheet-only');
+  var on=document.body.classList.contains('sheet-only');
+  this.textContent = on ? '切換完整講義' : '切換記錄單模式';
+  toast(on ? '記錄單模式：只留表格與量測欄位' : '完整講義模式');
+});
+
+/* ── 離開前提醒 ── */
+window.addEventListener('beforeunload',function(e){
+  if(dirty && !canPersist()){ e.preventDefault(); e.returnValue=''; }
+});
+
+/* ── 視窗變動重繪 ── */
+var rt=null;
+window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ drawLen(); drawPol(); },150); });
+
+/* ── 啟動 ── */
+load().then(recalc);
+recalc();
+
+})();
+</script>

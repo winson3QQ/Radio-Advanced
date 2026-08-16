@@ -1,0 +1,1174 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>進階無線電 第二節 · 無線科技分層解析</title>
+
+<style>
+:root{
+  --paper:#F1F4F4; --paper-2:#FFFFFF; --paper-3:#E7ECEC;
+  --ink:#0F1A21; --ink-2:#3B4C57; --ink-3:#6A7A85;
+  --rule:#C6D0D3; --rule-soft:#DCE3E4;
+  --panel:#0A1216; --panel-2:#15242B;
+  --teal:#06788B; --amber:#9E5E08; --violet:#63399B; --crimson:#9E2118; --steel:#31607F; --moss:#3E6B4A;
+  --teal-bg:#E2F0F2; --amber-bg:#F7EDDF; --violet-bg:#EEE8F6; --crimson-bg:#F8E5E3; --steel-bg:#E8F0F5; --moss-bg:#E9F1EA;
+  --mono: ui-monospace,"SFMono-Regular","JetBrains Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  --sans: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --rail-w:210px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:20px}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15.5px; line-height:1.78; -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(15,26,33,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(15,26,33,.045) 1px,transparent 1px); background-size:56px 56px;}
+.shell{display:flex; align-items:flex-start; max-width:1320px; margin:0 auto}
+
+.rail{position:sticky; top:0; height:100vh; width:var(--rail-w); flex:0 0 var(--rail-w); background:var(--panel); color:#9FB4BD; padding:22px 0 18px; display:flex; flex-direction:column; overflow:hidden}
+.rail-head{padding:0 18px 14px; border-bottom:1px solid #22343D}
+.rail-head b{display:block; color:#EAF2F4; font-size:13px}
+.rail-head span{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#5D7885}
+.ruler{flex:1; overflow-y:auto; padding:12px 0 30px; scrollbar-width:thin}
+.ruler::-webkit-scrollbar{width:5px}
+.ruler::-webkit-scrollbar-thumb{background:#243943; border-radius:3px}
+.tick{display:flex; align-items:center; gap:9px; padding:5px 16px 5px 0; color:#8AA3AD; text-decoration:none; font-size:12.5px; line-height:1.35; border-left:2px solid transparent}
+.tick .no{font-family:var(--mono); font-size:10.5px; width:30px; text-align:right; flex:0 0 30px; color:#4E6B77}
+.tick:hover{color:#DCEBEF; background:#101E24}
+.tick.on{color:#fff; background:#122129; border-left-color:#63C132}
+.tick.on .no{color:#9BD46E}
+.tick.grp{margin-top:12px; pointer-events:none; color:#4C6774; font-family:var(--mono); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; padding-left:16px}
+
+main{flex:1; min-width:0; padding:0 46px 120px; background:var(--paper-2); border-left:1px solid var(--rule-soft); border-right:1px solid var(--rule-soft)}
+
+.hero{margin:0 -46px 40px; background:var(--panel); color:#E9F2F4; padding:34px 46px 30px}
+.hero h1{font-size:clamp(28px,4.2vw,44px); line-height:1.04; margin:14px 0 12px; font-weight:800; letter-spacing:-.025em; color:#fff}
+.hero h1 em{font-style:normal; color:#7ED957}
+.eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:#5F8494}
+.hero p{color:#A7BEC7; max-width:60ch; font-size:14.5px; margin:0}
+.hero .badstack{display:flex; flex-wrap:wrap; gap:6px; margin-top:22px}
+.hero .badstack span{font-family:var(--mono); font-size:11px; padding:4px 9px; border:1px solid #2A424D; border-radius:3px; color:#8FA9B3}
+
+h2.part{font-family:var(--mono); font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--ink-3); margin:56px 0 6px; padding-bottom:8px; border-bottom:2px solid var(--ink)}
+section{scroll-margin-top:16px}
+h3.hd{font-size:23px; font-weight:800; letter-spacing:-.015em; margin:32px 0 4px; line-height:1.22}
+h4{font-size:16.5px; font-weight:700; margin:26px 0 4px}
+h5{font-size:13.5px; font-weight:700; margin:18px 0 2px; color:var(--ink-2)}
+p{margin:.55em 0}
+.lede{color:var(--ink-2); font-size:14.5px; margin:6px 0 14px}
+ul,ol{padding-left:1.3em; margin:.5em 0}
+li{margin:.25em 0}
+hr{border:0; border-top:1px solid var(--rule-soft); margin:34px 0}
+code{font-family:var(--mono); font-size:.9em; background:var(--paper-3); padding:1px 5px; border-radius:2px}
+
+.tag{font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.1em; padding:1px 5px; border-radius:2px; white-space:nowrap; vertical-align:2px}
+.t-fact{background:var(--teal-bg); color:var(--teal)}
+.t-inf{background:var(--amber-bg); color:var(--amber)}
+.t-tbd{background:var(--violet-bg); color:var(--violet)}
+.t-sc{background:var(--crimson-bg); color:var(--crimson)}
+
+.box{border-left:3px solid var(--rule); background:var(--paper); padding:14px 18px; margin:18px 0; font-size:14.5px}
+.box h5{margin-top:0}
+.box .lbl{font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; display:block; margin-bottom:4px; opacity:.75}
+.box.key{border-left-color:var(--teal); background:var(--teal-bg)}
+.box.warn{border-left-color:var(--amber); background:var(--amber-bg)}
+.box.sc{border-left-color:var(--crimson); background:var(--crimson-bg)}
+.box.tbd{border-left-color:var(--violet); background:var(--violet-bg)}
+.box.why{border-left-color:var(--steel); background:var(--steel-bg)}
+.box.why .lbl{color:var(--steel); opacity:1}
+.box.field{border-left-color:var(--moss); background:var(--moss-bg)}
+.box.field .lbl{color:var(--moss); opacity:1}
+.why h6,.field h6{font-size:12.5px; font-weight:700; margin:11px 0 1px; color:var(--steel)}
+.field h6{color:var(--moss)}
+.why h6:first-of-type,.field h6:first-of-type{margin-top:4px}
+
+.tw{overflow-x:auto; margin:16px 0}
+table{border-collapse:collapse; width:100%; font-size:13.5px}
+th,td{border:1px solid var(--rule-soft); padding:7px 10px; text-align:left; vertical-align:top}
+thead th{background:var(--paper-3); font-size:12px; font-weight:700; color:var(--ink-2)}
+tbody tr:nth-child(even) td{background:#FAFCFC}
+td.n,th.n{text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums}
+td.base{background:var(--paper-3)!important; font-family:var(--mono); font-size:12.5px; color:var(--ink-2)}
+.ok{color:#1F6B3E; font-weight:700}
+.no{color:var(--crimson); font-weight:700}
+
+/* 層位互動 */
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 18px}
+.chip{font-family:var(--mono); font-size:12px; padding:6px 12px; border:1px solid var(--rule); background:var(--paper-2); color:var(--ink-2); border-radius:3px; cursor:pointer}
+.chip:hover{border-color:var(--teal); color:var(--teal)}
+.chip.on{background:var(--ink); color:#fff; border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--teal); outline-offset:2px}
+.stack{display:flex; flex-direction:column; gap:5px; margin:16px 0}
+.lyr{display:flex; align-items:stretch; border:1px solid var(--rule-soft); border-radius:3px; background:var(--paper-2); overflow:hidden; transition:background .18s,border-color .18s,opacity .18s}
+.lyr .lno{flex:0 0 74px; background:var(--paper-3); font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-2); display:flex; align-items:center; justify-content:center; text-align:center}
+.lyr .lbody{padding:9px 14px; flex:1}
+.lyr .lname{font-weight:700; font-size:14.5px}
+.lyr .ldesc{font-size:12.5px; color:var(--ink-3); line-height:1.55}
+.lyr .lmark{flex:0 0 78px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-align:center; padding:0 6px}
+.lyr.sub .lno{background:#DDE7E9}
+.lyr.provide{background:var(--teal-bg); border-color:var(--teal)}
+.lyr.provide .lno{background:var(--teal); color:#fff}
+.lyr.provide .lmark{color:var(--teal); font-weight:700}
+.lyr.depend{background:var(--amber-bg); border-color:#D9B77E}
+.lyr.depend .lmark{color:var(--amber); font-weight:700}
+.lyr.host{background:#EDEAF4; border-color:#9B87C4}
+.lyr.host .lmark{color:var(--violet); font-weight:700}
+.lyr.dim{opacity:.42}
+.verdictbox{background:var(--panel); color:#CFE2E8; border-radius:4px; padding:16px 18px; margin:14px 0; font-family:var(--mono); font-size:13px; line-height:1.75; min-height:96px}
+.verdictbox .k{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#5F8494; display:block; margin-bottom:6px}
+.verdictbox b{color:#7ED957}
+.verdictbox .warnline{color:#F0B45E; display:block; margin-top:7px}
+
+/* 面板工具 */
+.panel{background:var(--panel); color:#CFE2E8; border-radius:4px; padding:18px 20px; margin:22px 0; font-family:var(--mono)}
+.panel .ttl{font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:#5F8494; margin-bottom:12px}
+.panel label{font-size:11px; letter-spacing:.08em; color:#8FA9B3; display:block; margin-bottom:3px}
+.panel select,.panel input{font-family:var(--mono); background:#050C0F; border:1px solid #2A424D; color:#7ED957; padding:6px 8px; font-size:13.5px; border-radius:2px; width:100%}
+.panel select:focus,.panel input:focus{outline:0; border-color:#7ED957}
+.pgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; align-items:end}
+.readout{background:#050C0F; border:1px solid #22343D; border-radius:2px; padding:8px 10px}
+.readout .k{font-size:9.5px; letter-spacing:.14em; color:#5F8494; text-transform:uppercase}
+.readout .v{font-size:19px; color:#7ED957; font-variant-numeric:tabular-nums; line-height:1.3}
+.readout .v.bad{color:#F0785A}
+.readout .u{font-size:11px; color:#4E7180}
+.note{font-size:11.5px; color:#7594A0; margin:12px 0 0; line-height:1.7}
+
+svg.fig{width:100%; height:auto; display:block; background:var(--paper-2); border:1px solid var(--rule-soft); border-radius:3px; margin:14px 0}
+.figcap{font-size:12.5px; color:var(--ink-3); margin:-6px 0 18px; font-family:var(--mono); letter-spacing:.02em}
+
+.bar{position:sticky; top:0; z-index:40; display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:rgba(241,244,244,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--rule); padding:9px 46px; margin:0 -46px}
+.bar .stat{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-3); margin-right:auto}
+.bbtn{font-family:var(--mono); font-size:11px; letter-spacing:.07em; padding:6px 11px; border:1px solid var(--rule); background:var(--paper-2); color:var(--ink-2); border-radius:3px; cursor:pointer}
+.bbtn:hover{border-color:var(--teal); color:var(--teal)}
+.bbtn.solid{background:var(--ink); color:var(--paper-2); border-color:var(--ink)}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; margin:14px 0 0}
+.legend span{display:flex; gap:6px; align-items:center}
+
+@media (max-width:900px){
+  .rail{display:none}
+  main{padding:0 20px 90px; border:0}
+  .hero{margin:0 -20px 30px; padding:26px 20px}
+  .bar{padding:9px 20px; margin:0 -20px}
+  body{background-size:40px 40px}
+  .lyr .lno{flex:0 0 56px; font-size:10px}
+  .lyr .lmark{flex:0 0 58px; font-size:9.5px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff; font-size:10.5pt}
+  .rail,.bar,.chips{display:none!important}
+  main{padding:0; border:0}
+  .hero{background:#fff; color:#000; margin:0 0 10mm; padding:0; border-bottom:2px solid #000}
+  .hero h1,.hero h1 em{color:#000}
+  .hero p,.eyebrow{color:#444}
+  .hero .badstack span{border-color:#999; color:#333}
+  section{page-break-inside:avoid}
+  table{page-break-inside:avoid; font-size:9pt}
+  .panel,.verdictbox{background:#fff; color:#000; border:1px solid #999}
+  .panel .ttl,.panel label,.readout .k,.verdictbox .k,.note{color:#555}
+  .panel select,.panel input,.readout{background:#fff; border:1px solid #999}
+  .readout .v,.panel select,.panel input,.verdictbox b{color:#000}
+  .lyr{opacity:1!important}
+}
+</style>
+
+<div class="shell">
+<aside class="rail">
+  <div class="rail-head"><span>Session 2 · Concepts</span><b>無線科技分層解析</b></div>
+  <nav class="ruler" id="ruler"></nav>
+</aside>
+
+<main>
+<div class="bar">
+  <div class="stat">第二節 · 純概念講解 · 無實驗</div>
+  <button class="bbtn" id="b-print">列印 / 存 PDF</button>
+  <button class="bbtn solid" onclick="location.href='#s-map'">直接看定位表</button>
+</div>
+
+<header class="hero">
+  <span class="eyebrow">Session Two · Layered Analysis</span>
+  <h1>它們<em>不在同一層</em><br>所以不能拿來比較</h1>
+  <p>民防圈討論無線科技時最常見的錯誤，不是選錯技術，而是<b>把不同抽象層級的東西並排比較</b>。這一節用 TCP/IP 四層與網路拓樸兩把尺，把下面這十六個名詞各自放回它該在的位置。</p>
+  <div class="badstack">
+    <span>Mesh</span><span>Ad-Hoc</span><span>MANET</span><span>OpenMANET</span><span>OpenWrt</span><span>LoRa</span><span>LoRaWAN</span><span>Meshtastic</span><span>802.11s</span><span>802.11ah</span><span>HaLow</span><span>4G / 5G</span><span>業餘無線電</span><span>AX.25</span><span>APRS</span><span>TAK</span>
+  </div>
+</header>
+
+<section id="s-intro">
+  <h2 class="part">開場 · 這份清單本身就是教材</h2>
+
+  <p>上面那排名詞，是民防圈實際討論時會並列出現的詞。但它們分別是：</p>
+  <div class="tw"><table>
+    <thead><tr><th>名詞</th><th>它實際上是哪一類東西</th></tr></thead>
+    <tbody>
+      <tr><td class="base">Mesh</td><td><b>拓樸概念</b>——不是技術，是一種連線的形狀</td></tr>
+      <tr><td class="base">Ad-Hoc</td><td><b>架構概念，同時也是一個 MAC 模式</b>——802.11 裡叫 IBSS，讓節點不透過基地台直接互通</td></tr>
+      <tr><td class="base">MANET</td><td><b>網路架構類別</b>——「會移動的自組織網狀網」，同時也是一個商用電台的產品分類</td></tr>
+      <tr><td class="base">LoRa</td><td><b>實體層調變方式</b>——一種把資料變成電波的方法</td></tr>
+      <tr><td class="base">LoRaWAN</td><td><b>網路架構規範</b>——而且是星狀，不是網狀</td></tr>
+      <tr><td class="base">Meshtastic</td><td><b>開源韌體專案</b>——一套軟體</td></tr>
+      <tr><td class="base">802.11s</td><td><b>IEEE 標準修訂</b>——替 Wi-Fi 加上網狀轉發</td></tr>
+      <tr><td class="base">802.11ah</td><td><b>IEEE 標準</b>——一整套實體層加媒體存取層</td></tr>
+      <tr><td class="base">HaLow</td><td><b>商標名</b>——就是 802.11ah <span class="tag t-fact">FACT</span></td></tr>
+      <tr><td class="base">4G / 5G</td><td><b>完整的商用系統</b>——含營運商基礎設施</td></tr>
+      <tr><td class="base">業餘無線電（FM）</td><td><b>實體層</b>——就是第一節那台手持機，接上數據機就能傳資料</td></tr>
+      <tr><td class="base">AX.25</td><td><b>連結層協定</b>——1980 年代的封包協定，用呼號當位址</td></tr>
+      <tr><td class="base">APRS</td><td><b>應用層軟體</b>——1980 年代版本的 TAK</td></tr>
+      <tr><td class="base">TAK</td><td><b>應用層軟體</b>——完全不管底下用什麼傳</td></tr>
+      <tr><td class="base">OpenWrt</td><td><b>作業系統</b>——不在任何一層，是讓所有層跑起來的地方</td></tr>
+      <tr><td class="base">OpenMANET</td><td><b>整合方案</b>——不發明任何一層，把別人的元件組成一台可用的電台</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">開場的三句話</span>
+    <ul>
+      <li><b>802.11ah 和 HaLow 是同一個東西。</b>前者是 IEEE 的標準編號，後者是 Wi-Fi Alliance 的認證商標名 <span class="tag t-fact">FACT</span>。清單上列成兩項，本身就說明這個混淆有多普遍。</li>
+      <li><b>問「要不要用 mesh」是錯的問題。</b>就像問「要不要用三角形」——要先知道你在蓋什麼。</li>
+      <li><b>LoRa、LoRaWAN、Meshtastic 是三個層次的東西</b>，卻經常被當成同義詞。這一節結束後，學員必須能一句話說清楚三者的差別。</li>
+    </ul>
+  </div>
+
+  <div class="legend">
+    <span><b class="tag t-fact">FACT</b> 有規範或文件支持</span>
+    <span><b class="tag t-inf">推論</b> 由事實推導，需驗證</span>
+    <span><b class="tag t-tbd">待查</b> 需依最新法規或現場補齊</span>
+    <span><b class="tag t-sc">供應鏈</b> 中國來源，資安須留意</span>
+  </div>
+</section>
+
+<!-- ═════════ 第一部 ═════════ -->
+<section id="s-layers">
+  <h2 class="part">第一部 · TCP/IP 四層，以及為什麼第一層要再拆</h2>
+
+  <p class="lede">TCP/IP 四層模型是網路教學的標準框架。但直接拿來分析無線科技會失去解析度——<b>因為那九個名詞裡有六個全部擠在第一層裡面</b>。</p>
+
+  <div class="box sc">
+    <span class="lbl">先講一件會造成誤讀的事 · 層編號</span>
+    <p><b>本文件的 L1–L4 是 TCP/IP 四層模型的編號，與 OSI 七層模型的 L1–L4 完全不同。</b>做網路的人看到「L2」幾乎都會反射性想到 OSI 的資料鏈結層，但在這份文件裡：</p>
+    <div class="tw"><table>
+      <thead><tr><th>本文件（TCP/IP 四層）</th><th>對應到 OSI 七層</th></tr></thead>
+      <tbody>
+        <tr><td class="base">L4 應用層</td><td>OSI L5–L7</td></tr>
+        <tr><td class="base">L3 傳輸層</td><td>OSI L4</td></tr>
+        <tr><td class="base"><b>L2 網際網路層（IP）</b></td><td><b>OSI L3 網路層</b></td></tr>
+        <tr><td class="base">L1 網路存取層</td><td>OSI L1 ＋ L2</td></tr>
+      </tbody>
+    </table></div>
+    <p>最容易出事的是<b>本文件的 L2 是 IP 層，不是 OSI 的資料鏈結層</b>。授課時建議直接講名稱（「網際網路層」「網路存取層」），不要只講編號。</p>
+  </div>
+
+  <h4>標準的四層</h4>
+  <div class="tw"><table>
+    <thead><tr><th style="width:100px">層</th><th>名稱</th><th>回答什麼問題</th><th>例子</th></tr></thead>
+    <tbody>
+      <tr><td class="base">L4</td><td><b>應用層</b><br>Application</td><td>人要用它做什麼？</td><td>TAK、網頁、電子郵件</td></tr>
+      <tr><td class="base">L3</td><td><b>傳輸層</b><br>Transport</td><td>資料要不要保證送到？</td><td>TCP（保證）、UDP（不保證）</td></tr>
+      <tr><td class="base">L2</td><td><b>網際網路層</b><br>Internet</td><td>怎麼定址？怎麼決定路徑？</td><td>IP、路由協定</td></tr>
+      <tr><td class="base">L1</td><td><b>網路存取層</b><br>Network Access</td><td>訊號怎麼實際傳出去？</td><td>乙太網路、Wi-Fi、無線電</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>為什麼 L1 必須再拆成三個子層</h4>
+  <p>對有線網路來說 L1 是一根線，不需要再拆。但無線的 L1 裡面其實藏了三件完全不同的事，而且這三件事各自有獨立的標準、獨立的廠商、獨立的失效模式。<b>下表與全份文件一致，一律由上（高層）往下（低層）排列</b>：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:100px">子層</th><th>負責什麼</th><th>失效時的症狀</th><th>第一節哪個實驗打過基礎</th></tr></thead>
+    <tbody>
+      <tr><td class="base">1c 拓樸與轉發<br>Topology</td><td>訊號要經過誰才能到達目的地</td><td>某些節點永遠連不上</td><td><b>實驗 6 中繼台位移</b></td></tr>
+      <tr><td class="base">1b 媒體存取<br>MAC</td><td>誰能發、什麼時候發、怎麼避免相撞</td><td>塞車、延遲暴增、封包遺失</td><td>實驗 8 TOT、實驗 11-A 鄰頻重疊</td></tr>
+      <tr><td class="base">1a 實體層<br>PHY</td><td>頻段、調變、頻寬、功率、天線</td><td>收不到、訊號弱、被干擾</td><td><b>整個第一節</b>（實驗 1–4、10）</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">兩節課的接點</span>
+    <p><b>中繼台就是 1c 層的類比實作。</b>學員在第一節已經懂了「訊號要經過一個轉發者、而且轉發者收發用不同頻率」。第二節只要說一句「網狀網路就是每個人都同時是中繼台」，整個概念就接上了——差別只在於中繼台是人工規劃的，網狀網路是自動決定的。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第二部 ═════════ -->
+<section id="s-topo">
+  <h2 class="part">第二部 · 網路拓樸 · 四種形狀</h2>
+  <p class="lede">拓樸決定的是「誰能跟誰講話」，以及「誰壞掉的時候會發生什麼事」。這是民防最該關心的一層，因為它直接對應到<b>韌性</b>。</p>
+
+  <svg class="fig" viewBox="0 0 900 250" role="img" aria-label="四種網路拓樸示意圖：點對點、星狀、樹狀、網狀">
+    <g font-family="ui-monospace,monospace" font-size="12" fill="#6A7A85" text-anchor="middle">
+      <text x="112" y="228">點對點 Point-to-Point</text>
+      <text x="337" y="228">星狀 Star</text>
+      <text x="562" y="228">樹狀 Tree</text>
+      <text x="787" y="228">網狀 Mesh</text>
+    </g>
+    <g stroke="#C6D0D3" stroke-width="1.2" fill="none">
+      <line x1="60" y1="105" x2="164" y2="105"/>
+      <line x1="337" y1="105" x2="277" y2="55"/><line x1="337" y1="105" x2="397" y2="55"/>
+      <line x1="337" y1="105" x2="277" y2="155"/><line x1="337" y1="105" x2="397" y2="155"/>
+      <line x1="562" y1="50" x2="512" y2="105"/><line x1="562" y1="50" x2="612" y2="105"/>
+      <line x1="512" y1="105" x2="487" y2="160"/><line x1="512" y1="105" x2="537" y2="160"/>
+      <line x1="612" y1="105" x2="587" y2="160"/><line x1="612" y1="105" x2="637" y2="160"/>
+      <line x1="737" y1="55" x2="837" y2="55"/><line x1="737" y1="55" x2="737" y2="155"/>
+      <line x1="837" y1="55" x2="837" y2="155"/><line x1="737" y1="155" x2="837" y2="155"/>
+      <line x1="737" y1="55" x2="837" y2="155"/><line x1="837" y1="55" x2="737" y2="155"/>
+      <line x1="787" y1="105" x2="737" y2="55"/><line x1="787" y1="105" x2="837" y2="155"/>
+    </g>
+    <g fill="#06788B">
+      <circle cx="60" cy="105" r="9"/><circle cx="164" cy="105" r="9"/>
+      <circle cx="277" cy="55" r="8"/><circle cx="397" cy="55" r="8"/><circle cx="277" cy="155" r="8"/><circle cx="397" cy="155" r="8"/>
+      <circle cx="487" cy="160" r="8"/><circle cx="537" cy="160" r="8"/><circle cx="587" cy="160" r="8"/><circle cx="637" cy="160" r="8"/>
+      <circle cx="737" cy="55" r="8"/><circle cx="837" cy="55" r="8"/><circle cx="737" cy="155" r="8"/><circle cx="837" cy="155" r="8"/><circle cx="787" cy="105" r="8"/>
+    </g>
+    <g fill="#9E2118">
+      <circle cx="337" cy="105" r="11"/>
+      <circle cx="562" cy="50" r="11"/><circle cx="512" cy="105" r="9"/><circle cx="612" cy="105" r="9"/>
+    </g>
+    <g font-family="ui-monospace,monospace" font-size="10.5" fill="#9E2118" text-anchor="middle">
+      <text x="337" y="88">單點失效</text>
+      <text x="562" y="33">單點失效</text>
+    </g>
+  </svg>
+  <p class="figcap">紅色節點＝失去它整個網路就斷。網狀拓樸沒有紅色節點，這就是它的全部價值。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>拓樸</th><th>特性</th><th>單點失效</th><th>代價</th><th>民防對應</th></tr></thead>
+    <tbody>
+      <tr><td class="base">點對點</td><td>兩台直接連</td><td class="ok">無</td><td>只能兩個人</td><td>簡易通信（Simplex）</td></tr>
+      <tr><td class="base">星狀</td><td>全部連到中心</td><td class="no">中心倒＝全倒</td><td>中心是瓶頸也是靶</td><td><b>中繼台、LoRaWAN、4G 基地台</b></td></tr>
+      <tr><td class="base">樹狀</td><td>星狀的多層版</td><td class="no">上層倒＝下層全倒</td><td>失效會擴散</td><td>階層式指揮體系</td></tr>
+      <tr><td class="base">網狀</td><td>每個節點都能轉發</td><td class="ok">無</td><td><b>頻寬被轉發吃掉</b></td><td>Meshtastic、802.11s</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box warn">
+    <span class="lbl">網狀不是免費的</span>
+    <p>網狀拓樸換來韌性，付出的代價是<b>空中時間</b>。同一則訊息要被轉發很多次，每一次轉發都佔用一次頻譜。所以網狀網路的有效頻寬會隨節點數與跳數快速下降——這是物理限制，換晶片、換韌體都不會消失。</p>
+    <p>這也解釋了為什麼「網狀 + 低頻寬實體層」的組合（例如 Meshtastic）只能傳極短的訊息，而「網狀 + 高頻寬實體層」的組合（例如 802.11s）覆蓋距離又很短。<b>你不可能同時要韌性、頻寬和距離。</b></p>
+  </div>
+
+  <h4>網狀的兩種實作層次（這是 802.11s 與 Meshtastic 的真正差別）</h4>
+  <div class="tw"><table>
+    <thead><tr><th>實作層次</th><th>怎麼運作</th><th>代表</th><th>對上層的意義</th></tr></thead>
+    <tbody>
+      <tr><td class="base">L1c 層網狀<br>（MAC 層）</td><td>在 MAC 層做轉發，上層看起來就像一個普通的區域網路</td><td><b>802.11s</b>、batman-adv</td><td>IP 以上完全無感，一般軟體直接能用</td></tr>
+      <tr><td class="base">L2 層網狀<br>（路由層）</td><td>用路由協定決定路徑</td><td>OLSR、Babel</td><td>需要設定，但可跨不同實體層</td></tr>
+      <tr><td class="base">自訂網狀<br>（跳過標準）</td><td>自己定義封包格式與轉發規則</td><td><b>Meshtastic</b></td><td><b>不是 IP 網路</b>，一般軟體無法直接使用</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>先解決一個命名陷阱：MANET 就是 Mobile Ad-hoc NETwork</h4>
+  <p><b>MANET 的全名是 Mobile Ad-hoc NETwork，名字裡本來就有 Ad-hoc。</b>所以「MANET 支不支援 ad-hoc」聽起來像廢話——但它其實不是廢話，因為 <b>Ad-hoc 這個詞有兩個完全不同的意思</b>：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:170px">Ad-hoc 的哪個意思</th><th>指的是</th><th style="width:190px">MANET 名字裡是哪一個</th></tr></thead>
+    <tbody>
+      <tr><td class="base">架構概念</td><td>無基礎設施、臨時組成、沒有事先規劃</td><td class="ok">✔ 就是這個</td></tr>
+      <tr><td class="base">802.11 的 IBSS 模式</td><td>一個具體的 MAC 運作模式，節點不透過基地台直接交換訊框</td><td class="no">✘ 不是這個</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box why">
+    <span class="lbl">這個區分能解開什麼</span>
+    <p><b>MANET 的名字裡有 ad-hoc，不代表它必須用 802.11 的 IBSS 模式實作。</b>一個 MANET 可以：</p>
+    <ul>
+      <li>用 <b>IBSS</b> 實作——傳統做法，現在較少用</li>
+      <li>用 <b>802.11s mesh point</b> 實作——<b>OpenMANET 走的就是這條路</b></li>
+      <li>用<b>專有波形</b>實作——商用戰術電台</li>
+      <li>完全不用 802.11——Meshtastic 自訂封包格式</li>
+    </ul>
+    <p>所以當你問「底層沒支援 ad-hoc 怎麼辦」時，<b>正確的問法是</b>：這個晶片的 MAC 有沒有提供<b>任何一種</b>讓兩個節點直接交換訊框的模式？IBSS 只是其中一種答案，802.11s mesh point 是另一種——而且在 HaLow 上是比較可靠的那一種。</p>
+  </div>
+
+  <h4>Ad-Hoc、Mesh、MANET 三個詞的關係</h4>
+  <p>釐清命名之後，三個詞回答的是不同問題：</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:110px">名詞</th><th>回答的問題</th><th>在 802.11 裡的具體實作</th><th>層</th></tr></thead>
+    <tbody>
+      <tr><td class="base">MANET</td><td>「拓樸一直在變，還能不能通？」<br>——自動找路、容忍移動</td><td>batman-adv、Babel、OLSR</td><td class="base">L2 / 1c</td></tr>
+      <tr><td class="base">Mesh</td><td>「訊號有幾條路可以走？」<br>——每個節點都能替別人轉發</td><td><b>802.11s MBSS</b>（多跳，含轉發）</td><td class="base">1c</td></tr>
+      <tr><td class="base">Ad-Hoc</td><td>「有沒有基地台？」<br>——沒有，節點直接互通</td><td><b>IBSS 模式</b>（單跳，不做轉發）</td><td class="base">1b</td></tr>
+    </tbody>
+  </table></div>
+  <p>包含關係是：<b>Ad-Hoc ⊃ MANET</b>（MANET 是「會移動的」ad-hoc 網路）。而 <b>Mesh 是形狀</b>，跟前兩者是不同軸的描述。</p>
+
+  <div class="box warn">
+    <span class="lbl">最關鍵的差別 · IBSS 不做轉發</span>
+    <p><b>Ad-Hoc（IBSS）只提供「鄰居之間能直接交換訊框」，它本身不做多跳轉發。</b>兩個聽不到彼此的節點，即使都在同一個 IBSS 裡，也無法互通。</p>
+    <p>要跨越多跳，必須另外有人做轉發——那是 802.11s 或 MANET 路由協定的工作。<b>這兩件事缺一不可，而且不能互相取代。</b></p>
+  </div>
+
+  <h4>Mesh 與 MANET 的差別</h4>
+  <p>這兩個詞在民防圈幾乎被當成同義詞，但它們描述的是不同的東西：</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:120px">名詞</th><th>描述的是</th><th>關鍵問題</th></tr></thead>
+    <tbody>
+      <tr><td class="base">Mesh</td><td><b>形狀</b>：每個節點都能替別人轉發</td><td>「訊號有幾條路可以走？」</td></tr>
+      <tr><td class="base">MANET</td><td><b>能力</b>：自己找路、節點會移動、沒有預先規劃</td><td>「拓樸一直在變的時候，還能不能通？」</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>所有 MANET 都是 mesh，但不是所有 mesh 都是 MANET。</b>架在屋頂上位置固定的 802.11s 網路是 mesh，但不是 MANET——因為拓樸幾乎不變。背在身上邊走邊用的節點才需要 MANET 的能力。</p>
+
+  <div class="box warn">
+    <span class="lbl">MANET 的核心難題</span>
+    <p><b>拓樸變得比路由表更新得還快。</b>傳統路由協定要靠控制封包或附加中繼資料來維護路徑，而每一次維護都吃掉空中時間。當節點頻繁移動時，<b>維護路由的開銷會超過它帶來的好處</b> <span class="tag t-fact">FACT</span>。</p>
+    <p>這正是 Meshtastic 選擇洪泛而不是路由的原因——在低頻寬、高移動性的環境下，「大家一起轉發」反而比「算出最佳路徑」更划算。這是工程取捨，不是技術落後。</p>
+  </div>
+
+  <h5>MANET 的兩種面貌</h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:150px">面貌</th><th>指的是什麼</th><th>例子</th><th>落在哪一層</th></tr></thead>
+    <tbody>
+      <tr><td class="base">路由協定族<br>（學術／開源）</td><td>在既有硬體上跑的自組織路由軟體</td><td>OLSR、Babel、BATMAN、AODV</td><td class="base">L2 或 1c</td></tr>
+      <tr><td class="base">商用 MANET 電台<br>（產品類別）</td><td>整包交付的專有波形電台，硬體軟體一起賣</td><td>Silvus、Persistent Systems、TrellisWare、Rajant</td><td class="base">L2 ~ 1a 全包</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>同一個詞指兩件事，是討論時最常見的雞同鴨講。</b>有人說「我們要用 MANET」時，可能是指「在現有 Wi-Fi 上跑 Babel」，也可能是指「買一台十萬元起跳的戰術電台」。務必先問清楚。</p>
+
+  <div class="box key">
+    <span class="lbl">觀念釐清</span>
+    <p><b>Meshtastic 不是一個 IP 網路。</b>它有自己的封包格式與定址方式，不跑 IP、不跑 TCP/UDP。</p>
+    <p>這件事的真正代價不是「什麼都不能跑」，而是<b>每一個應用都要單獨施工</b>：IP 網路上任何應用插上去就能用，非 IP 網路上每個應用都需要一個專屬的適配器。第五部會用 TAK 當例子詳細說明。</p>
+  </div>
+
+  <h3 class="hd">課堂提問 · 下層沒有 ad-hoc，上層有 MANET，能通嗎？</h3>
+  <p class="lede">這是分層框架最好的一道考題。答案是：<b>能通，但你得到的不是 MANET。</b></p>
+
+  <div class="box why">
+    <span class="lbl">核心原則</span>
+    <p style="font-size:16px; margin:2px 0 10px"><b>路由協定只能決定「走哪一條路」，不能創造「本來不存在的路」。</b></p>
+    <p>MANET 路由協定（batman-adv、Babel、OLSR）有一個前提假設：<b>如果 A 和 B 在無線電涵蓋範圍內，A 就能直接送一個訊框給 B。</b>它在這個假設上建立鄰居表、算路徑。</p>
+    <p>如果底層 MAC 只提供基地台對用戶端，那麼<b>兩個用戶端之間在連結層根本沒有直接的路</b>——即使它們的天線相距三公尺。</p>
+  </div>
+
+  <h5>硬跑會發生什麼</h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:44px">#</th><th>結果</th><th>為什麼</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">1</td><td>路由協定<b>忠實地發現一個星狀拓樸</b></td><td>它沒有壞掉，它只是照實回報它看到的東西——而它看到的就是星狀</td></tr>
+      <tr><td class="n base">2</td><td>每一「跳」實際上是<b>兩次無線傳輸</b></td><td>用戶端 → 基地台 → 用戶端。吞吐減半、延遲加倍、佔用的空中時間加倍</td></tr>
+      <tr><td class="n base">3</td><td class="no"><b>基地台一倒，底下所有節點全部孤立</b></td><td>路由協定無路可繞，因為連結層沒有替代路徑可供選擇</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>第三點是關鍵：你採用 MANET 就是為了避免單點失效，而這個組合把單點失效原封不動地保留下來了。</b></p>
+
+  <div class="box key">
+    <span class="lbl">用第一節的東西類比</span>
+    <p>兩台手持機如果彼此聽不到、只能透過中繼台通聯，那麼無論你在上層做多聰明的規劃，都不會讓它們變得能直接通聯。<b>可達性是實體層與連結層的事實，上層只能在既有的可達性上做選擇。</b></p>
+    <p>這跟第一節反覆強調的「軟體不能修好天線」是同一件事，只是搬到了網路層。</p>
+  </div>
+
+  <h5>正確的分工</h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:110px">層</th><th>誰負責</th><th>提供什麼</th></tr></thead>
+    <tbody>
+      <tr><td class="base">L2 / 1c</td><td>batman-adv、Babel、OLSR</td><td>「多跳時怎麼繞路」——<b>路徑選擇</b></td></tr>
+      <tr><td class="base">1b</td><td>IBSS 模式，或 802.11s 的 mesh peering</td><td>「鄰居之間能直接交換訊框」——<b>單跳</b></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box field">
+    <span class="lbl">HaLow 的實際狀況 · 查證結果</span>
+    <h6>好消息</h6>
+    <p><b>HaLow 晶片實際上有支援 802.11s mesh point 模式</b> <span class="tag t-fact">FACT</span>。Alfa Network 表示其 NRC7292 產品支援 IEEE 802.11s；Gateworks 的文件指出 Morse Micro 提供修改版的 hostapd 與 wpa_supplicant 支援 802.11ah，且大多數使用情境（含 AP、STA、802.11s Mesh）不需額外核心修補，其 GW16146 文件同時列出 802.11s Mesh 與 Adhoc/IBSS 兩種設定範例。</p>
+    <h6>但 IBSS 被當成 legacy 且不穩定</h6>
+    <p>Gateworks 明確把 IBSS 稱為「舊的」模式，並註明某個核心修補只有 IBSS 搭配 bridge 時才需要、802.11s Mesh 不需要 <span class="tag t-fact">FACT</span>。Morse Micro 社群近期也有回報：同一份 OpenWRT 映像下 802.11s 運作正常，切到 ad-hoc/IBSS 卻出現核心崩潰 <span class="tag t-fact">FACT</span>。</p>
+    <h6>主流架構</h6>
+    <p><b>802.11s 提供鄰居可達性，batman-adv 或 Babel 在上面做路由。</b>OpenMANET 就是這個架構——基於 Raspberry Pi 與 Morse Micro HaLow 板，跑 OpenWrt，802.11s 加 batman-adv，對終端呈現一個扁平的區域網路，即使背後可能跨越多個 HaLow 跳點 <span class="tag t-fact">FACT</span>。</p>
+  </div>
+
+  <div class="box sc">
+    <span class="lbl">評估時的判斷口訣</span>
+    <p><b>不要問廠商「支不支援 mesh」，要問「兩個用戶端之間能不能直接交換訊框」。</b></p>
+    <p>因為「支援 mesh」在行銷文件裡可能指的是：每個節點同時開一個基地台和一個用戶端，串成一棵樹。<b>那是樹狀不是網狀——根節點倒了整棵斷</b>，跟你要的韌性完全無關。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第三部 ═════════ -->
+<section id="s-map">
+  <h2 class="part">第三部 · 九個名詞的層位定位</h2>
+  <p class="lede">點下面任何一個名詞，看它<b>自己提供哪幾層</b>、以及<b>依賴別人提供哪幾層</b>。這個區分是整節課的核心。</p>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="stack" id="stack"></div>
+
+  <div class="verdictbox" id="verdict"><span class="k">選擇上方任一項目</span>目前顯示完整的層次架構。點選任一名詞後，綠色代表它自己提供的層，琥珀色代表它必須依賴其他技術提供的層，紫色代表它承載或整合了所有層但自己不是任何一層。</div>
+
+  <div class="box key">
+    <span class="lbl">操作完之後要學員說出的結論</span>
+    <ul>
+      <li><b>只有 4G/5G 一個人包辦全部層次。</b>這既是它最方便的地方，也是它最脆弱的地方——因為那些層次全部由第三方擁有。</li>
+      <li><b>TAK 什麼層都不提供，只有 L4。</b>它是最容易被誤會成「一種通訊技術」的東西，實際上它完全不管底下怎麼傳。</li>
+      <li><b>802.11ah 自己不提供 1c 層。</b>它的網路架構以基地台為中心（RAW、TWT、階層式 AID 都以基地台排程為前提），標準沒有為 sub-1 GHz 定義專屬的網狀機制 <span class="tag t-fact">FACT</span>。網狀要靠 802.11s——它屬於基礎 802.11 標準，<b>但實際能不能用取決於晶片韌體有沒有開放 mesh point 模式</b>。</li>
+    </ul>
+  </div>
+
+  <h4>完整定位表</h4>
+  <div class="tw"><table>
+    <thead><tr><th>名詞</th><th>它是什麼</th><th>自己提供</th><th>依賴別人</th><th>最常見的誤解</th></tr></thead>
+    <tbody>
+      <tr><td class="base">Mesh</td><td>拓樸概念</td><td>—</td><td>—</td><td>以為它是一種可以拿來比較的技術</td></tr>
+      <tr><td class="base">LoRa</td><td>實體層調變（線性調頻展頻 CSS）</td><td class="base">1a</td><td class="base">L4 L3 L2 1c 1b</td><td>以為它包含網路功能</td></tr>
+      <tr><td class="base">LoRaWAN</td><td>MAC 與網路架構規範</td><td class="base">L2 1b</td><td class="base">1a（LoRa）</td><td><b>以為它是網狀——它是星狀</b></td></tr>
+      <tr><td class="base">Meshtastic</td><td>開源韌體專案</td><td class="base">L4 L2 1c</td><td class="base">1b 1a（LoRa）</td><td>以為它是一種無線電技術；以為它是 IP 網路</td></tr>
+      <tr><td class="base">802.11s</td><td>Wi-Fi 網狀修訂（HWMP 路由）</td><td class="base">1c</td><td class="base">1b 1a（任一 802.11 實體層）</td><td>以為它是一種頻段或調變</td></tr>
+      <tr><td class="base">802.11ah<br>／ HaLow</td><td>Sub-1 GHz 的實體層與 MAC 標準</td><td class="base">1b 1a</td><td class="base">L2 1c（要網狀時）</td><td><b>以為標準自帶網狀——它自己不提供，要靠 802.11s 且看韌體</b></td></tr>
+      <tr><td class="base">4G / 5G</td><td>完整蜂巢式系統</td><td class="base">L4 L3 L2 1c 1b 1a</td><td class="base">營運商基礎設施</td><td>以為可以跟前面幾項平行比較</td></tr>
+      <tr><td class="base">Ad-Hoc（IBSS）</td><td>MAC 層的無基地台模式</td><td class="base">1b</td><td class="base">1a</td><td><b>以為它自帶多跳轉發——它只做單跳</b></td></tr>
+      <tr><td class="base">MANET</td><td>自組織移動網狀網（協定族）</td><td class="base">L2 1c</td><td class="base">1b 1a</td><td><b>與 mesh 混用；與商用戰術電台混用</b></td></tr>
+      <tr><td class="base">商用 MANET 電台</td><td>專有波形的整包產品</td><td class="base">L2 1c 1b 1a</td><td class="base">—</td><td>以為它跟開源 MANET 是同一件事</td></tr>
+      <tr><td class="base">業餘無線電 FM</td><td>實體層（原本設計傳語音）</td><td class="base">1a</td><td class="base">L4 L3 L2 1c 1b</td><td>以為它只能傳語音</td></tr>
+      <tr><td class="base">AX.25</td><td>連結層協定，用呼號定址</td><td class="base">L2 1b</td><td class="base">1a（業餘無線電）</td><td>以為它已經過時而沒有價值</td></tr>
+      <tr><td class="base">APRS</td><td>態勢感知應用軟體</td><td class="base">L4</td><td class="base">L2 1b 1a（AX.25）</td><td>以為它跟 TAK 是不同性質的東西</td></tr>
+      <tr><td class="base">TAK</td><td>態勢感知應用軟體</td><td class="base">L4</td><td class="base">L3 L2 1c 1b 1a<br>（任何 IP 網路）</td><td>以為它是一種通訊技術</td></tr>
+      <tr><td class="base">OpenWrt</td><td>嵌入式作業系統</td><td class="base">—</td><td class="base">承載全部層</td><td>以為它是一種網路技術</td></tr>
+      <tr><td class="base">OpenMANET</td><td>整合方案（Pi ＋ HaLow ＋ OpenWrt ＋ 802.11s ＋ batman-adv）</td><td class="base">—</td><td class="base">整合全部層</td><td>以為它是一種新的無線協定</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="hd">疊疊樂 · 同一個實體層可以疊不同的東西</h3>
+  <p class="lede">把定位表換一個方向看，整個架構就清楚了：<b>每一個實體層上面，都可以疊不同的連結層，再疊不同的應用。</b>下表<b>由左（高層）往右（低層）</b>，與全份文件的降序一致——最右邊那一欄就是第一節談的東西。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:22%">L4 應用</th><th style="width:28%">L2 / 1c / 1b</th><th style="width:24%">1a 實體層</th><th>典型速率</th></tr></thead>
+    <tbody>
+      <tr><td>感測回報</td><td>LoRaWAN（星狀）</td><td class="base">LoRa</td><td class="n">約 1 kbps</td></tr>
+      <tr><td>Meshtastic 內建</td><td>Meshtastic（自訂網狀）</td><td class="base">LoRa</td><td class="n">約 1 kbps</td></tr>
+      <tr><td><b>APRS</b>、Winlink</td><td><b>AX.25</b></td><td class="base"><b>業餘無線電 FM</b></td><td class="n">1200 / 9600 bps</td></tr>
+      <tr><td><b>TAK</b>、任何 IP 應用</td><td>802.11 MAC ＋ 802.11s 或 Babel</td><td class="base">802.11ah 實體層</td><td class="n">數 Mbps</td></tr>
+      <tr><td><b>TAK</b>、影像</td><td>802.11 MAC ＋ 802.11s</td><td class="base">802.11 (2.4/5 GHz)</td><td class="n">數十 Mbps</td></tr>
+      <tr><td><b>TAK</b>、影像</td><td>商用 MANET 電台（全包）</td><td class="base">專有波形</td><td class="n">數 Mbps 至數十 Mbps</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">這張表要學員看出來的三件事</span>
+    <ul>
+      <li><b>APRS 與 TAK 是同一類東西</b>，只是隔了三十年。都是 L4 的態勢感知，都在地圖上顯示誰在哪裡。差別在底下疊的層</li>
+      <li><b>同一個實體層可以有完全不同的網路行為。</b>LoRa 配 LoRaWAN 是星狀、配 Meshtastic 是網狀——實體層一模一樣，韌性天差地別</li>
+      <li><b>第三列是你已經擁有的能力。</b>手上那台手持機加一個數據機，就是一條完整的資料鏈路</li>
+    </ul>
+  </div>
+
+  <h3 class="hd">不在任何一層的東西 · 作業系統與整合方案</h3>
+  <p class="lede">前面所有名詞都能被放進某一層。<b>但有兩類東西放不進去，而它們在實務上決定成敗。</b></p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:130px">名稱</th><th>它是什麼</th><th>與層的關係</th><th>為什麼重要</th></tr></thead>
+    <tbody>
+      <tr><td class="base">OpenWrt</td><td>嵌入式 Linux 韌體發行版</td><td><b>承載全部層</b>，自己不是任何一層</td><td>驅動、hostapd、802.11s、batman-adv、防火牆、DHCP 全都是它的套件</td></tr>
+      <tr><td class="base">OpenMANET</td><td>整合方案／配方</td><td><b>把別人的層組起來</b>，自己不發明任何一層</td><td>把「理論上可行」變成「開箱可用」</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box why">
+    <span class="lbl">OpenWrt · 為什麼它決定你能不能拿到 mesh</span>
+    <p>OpenWrt 本身不在四層框架裡——它是<b>讓那些層跑起來的執行環境</b>。但在 HaLow 的世界裡它有一個特殊地位：</p>
+    <p><b>廠商的 802.11ah 驅動與工具幾乎都以 OpenWrt 為第一支援平台。</b>Morse Micro 提供的是修改版的 <code>hostapd_s1g</code> 與 <code>wpa_supplicant_s1g</code>，加上 <code>morse_cli</code> 這個廠商專用工具，因為許多 802.11ah 的設定選項<b>無法透過標準的 nl80211 介面傳遞</b>，只能用廠商專屬指令 <span class="tag t-fact">FACT</span>。</p>
+    <p>實務上的意義：<b>「用不用 OpenWrt」不是偏好問題，而是決定你拿不拿得到 802.11s。</b>如果你堅持用一般的 Debian 或 Raspberry Pi OS，往往要自己回頭移植這些補丁與工具。</p>
+  </div>
+
+  <div class="box why">
+    <span class="lbl">OpenMANET · 整合方案在做什麼</span>
+    <p>OpenMANET 是一個基於 Raspberry Pi 的 MANET 電台專案，建構在 Wi-Fi HaLow 之上，圍繞 Morse Micro 的 HAT 與 SDIO 板設計，跑 OpenWrt，<b>支援 802.11s 加 batman-adv</b>，並包含 GPSD 驅動的距離測試與 PTT 應用 <span class="tag t-fact">FACT</span>。</p>
+    <p>它對終端使用者呈現一個<b>扁平的區域網路</b>，即使 BATMAN-V 在背後可能跨越多個 HaLow 跳點傳送訊框 <span class="tag t-fact">FACT</span>。這正是前一節「802.11s 提供可達性、batman-adv 提供路由」的具體實作。</p>
+    <p><b>它的價值不在發明，在選型與調校。</b>每一層都是現成的元件，但要讓它們一起正常運作、參數調對、預設值合理，是相當可觀的工程量。</p>
+  </div>
+
+  <div class="box sc">
+    <span class="lbl">OpenMANET 的供應鏈風險</span>
+    <p>OpenMANET 專案文件提到目前特別針對 <b>Seeed HaLow 板</b>建構，並列出 <b>Heltec HT-HD01V2</b> 等硬體選項 <span class="tag t-fact">FACT</span>。<b>這兩者皆為中國廠商</b> <span class="tag t-sc">供應鏈</span>。</p>
+    <p><b>這是「軟體乾淨、硬體不乾淨」的又一個實例</b>——與 Meshtastic 的情況完全相同。專案本身是開源可審查的，但參考硬體落在需要排除的供應鏈上。</p>
+    <p>較乾淨的替代路徑：<b>Morse Micro HaLowLink 2</b>（澳洲）、<b>Alfa Network</b> 的 HaLow HAT（台灣）、<b>Gateworks</b> 的板卡（美國）。三者都能跑 OpenWrt 加 802.11s，但整合工作量會比直接用 OpenMANET 的參考硬體高 <span class="tag t-inf">推論</span>。</p>
+  </div>
+
+  <h3 class="hd">用無線電當底層 · 封包無線電<span style="font-family:var(--mono); font-size:12px; font-weight:400; color:var(--ink-3); letter-spacing:.08em; margin-left:10px">教學對照組</span></h3>
+  <p class="lede">這是第二節與第一節接得最緊的一段：<b>學員手上那台已經練習過十一個實驗的手持機，本身就是一個可用的資料實體層。</b></p>
+  <div class="box warn">
+    <span class="lbl">這一段的定位</span>
+    <p>封包無線電在 2026 年的<b>實際部署價值有限</b>——1200 bps 與 Meshtastic 同一個量級，而且不能加密。把它放進課程的理由是<b>教學</b>，不是推薦部署：</p>
+    <ul>
+      <li>它是<b>唯一一個學員手上已經擁有的資料鏈路</b>，不需要買任何新設備</li>
+      <li><b>APRS 對 TAK</b> 的並列，是四層框架最好的示範——同一層、不同底層、隔了三十年</li>
+      <li>業餘頻段禁止加密這條法規，透過它來講最自然</li>
+    </ul>
+  </div>
+
+  <div class="box why">
+    <span class="lbl">它為什麼存在</span>
+    <h6>要解決的問題</h6>
+    <p>1980 年代業餘無線電社群想傳資料，但沒有任何無線資料網路可用。手上唯一的東西是為語音設計的 FM 電台。</p>
+    <h6>設計原理</h6>
+    <p>既然電台能傳語音，就把資料<b>編碼成音訊</b>再送進麥克風孔。接收端把喇叭輸出解回資料。中間那個轉換裝置叫做<b>數據機（TNC，Terminal Node Controller）</b>。</p>
+    <p>連結層協定 <b>AX.25</b> 借用自 X.25，最大的特色是<b>用呼號當位址</b>——這在當時是很自然的選擇，因為法規本來就要求你必須表明身分。</p>
+    <h6>兩種速率</h6>
+    <ul>
+      <li><b>1200 bps AFSK</b>：資料變成兩個音頻音調，走一般麥克風與喇叭接口。<b>任何一台 FM 電台都能用</b>，不需改機</li>
+      <li><b>9600 bps FSK</b>：直接調變到鑑頻器，需要電台有專用的數據接口。速率快八倍，但機種限制多</li>
+    </ul>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>應用</th><th>做什麼</th><th>層次</th><th>民防適用性 <span class="tag t-inf">推論</span></th></tr></thead>
+    <tbody>
+      <tr><td class="base">APRS</td><td>位置回報、短訊、氣象資料、地圖顯示</td><td class="base">L4</td><td>適合人員與車輛位置追蹤</td></tr>
+      <tr><td class="base">Winlink</td><td>經由無線電收發電子郵件，可接入網際網路</td><td class="base">L4</td><td>適合表單化的災情回報</td></tr>
+      <tr><td class="base">封包 BBS</td><td>訊息板、檔案交換</td><td class="base">L4</td><td>已較少使用</td></tr>
+      <tr><td class="base">AREDN</td><td>用業餘頻段的 Wi-Fi 建網狀網路</td><td class="base">L2 ~ 1a</td><td>頻寬高，但需執照且不得加密</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box field">
+    <span class="lbl">優點與代價</span>
+    <h6>它的優點</h6>
+    <ul>
+      <li><b>硬體你已經有了</b>——不需要再買一套新的無線電系統</li>
+      <li><b>涵蓋範圍是已知的</b>——第一節的天線實驗成果可以直接套用</li>
+      <li><b>可以透過中繼台延伸</b>——這是 Meshtastic 與 LoRa 都沒有的現成基礎設施</li>
+      <li><b>供應鏈相對乾淨</b>——日系電台加開源軟體數據機，避開了 Meshtastic 硬體的問題</li>
+      <li><b>操作者已經受過訓練</b>——執照持有人本來就懂頻率、功率、天線</li>
+    </ul>
+    <h6>它的代價</h6>
+    <ul>
+      <li><b>慢。</b>1200 bps 與 Meshtastic 同一個量級，傳照片一樣不可行</li>
+      <li><b>需要執照</b>，且操作者身分公開</li>
+      <li><b>不能加密</b>——見下方</li>
+      <li>佔用語音頻道，資料與語音會互相排擠</li>
+    </ul>
+  </div>
+
+  <div class="box sc">
+    <span class="lbl">最關鍵的一條法規限制</span>
+    <p>國際電信聯盟無線電規則 <b>RR 25.2A</b> 規定：<b>不同國家之間</b>的業餘電台通信，不得為了隱藏意義而編碼（業餘衛星服務的控制訊號除外）<span class="tag t-fact">FACT</span>。</p>
+    <div class="box tbd" style="margin:10px 0">
+      <span class="lbl">這裡要講精確</span>
+      <p><b>這條 ITU 條文只約束「跨國」通信</b>，不是一條全球通則。國內通信的規範由各國自行訂定，而且各國作法不同：美國 FCC 把禁令擴及國內通信；加拿大則允許使用加密，<b>但金鑰必須公開發布</b>。</p>
+      <p><b>台灣的具體條文請以最新法令為準 <span class="tag t-tbd">待查</span></b>——這是開課前必須查清楚的項目，不能用「業餘就是不能加密」帶過。</p>
+      <p>另外要注意條文的關鍵字是<b>「為了隱藏意義」</b>。莫斯電碼、Baudot、ASCII、FT8、數位語音都是「編碼」，但目的不是隱藏意義，所以不在禁止之列。<b>判斷標準是意圖，不是有沒有用到編碼。</b></p>
+    </div>
+    <p>這代表任何跑在業餘頻段上的資料——APRS 位置、Winlink 郵件、AREDN 上的 TAK——<b>全部都是明文，任何人都能完整接收與解讀</b>。</p>
+    <p><b>這一點直接呼應第一節的「亞音不是加密」。</b>同一個教訓在兩節課出現兩次，只是規模不同：第一節是你以為亞音保護了你，第二節是整個頻段在法律上就禁止你被保護。<b>需要保密的內容，不能走這條路。</b></p>
+  </div>
+
+</section>
+
+<!-- ═════════ 第四部 ═════════ -->
+<section id="s-spectrum">
+  <h2 class="part">第四部 · 頻譜 · 它們住在哪裡</h2>
+  <p class="lede">頻率決定物理特性，而物理特性不能靠軟體改善。這一部要建立的直覺是：<b>頻率越低，傳越遠、穿越好、但頻寬越小。</b></p>
+
+  <svg class="fig" viewBox="0 0 900 300" role="img" aria-label="各無線技術在頻譜上的位置">
+    <line x1="60" y1="250" x2="860" y2="250" stroke="#3B4C57" stroke-width="1.5"/>
+    <g font-family="ui-monospace,monospace" font-size="11" fill="#6A7A85" text-anchor="middle">
+      <text x="60" y="272">100M</text><text x="220" y="272">500M</text><text x="330" y="272">1G</text>
+      <text x="500" y="272">2.4G</text><text x="640" y="272">5G Hz</text><text x="800" y="272">28G</text>
+      <text x="460" y="292">頻率（對數尺）</text>
+    </g>
+    <g stroke="#C6D0D3" stroke-width="1">
+      <line x1="60" y1="245" x2="60" y2="255"/><line x1="220" y1="245" x2="220" y2="255"/>
+      <line x1="330" y1="245" x2="330" y2="255"/><line x1="500" y1="245" x2="500" y2="255"/>
+      <line x1="640" y1="245" x2="640" y2="255"/><line x1="800" y1="245" x2="800" y2="255"/>
+    </g>
+    <g font-family="ui-monospace,monospace" font-size="11.5">
+      <rect x="66" y="36" width="52" height="22" rx="3" fill="#E2F0F2" stroke="#06788B"/>
+      <text x="92" y="51" fill="#06788B" text-anchor="middle">2m/70cm</text>
+      <line x1="92" y1="58" x2="92" y2="245" stroke="#06788B" stroke-dasharray="3 3"/>
+      <text x="126" y="51" fill="#6A7A85">第一節的手持機 · AX.25 與 APRS 也在這裡</text>
+
+      <rect x="286" y="82" width="88" height="22" rx="3" fill="#EAF3DE" stroke="#639922"/>
+      <text x="330" y="97" fill="#3B6D11" text-anchor="middle">920–925 MHz</text>
+      <line x1="330" y1="104" x2="330" y2="245" stroke="#639922" stroke-dasharray="3 3"/>
+      <text x="382" y="97" fill="#6A7A85">LoRa · LoRaWAN · Meshtastic · 802.11ah</text>
+
+      <rect x="474" y="128" width="52" height="22" rx="3" fill="#EEE8F6" stroke="#63399B"/>
+      <text x="500" y="143" fill="#63399B" text-anchor="middle">2.4 GHz</text>
+      <line x1="500" y1="150" x2="500" y2="245" stroke="#63399B" stroke-dasharray="3 3"/>
+      <rect x="614" y="128" width="52" height="22" rx="3" fill="#EEE8F6" stroke="#63399B"/>
+      <text x="640" y="143" fill="#63399B" text-anchor="middle">5 GHz</text>
+      <line x1="640" y1="150" x2="640" y2="245" stroke="#63399B" stroke-dasharray="3 3"/>
+      <text x="676" y="143" fill="#6A7A85">Wi-Fi · 802.11s</text>
+
+      <rect x="240" y="174" width="440" height="22" rx="3" fill="#FAEEDA" stroke="#BA7517" fill-opacity=".55"/>
+      <text x="460" y="189" fill="#854F0B" text-anchor="middle">4G / 5G ： 700 MHz ~ 3.5 GHz</text>
+      <rect x="770" y="174" width="60" height="22" rx="3" fill="#FAEEDA" stroke="#BA7517"/>
+      <text x="800" y="189" fill="#854F0B" text-anchor="middle">n257/258</text>
+
+      <text x="62" y="222" fill="#9E2118">← 傳更遠、穿透好、頻寬小</text>
+      <text x="858" y="222" fill="#9E2118" text-anchor="end">頻寬大、距離短、遇障礙就停 →</text>
+    </g>
+  </svg>
+  <p class="figcap">TAK、MANET 協定族不在這張圖上——它們沒有頻段。商用 MANET 電台頻段依型號而異，多在 L 與 S 頻段。<span class="tag t-tbd">待查</span></p>
+
+  <div class="tw"><table>
+    <thead><tr><th>技術</th><th>頻段</th><th>台灣可用性</th><th>物理特性</th></tr></thead>
+    <tbody>
+      <tr><td class="base">LoRa / LoRaWAN / Meshtastic</td><td>920–925 MHz</td><td><b>可用</b>，屬低功率廣域物聯網射頻器材 <span class="tag t-fact">FACT</span></td><td>穿透佳、繞射佳、可達數公里</td></tr>
+      <tr><td class="base">802.11ah / HaLow</td><td>國際上約 850–950 MHz <span class="tag t-fact">FACT</span></td><td><span class="tag t-tbd">待查</span> <b>台灣是否開放給此用途須確認</b></td><td>同上，但頻寬較大</td></tr>
+      <tr><td class="base">802.11s</td><td>依底層實體層，通常 2.4 / 5 GHz</td><td>可用</td><td>頻寬大、距離短、穿牆差</td></tr>
+      <tr><td class="base">4G / 5G</td><td>700 MHz ~ 3.5 GHz，毫米波 n257/n258</td><td>可用（執照頻段）</td><td>視頻段而異</td></tr>
+      <tr><td class="base">TAK</td><td><b>無</b></td><td>—</td><td>不適用</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box tbd">
+    <span class="lbl">開課前必須查證</span>
+    <p><b>台灣的 802.11ah 頻譜開放狀況 <span class="tag t-tbd">待查</span></b>。Sub-1 GHz 的分配各國差異很大，這一項直接決定 HaLow 在台灣能不能合法部署，是整個第二節最關鍵的待查項目。920–925 MHz 的功率與佔空比限制也請以最新版 NCC 低功率射頻電機技術規範為準。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第五部 ═════════ -->
+<section id="s-bw">
+  <h2 class="part">第五部 · 頻寬 · 差了六個數量級</h2>
+  <p class="lede">這一部只要傳達一件事：<b>這些技術的頻寬不是差幾倍，是差幾個數量級。</b>把它們並排比較「哪個比較好」，就像問腳踏車和貨櫃船哪個比較好。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>技術</th><th class="n">典型有效吞吐</th><th>倍數關係</th><th>能傳什麼</th></tr></thead>
+    <tbody>
+      <tr><td class="base">Meshtastic</td><td class="n">約 0.5 – 1 kbps <span class="tag t-inf">推論</span></td><td class="base">×1</td><td>位置、狀態碼、極短訊息</td></tr>
+      <tr><td class="base"><b>AX.25 · 1200 bps</b></td><td class="n">約 0.5 – 0.8 kbps <span class="tag t-inf">推論</span></td><td class="base">×1</td><td>APRS 位置、短訊</td></tr>
+      <tr><td class="base"><b>AX.25 · 9600 bps</b></td><td class="n">約 4 – 6 kbps <span class="tag t-inf">推論</span></td><td class="base">×5</td><td>Winlink 郵件、表單</td></tr>
+      <tr><td class="base">LoRaWAN</td><td class="n">約 0.3 – 5 kbps <span class="tag t-inf">推論</span></td><td class="base">×1 – 5</td><td>感測讀值、狀態回報</td></tr>
+      <tr><td class="base">802.11ah（遠距）</td><td class="n">約 1 Mbps <span class="tag t-inf">推論</span></td><td class="base">×1,000</td><td>TAK、低碼率影像</td></tr>
+      <tr><td class="base">802.11ah（近距）</td><td class="n">約 10 Mbps <span class="tag t-inf">推論</span></td><td class="base">×10,000</td><td>影像串流、檔案</td></tr>
+      <tr><td class="base">802.11s（2.4/5 GHz）</td><td class="n">約 20 Mbps <span class="tag t-inf">推論</span></td><td class="base">×20,000</td><td>幾乎任何東西</td></tr>
+      <tr><td class="base">商用 MANET 電台</td><td class="n">約 5 – 50 Mbps <span class="tag t-inf">推論</span></td><td class="base">×5,000 起</td><td>影像、TAK、全部</td></tr>
+      <tr><td class="base">4G</td><td class="n">約 20 Mbps <span class="tag t-inf">推論</span></td><td class="base">×20,000</td><td>幾乎任何東西</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13px; color:var(--ink-3)">上述均為<b>有效吞吐的量級估計</b>，非規格書峰值。實際值受距離、節點數、跳數、佔空比與環境影響極大，差異可達十倍以上。</p>
+
+  <div class="panel">
+    <div class="ttl">傳輸時間試算</div>
+    <div class="pgrid">
+      <div><label>要傳什麼</label><select id="bw_payload"></select></div>
+      <div><label>用什麼傳</label><select id="bw_tech"></select></div>
+      <div class="readout"><div class="k">資料量</div><div class="v" id="bw_size">—</div><div class="u" id="bw_sizeu">bytes</div></div>
+      <div class="readout"><div class="k">所需時間</div><div class="v" id="bw_time">—</div><div class="u" id="bw_timeu">秒</div></div>
+    </div>
+    <div id="bw_note" class="note">選擇組合後會顯示評估。此為理想值，未計入重傳、轉發與佔空比限制，實際只會更久。</div>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">這個計算器要打破的迷思</span>
+    <p>試著選「TAK 位置更新」配「Meshtastic」，再選「一張壓縮照片」配「Meshtastic」，兩個結果的落差就是答案：<b>位置更新勉強可行，照片完全不可行。</b></p>
+    <p>但這裡有一個重要的但書，見下一節。</p>
+  </div>
+
+  <h3 class="hd">當下層不夠時 · 應用層適配</h3>
+  <p class="lede">「用 Meshtastic 跑 TAK」這件事<b>實際上做得到，而且有官方支援</b>。但它的做法不是你想的那樣，而這個差別正是分層框架最有價值的地方。</p>
+
+  <div class="box why">
+    <span class="lbl">兩條路，不是一條</span>
+    <p>當下層的承載能力不足以支撐上層應用時，工程上有兩條路：</p>
+    <ol>
+      <li><b>換掉下層</b>——改用頻寬夠的實體層，例如 802.11ah 加 802.11s</li>
+      <li><b>在應用層做適配</b>——接受下層的限制，把資料重新設計成能通過那條管道的形狀</li>
+    </ol>
+    <p><b>Meshtastic ATAK Plugin 走的是第二條。</b>它沒有假裝 Meshtastic 是 IP 網路，而是誠實承認頻寬限制，然後在應用層動手。</p>
+  </div>
+
+  <h5>它實際上怎麼運作 <span class="tag t-fact">FACT</span></h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:44px">#</th><th>步驟</th><th>細節</th></tr></thead>
+    <tbody>
+      <tr><td class="n base">1</td><td>攔截</td><td>透過 ATAK 的 PreSendProcessor 介面攔截所有外送的 CoT 事件</td></tr>
+      <tr><td class="n base">2</td><td><b>剝除</b></td><td>移除只用於顯示的 detail 內容——地圖繪製提示、地理圍欄、線條樣式、建立者中繼資料。接收端不需要這些，<b>但每個位元組都在跟 237 bytes 的 LoRa MTU 競爭</b></td></tr>
+      <tr><td class="n base">3</td><td>轉換</td><td>CoT XML 轉成 Meshtastic 的 protobuf 格式（TAKPacket，portnum 72）</td></tr>
+      <tr><td class="n base">4</td><td>壓縮</td><td>V2 協定用 zstd 搭配<b>預先訓練的共享字典</b>。早期版本曾用 EXI，後來改用 zlib 以與 Apple 版一致</td></tr>
+      <tr><td class="n base">5</td><td>分片</td><td>超過 231 bytes 的訊息用<b>噴泉碼（LT codes）</b>編碼分片</td></tr>
+      <tr><td class="n base">6</td><td>還原</td><td>接收端轉回 CoT 格式，注入 ATAK 的事件分派器</td></tr>
+    </tbody>
+  </table></div>
+
+  <h5>所以「能不能跑 TAK」應該分成三類，不是兩類</h5>
+  <div class="tw"><table>
+    <thead><tr><th style="width:150px">承載方式</th><th style="width:34%">例子</th><th>你實際得到什麼</th></tr></thead>
+    <tbody>
+      <tr><td class="base"><b>網路承載</b></td><td>802.11ah ＋ 802.11s、802.11s、AREDN、4G、商用 MANET 電台</td><td class="ok"><b>完整的 TAK</b>：影像、檔案、data package、即時視訊、TAK Server 同步</td></tr>
+      <tr><td class="base"><b>應用層適配</b></td><td><b>Meshtastic ATAK Plugin</b></td><td><b>CoT 的子集</b>：位置回報、聊天、部分標繪。經極度壓縮，位置回報預設五分鐘一次</td></tr>
+      <tr><td class="base">完全不行</td><td>LoRaWAN、AX.25</td><td class="no">沒有適配層存在</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box warn">
+    <span class="lbl">應用層適配的代價</span>
+    <ul>
+      <li><b>你得到的不是 TAK，是「TAK 的位置與訊息子集」。</b>不要拿它當完整態勢圖規劃</li>
+      <li><b>位置回報是分鐘級不是即時</b>——預設五分鐘，可調範圍約 30 秒到 30 分鐘</li>
+      <li><b>適配器綁死在特定實作上。</b>TAKPacket 的 portnum 72 是 Meshtastic 特有的，MeshCore 上並不存在 <span class="tag t-fact">FACT</span></li>
+      <li><b>換一個應用就得重寫一個適配器。</b>這正是「不是 IP 網路」的真正代價——IP 網路上任何應用都能跑，非 IP 網路上每個應用都要單獨施工</li>
+    </ul>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">這一節要學員帶走的觀念</span>
+    <p><b>「能不能跑」不是是非題。</b>問的時候要追加一句：<b>「跑得起來的是完整功能，還是經過適配的子集？」</b></p>
+    <p>這跟第一節的「用時間換距離」是同一種工程思維：<b>接受物理限制，然後在你能控制的層次上想辦法。</b>差別只在於第一節是在實體層想辦法，這一節是在應用層想辦法。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第六部 ═════════ -->
+<section id="s-power">
+  <h2 class="part">第六部 · 發射功率 · 為什麼加功率沒用</h2>
+  <p class="lede">第一節實驗 2 已經用瀑布圖證明過「功率不是萬靈丹」。第二節把同一個結論放大到系統層次。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>技術</th><th class="n">典型發射功率</th><th>誰決定上限</th><th>加功率有沒有用</th></tr></thead>
+    <tbody>
+      <tr><td class="base">業餘手持機</td><td class="n">0.5 – 5 W<br>（27 – 37 dBm）</td><td>執照與機器</td><td>有限，見第一節實驗 2</td></tr>
+      <tr><td class="base">LoRa / Meshtastic</td><td class="n">約 20 dBm <span class="tag t-tbd">待查</span></td><td><b>NCC 法規上限</b></td><td class="no">不行，已在法規上限</td></tr>
+      <tr><td class="base">802.11ah</td><td class="n"><span class="tag t-tbd">待查</span></td><td>法規</td><td class="no">不行</td></tr>
+      <tr><td class="base">Wi-Fi 2.4 / 5 GHz</td><td class="n"><span class="tag t-tbd">待查</span></td><td>法規（含天線增益補償）</td><td class="no">不行</td></tr>
+      <tr><td class="base"><b>AX.25 / APRS</b></td><td class="n">同業餘手持機<br>0.5 – 5 W</td><td>執照</td><td class="ok"><b>可以</b>，且可用中繼台延伸</td></tr>
+      <tr><td class="base">商用 MANET 電台</td><td class="n">依型號與頻段 <span class="tag t-tbd">待查</span></td><td>執照或軍用授權</td><td>視授權而定</td></tr>
+      <tr><td class="base">手機（4G/5G）</td><td class="n">約 23 dBm</td><td>標準與 RF 曝露規範</td><td class="no">使用者無法調整</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">本部的核心結論</span>
+    <p><b>免執照頻段的功率上限是法規訂死的，人人都一樣。</b>所以在這些技術上，功率不是可以競爭的變數。真正能改善的只剩下三件事：</p>
+    <ol>
+      <li><b>天線</b>——第一節實驗 10 已經證明它的效益遠大於功率</li>
+      <li><b>高度與視距</b>——第一節實驗 10-5，零成本</li>
+      <li><b>降低資料率換取靈敏度</b>——這是 LoRa 展頻因子的本質：<b>傳得慢＝傳得遠</b></li>
+    </ol>
+    <p>第三項是第二節新增的觀念，第一節沒有對應。它是所有低功率廣域技術的共同設計哲學：<b>用時間換距離。</b></p>
+    <p><b>但有一個例外值得注意</b>：走業餘頻段的方案（AX.25、APRS、AREDN）<b>功率上限高得多，而且可以透過既有中繼台延伸涵蓋</b>。這是它相對於免執照頻段方案最實質的優勢——代價是需要執照，而且不能加密。</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">佔空比：另一個被忽略的法規限制</span>
+    <p>920–925 MHz 這類頻段除了功率上限，通常還有<b>佔空比（duty cycle）限制</b> <span class="tag t-tbd">待查</span>。意思是你在一小時內只能發射總時間的一小部分。</p>
+    <p>這對網狀網路是雙重打擊：訊息本來就要被轉發很多次，而每個節點各自受佔空比約束。<b>節點數越多，每個人能講話的時間越少。</b>這是規劃 Meshtastic 網路時最容易被低估的天花板。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第七部 ═════════ -->
+<section id="s-use">
+  <h2 class="part">第七部 · 使用場景 · 民防判斷矩陣</h2>
+  <p class="lede">前面六部的結論收斂到這一張表。<b>刻意把「誰能關掉它」放在第一列</b>——那才是民防要問的第一個問題，不是速率快慢。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Meshtastic</th><th>LoRaWAN</th><th>802.11s</th><th>802.11ah</th><th>4G / 5G</th></tr></thead>
+    <tbody>
+      <tr><td class="base"><b>誰能關掉它</b></td><td class="ok">沒人</td><td>閘道器擁有者</td><td class="ok">沒人</td><td class="ok">沒人</td><td class="no">營運商、主管機關、攻擊者</td></tr>
+      <tr><td class="base">基礎設施依賴</td><td class="ok">無</td><td class="no">需閘道器與伺服器</td><td class="ok">無</td><td>需規劃節點</td><td class="no">完全依賴</td></tr>
+      <tr><td class="base">拓樸</td><td>網狀</td><td class="no">星狀</td><td>網狀</td><td>星狀（可疊網狀）</td><td>樹狀</td></tr>
+      <tr><td class="base">典型吞吐</td><td>約 1 kbps</td><td>約 1 kbps</td><td>數十 Mbps</td><td>數 Mbps</td><td>數十 Mbps</td></tr>
+      <tr><td class="base">單跳距離</td><td>數公里</td><td>數公里</td><td>數百公尺</td><td>數百公尺至數公里</td><td>數公里</td></tr>
+      <tr><td class="base">功耗</td><td class="ok">極低，可太陽能</td><td class="ok">極低</td><td class="no">高</td><td>中</td><td>中高</td></tr>
+      <tr><td class="base">能不能跑 TAK</td><td><b>應用層適配</b><br>僅 CoT 子集</td><td class="no">不行</td><td class="ok">完整</td><td class="ok">完整</td><td class="ok">完整</td></tr>
+      <tr><td class="base">台灣頻段合法性</td><td>920–925 MHz</td><td>920–925 MHz</td><td>2.4 / 5 GHz</td><td><span class="tag t-tbd">待查</span></td><td>執照頻段</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>延伸選項 · 走業餘頻段與整包產品</h4>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>AX.25 / APRS</th><th>AREDN</th><th>商用 MANET 電台</th></tr></thead>
+    <tbody>
+      <tr><td class="base"><b>誰能關掉它</b></td><td class="ok">沒人</td><td class="ok">沒人</td><td class="ok">沒人</td></tr>
+      <tr><td class="base">基礎設施依賴</td><td>可用既有中繼台，也可直通</td><td class="ok">無</td><td class="ok">無</td></tr>
+      <tr><td class="base">拓樸</td><td>星狀（經中繼台）或點對點</td><td>網狀</td><td>網狀 · MANET</td></tr>
+      <tr><td class="base">典型吞吐</td><td>0.6 – 5 kbps</td><td>數 Mbps</td><td>數 Mbps 至數十 Mbps</td></tr>
+      <tr><td class="base">硬體門檻</td><td class="ok"><b>你已經有了</b></td><td>需改裝的 Wi-Fi 設備</td><td class="no">單價高、可能有出口管制</td></tr>
+      <tr><td class="base">執照需求</td><td class="no">需業餘執照</td><td class="no">需業餘執照</td><td>依頻段 <span class="tag t-tbd">待查</span></td></tr>
+      <tr><td class="base"><b>能不能加密</b></td><td class="no"><b>應假設不行</b> <span class="tag t-tbd">待查</span></td><td class="no"><b>應假設不行</b></td><td class="ok">可以</td></tr>
+      <tr><td class="base">能不能跑 TAK</td><td class="no">不行（無適配層）</td><td class="ok">完整</td><td class="ok">完整，這是它的主要用途</td></tr>
+      <tr><td class="base">供應鏈</td><td class="ok">日系電台＋開源軟體，相對乾淨</td><td>視設備而定</td><td>多為美系，需查出口限制</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>三種典型民防任務的建議組合 <span class="tag t-inf">推論</span></h4>
+  <div class="tw"><table>
+    <thead><tr><th>任務</th><th>需要什麼</th><th>合理組合</th><th>為什麼不用其他的</th></tr></thead>
+    <tbody>
+      <tr><td class="base">人員位置回報<br>（廣域、長時間）</td><td>低頻寬、極低功耗、無基礎設施</td><td><b>Meshtastic</b></td><td>802.11ah 功耗太高，4G 會斷</td></tr>
+      <tr><td class="base">指揮所態勢圖<br>（完整 TAK）</td><td>IP 網路、數 Mbps、數公里</td><td><b>802.11ah + 網狀方案</b></td><td>Meshtastic 只能給你 CoT 子集，撐不起完整態勢圖</td></tr>
+      <tr><td class="base">前進人員位置上圖<br>（TAK 子集）</td><td>低頻寬、分鐘級更新</td><td><b>Meshtastic ＋ ATAK Plugin</b></td><td>不需要完整 TAK 的場合，這是成本最低的做法</td></tr>
+      <tr><td class="base">現場影像回傳</td><td>高頻寬、短距離</td><td><b>802.11s（2.4/5 GHz）</b></td><td>Sub-1 GHz 頻寬不足</td></tr>
+      <tr><td class="base">人員位置回報<br>（已持照、想用現有裝備）</td><td>零額外硬體</td><td><b>APRS over AX.25</b></td><td>不需再買 Meshtastic 節點；但身分與位置全公開</td></tr>
+      <tr><td class="base">高機動戰術通聯</td><td>移動中維持連線、需加密</td><td><b>商用 MANET 電台</b></td><td>其他方案在高速移動下路由跟不上；但單價與取得門檻高</td></tr>
+      <tr><td class="base">平時日常</td><td>方便</td><td>4G/5G</td><td>但<b>不能當作災時的主要方案</b></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box key">
+    <span class="lbl">給學員的結論</span>
+    <p><b>沒有一種技術能同時滿足所有需求，所以正確的問題不是「該選哪一個」，而是「哪幾個要一起用、各自負責什麼」。</b></p>
+    <p>一個合理的民防通訊架構通常長這樣：<b>語音用業餘無線電</b>（第一節的內容）、<b>位置與狀態用 Meshtastic 或 APRS</b>、<b>態勢圖與資料用 802.11ah 或 802.11s</b>、<b>4G/5G 當作平時的便利管道但不列入災時依賴</b>。各自覆蓋不同的層次與場景。</p>
+    <p><b>而且要注意這個架構裡沒有任何一條路徑是保密的。</b>業餘頻段法規禁止加密；免執照頻段雖可加密，但硬體供應鏈存疑。需要保密的內容必須另外規劃管道——這是規劃時最容易被跳過、卻最不能跳過的一步 <span class="tag t-inf">推論</span>。</p>
+  </div>
+</section>
+
+<!-- ═════════ 第八部 ═════════ -->
+<section id="s-sc">
+  <h2 class="part">第八部 · 供應鏈</h2>
+  <p class="lede">這一部要建立的觀念，和第一節的「亞音不是加密」是同一種思維訓練：<b>把兩個容易被混為一談的性質分開。</b></p>
+
+  <div class="tw"><table>
+    <thead><tr><th>層次</th><th>非中國選項</th><th>應排除</th></tr></thead>
+    <tbody>
+      <tr><td class="base">LoRa 晶片</td><td>Semtech（美國）</td><td>—</td></tr>
+      <tr><td class="base">LoRa 模組與開發板</td><td>需個案查證 <span class="tag t-tbd">待查</span></td><td><b>Heltec、LILYGO、Ebyte 皆中國</b> <span class="tag t-sc">供應鏈</span></td></tr>
+      <tr><td class="base">Meshtastic 硬體</td><td><b>這是最大的難題</b>，主流硬體幾乎全為中國製 <span class="tag t-tbd">待查</span></td><td>同上</td></tr>
+      <tr><td class="base">802.11ah 晶片</td><td>Morse Micro（澳洲）<br>Newracom（<b>美國</b>，總部加州爾灣，首爾設有據點；創辦團隊為韓裔）<br>Methods2Business（荷蘭 <span class="tag t-tbd">待查</span>）</td><td><b>TaiXin 泰芯 TXW8301（中國）</b> <span class="tag t-sc">供應鏈</span></td></tr>
+      <tr><td class="base">802.11ah 模組與板</td><td>Silex Technology（日本）<br>Alfa Network（台灣）<br>Gateworks（美國）</td><td>白牌模組須逐一查證</td></tr>
+      <tr><td class="base">4G / 5G 設備</td><td>Nokia、Ericsson、Samsung</td><td><b>華為、中興</b> <span class="tag t-sc">供應鏈</span></td></tr>
+      <tr><td class="base">業餘無線電機</td><td>Yaesu、Icom、Kenwood、Alinco（皆日本）</td><td>中國品牌手持機 <span class="tag t-sc">供應鏈</span></td></tr>
+      <tr><td class="base">數據機 TNC</td><td>Dire Wolf（開源軟體數據機，用音效卡即可）</td><td>白牌硬體 TNC 需查證</td></tr>
+      <tr><td class="base">商用 MANET 電台</td><td>Silvus、Persistent Systems、TrellisWare、Rajant（皆美國）<br>Domo Tactical（英國）</td><td>中國廠商亦有同類產品，須逐案查證 <span class="tag t-tbd">待查</span></td></tr>
+      <tr><td class="base">TAK 軟體</td><td>開源，可自行審查</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box sc">
+    <span class="lbl">本部的核心觀念 · 開源 ≠ 供應鏈安全</span>
+    <p><b>Meshtastic 是最好的教材</b>：它的軟體是開源的、可以逐行審查，但硬體幾乎全部來自中國供應鏈。</p>
+    <p>這個「軟體乾淨、硬體不乾淨」的組合，正好訓練學員把兩件事分開看：</p>
+    <ul>
+      <li><b>可審查性</b>：程式碼能不能被檢視？</li>
+      <li><b>供應鏈信任</b>：晶片、韌體、製造流程掌握在誰手上？</li>
+    </ul>
+    <p>兩者互不保證。開源專案可以跑在不可信的硬體上，閉源產品也可以來自可信的供應鏈。<b>選型時必須分開評估。</b></p>
+  </div>
+</section>
+
+<!-- ═════════ 第九部 ═════════ -->
+<section id="s-clear">
+  <h2 class="part">第九部 · 16 個觀念釐清</h2>
+  <p class="lede">這一節的驗收標準：學員要能用一句話回答下面每一題。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:38%">常見說法</th><th>為什麼不對</th></tr></thead>
+    <tbody>
+      <tr><td class="base">「802.11ah 和 HaLow 哪個好？」</td><td><b>同一個東西。</b>一個是 IEEE 標準編號，一個是 Wi-Fi Alliance 商標名 <span class="tag t-fact">FACT</span></td></tr>
+      <tr><td class="base">「我們要不要用 mesh？」</td><td><b>Mesh 是拓樸不是技術。</b>要先問「在哪一層做 mesh」「用什麼實體層」</td></tr>
+      <tr><td class="base">「LoRaWAN 是 mesh 網路」</td><td><b>它是星狀。</b>所有節點都要連到閘道器，閘道器倒了就全倒</td></tr>
+      <tr><td class="base">「用 Meshtastic 跑 TAK」</td><td><b>做得到，但要問清楚是哪一種。</b>它不是網路承載，是<b>應用層適配</b>——官方 ATAK Plugin 把 CoT 剝除顯示用資料、轉 protobuf、zstd 壓縮後送出。你得到的是位置與聊天的子集，不是完整 TAK</td></tr>
+      <tr><td class="base">「Meshtastic 跑不了 TAK」</td><td><b>也不對。</b>二分法本身就是錯的問法。正確的問法是「跑得起來的是完整功能，還是經過適配的子集？」</td></tr>
+      <tr><td class="base">「802.11ah 自帶 mesh」</td><td><b>它自己不提供。</b>網路架構以基地台為中心，網狀要靠 802.11s，而且<b>實際能不能用取決於晶片韌體</b>——同一個標準，不同晶片答案可能不同</td></tr>
+      <tr><td class="base">「Meshtastic 是開源的所以安全」</td><td><b>軟體開源不等於硬體可信。</b>主流硬體幾乎全是中國供應鏈</td></tr>
+      <tr><td class="base">「MANET 裡就有 ad-hoc，所以底層一定要開 ad-hoc 模式」</td><td><b>不一定。</b>MANET 名字裡的 ad-hoc 指的是<b>架構概念</b>（無基礎設施），不是 802.11 的 IBSS 模式。用 802.11s mesh point 實作也是 MANET</td></tr>
+      <tr><td class="base">「OpenMANET 是一種新的無線協定」</td><td><b>它不發明任何一層</b>，是把 HaLow、OpenWrt、802.11s、batman-adv 組起來的整合方案</td></tr>
+      <tr><td class="base">「Ad-Hoc 就是 mesh」</td><td><b>Ad-Hoc 只做單跳。</b>IBSS 讓鄰居能直接互通，但不做轉發；多跳要靠 802.11s 或 MANET 路由協定</td></tr>
+      <tr><td class="base">「下層沒 ad-hoc，上層跑 MANET 就好」</td><td><b>不行。</b>路由協定只能選路，不能創造連結層不存在的路。結果會是「星狀網路上跑了一套 MANET 路由」，單點失效原封不動</td></tr>
+      <tr><td class="base">「這個產品支援 mesh」</td><td><b>要追問是哪一種。</b>可能只是每個節點同時開 AP 加 STA 串成樹——根節點倒了整棵斷</td></tr>
+      <tr><td class="base">「Mesh 和 MANET 是同一件事」</td><td><b>Mesh 講形狀，MANET 講能力。</b>所有 MANET 都是 mesh，但固定不動的 mesh 不是 MANET</td></tr>
+      <tr><td class="base">「我們要用 MANET」</td><td><b>先問是哪一種。</b>是在現有設備上跑 Babel，還是買一台十萬元起跳的戰術電台？同一個詞兩種意思</td></tr>
+      <tr><td class="base">「無線電只能傳語音」</td><td><b>接上數據機就能傳資料。</b>AX.25 已經運作四十年，APRS 就是 1980 年代的 TAK</td></tr>
+      <tr><td class="base">「用業餘無線電傳加密的災情」</td><td><b>幾乎可以確定不行，但要查清楚依據。</b>ITU RR 25.2A 只約束跨國通信 <span class="tag t-fact">FACT</span>；國內規範各國自訂，台灣條文 <span class="tag t-tbd">待查</span>。務實上應假設走這條路的資料全部是明文</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box why">
+    <span class="lbl">兩節課的總結</span>
+    <h6>第一節教的是</h6>
+    <p>怎麼看懂<b>一條無線鏈路</b>：頻率、頻寬、功率、天線、以及怎麼判斷你聽到的東西是真是假。全部集中在 1a 實體層。</p>
+    <h6>第二節教的是</h6>
+    <p>怎麼看懂<b>一個無線系統</b>：那條鏈路上面還疊了哪些層、拓樸長什麼樣、誰掌握著哪一層。</p>
+    <h6>兩節共同的方法</h6>
+    <p><b>先問「這是什麼層次的東西」，再問「它好不好」。</b>第一節用瀑布圖把物理現象攤開來看，第二節用分層框架把系統結構攤開來看——都是拒絕在資訊不對等的情況下比較。</p>
+  </div>
+
+  <hr>
+  <p style="font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink-3)">進階無線電 第二節 · 無線科技分層解析 v1 · 文件結束</p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var LAYERS=[
+  {id:'L4',  no:'L4',      name:'應用層',        desc:'人要用它做什麼。TAK、網頁、訊息介面'},
+  {id:'L3',  no:'L3',      name:'傳輸層',        desc:'資料要不要保證送到。TCP 保證、UDP 不保證'},
+  {id:'L2',  no:'L2',      name:'網際網路層',    desc:'怎麼定址、怎麼決定路徑。IP 與路由協定'},
+  {id:'1c',  no:'L1 · 1c', name:'拓樸與轉發',    desc:'訊號要經過誰才會到。中繼台就是這一層的類比版', sub:true},
+  {id:'1b',  no:'L1 · 1b', name:'媒體存取 MAC',  desc:'誰能發、什麼時候發、怎麼避免相撞', sub:true},
+  {id:'1a',  no:'L1 · 1a', name:'實體層 PHY',    desc:'頻段、調變、頻寬、功率、天線。第一節的全部內容', sub:true}
+];
+
+var TECH=[
+  {k:'mesh',  n:'Mesh',        kind:'拓樸概念',            prov:[],                        need:[],
+   v:'<b>Mesh 不是技術，是拓樸。</b>它描述的是「每個節點都能替別人轉發」這種形狀，可以在 L2 層實作（OLSR、Babel），也可以在 1c 層實作（802.11s），或是自訂（Meshtastic）。',
+   w:'所以「要不要用 mesh」不是一個能回答的問題——要先問「在哪一層做」「用什麼實體層」。'},
+  {k:'adhoc', n:'Ad-Hoc (IBSS)', kind:'MAC 層運作模式',   prov:['1b'],                    need:['1a'],
+   v:'<b>Ad-Hoc 是「不透過基地台、節點直接互通」這個模式</b>，在 802.11 裡的具體實作叫 IBSS。它讓彼此聽得到的節點可以直接交換訊框。',
+   w:'<b>但它只做單跳，本身不做轉發。</b>兩個聽不到彼此的節點即使在同一個 IBSS 裡也無法互通——要跨多跳必須另外疊 802.11s 或 MANET 路由協定。'},
+  {k:'manet', n:'MANET',       kind:'網路架構類別',        prov:['L2','1c'],               need:['1b','1a'],
+   v:'<b>MANET 是「會移動的自組織網狀網」這個能力的統稱。</b>作為協定族（OLSR、Babel、BATMAN）時，它做的是 L2 與 1c 層的自動路由，底下的實體層由別人提供。',
+   w:'但「MANET」也常被用來指<b>商用戰術電台這個產品類別</b>，那是連 1a 實體層一起包好的整套方案。同一個詞兩種意思，討論前務必先確認對方指哪一個。'},
+  {k:'lora',  n:'LoRa',        kind:'實體層調變',          prov:['1a'],                    need:['L4','L3','L2','1c','1b'],
+   v:'<b>LoRa 只是一種把資料變成電波的方法</b>（線性調頻展頻，CSS）。它本身沒有任何網路功能——沒有定址、沒有路由、沒有應用。',
+   w:'單獨的 LoRa 什麼事都做不了，必須有人替它補上 1b 以上的所有層次。'},
+  {k:'lorawan',n:'LoRaWAN',    kind:'MAC 與網路架構',      prov:['L2','1b'],               need:['1a'],
+   v:'<b>LoRaWAN 是跑在 LoRa 之上的網路規範</b>，補上了媒體存取與網路架構。但它的拓樸是<b>星狀</b>：所有節點連到閘道器，閘道器再連到伺服器。',
+   w:'星狀＝有單點失效。閘道器或伺服器倒了，整個網路就沒了。這是它與 Meshtastic 最大的差別。'},
+  {k:'mesht', n:'Meshtastic',  kind:'開源韌體專案',        prov:['L4','L2','1c'],          need:['1b','1a'],
+   v:'<b>Meshtastic 是一套軟體，不是一種無線電技術。</b>它跑在 LoRa 實體層上，自己實作了轉發（受管洪泛）、加密與應用介面。',
+   w:'它不是 IP 網路——有自己的封包格式與定址方式，所以一般網路軟體無法直接使用它。想跑 TAK 必須靠官方 ATAK Plugin 這種<b>應用層適配器</b>，而且只能傳 CoT 的子集。'},
+  {k:'ham',   n:'業餘無線電 FM', kind:'實體層',             prov:['1a'],                    need:['L4','L3','L2','1c','1b'],
+   v:'<b>第一節那台手持機，本身就是一個實體層。</b>它和 LoRa 在架構上的地位完全相同——一種把資料變成電波的方法，只是它原本設計來傳語音。',
+   w:'接上數據機（硬體 TNC 或軟體數據機）之後，它就能承載資料。速率約 1200 至 9600 bps，與 Meshtastic 同一個量級。'},
+  {k:'ax25',  n:'AX.25',        kind:'連結層協定',          prov:['L2','1b'],               need:['1a'],
+   v:'<b>AX.25 之於業餘無線電，就像 LoRaWAN 之於 LoRa。</b>它補上媒體存取與定址——而且位址用的是<b>呼號</b>，這是它與所有現代協定最大的不同。',
+   w:'呼號當位址意味著<b>發話者身分是公開且必須公開的</b>。這不是設計疏漏，是業餘無線電的法規要求。'},
+  {k:'aprs',  n:'APRS',         kind:'應用層軟體',          prov:['L4'],                    need:['L2','1b','1a'],
+   v:'<b>APRS 是 1980 年代版本的 TAK。</b>兩者都是應用層的態勢感知系統，都在地圖上顯示誰在哪裡、傳遞短訊與狀態。',
+   w:'差別只在底下疊的東西：APRS 疊在 AX.25 加業餘無線電上，TAK 疊在 IP 網路上。<b>把這兩個放在一起看，四層框架的價值就出來了。</b>'},
+  {k:'11s',   n:'802.11s',     kind:'Wi-Fi 網狀修訂',      prov:['1c'],                    need:['1b','1a'],
+   v:'<b>802.11s 只做一件事：替 Wi-Fi 加上 MAC 層的網狀轉發。</b>它不定義頻段、不定義調變，那些由底下的 802.11 實體層提供。',
+   w:'因為網狀做在 MAC 層，IP 以上完全無感——一般軟體直接就能用，這是它與 Meshtastic 的關鍵差異。'},
+  {k:'11ah',  n:'802.11ah / HaLow', kind:'Sub-1GHz 標準',  prov:['1b','1a'],               need:['L2','1c'],
+   v:'<b>802.11ah 是完整的實體層加 MAC 標準</b>，工作在 sub-1 GHz，比一般 Wi-Fi 傳更遠、穿透更好。HaLow 是它的認證商標名，兩者是同一個東西。',
+   w:'<b>它的網路架構以基地台為中心</b>——RAW、TWT、階層式 AID 這些機制都以基地台排程為前提，標準沒有為 sub-1 GHz 定義專屬的網狀機制。網狀要靠 802.11s（屬於基礎 802.11 標準），<b>但實際能不能用取決於晶片韌體有沒有開放 mesh point 模式</b>。'},
+  {k:'mradio',n:'商用 MANET 電台', kind:'整包產品',        prov:['L2','1c','1b','1a'],     need:[],
+   v:'<b>Silvus、Persistent Systems、TrellisWare、Rajant 這一類產品，用專有波形把 L2 以下（1c、1b、1a）全部包好</b>，交付給你的是一個能直接用的 IP 網路，插上網路線就能跑 TAK。',
+   w:'代價是價格高、波形不公開、多有出口管制，且頻段常需執照。台灣民間可取得性與合法頻段須逐案確認。'},
+  {k:'cell',  n:'4G / 5G',     kind:'完整蜂巢式系統',      prov:['L4','L3','L2','1c','1b','1a'], need:[],
+   v:'<b>4G/5G 一個人包辦全部層次</b>，從實體層一路到應用層，還附帶認證與計費。這是它最方便的地方。',
+   w:'但這些層次<b>全部由營運商擁有</b>。它是清單上唯一一個「別人可以關掉你」的方案——這才是民防要討論的重點，不是速率。'},
+  {k:'tak',   n:'TAK',         kind:'應用層軟體',          prov:['L4'],                    need:['L3','L2','1c','1b','1a'],
+   v:'<b>TAK 完全是應用層。</b>它不管底下怎麼傳，只要有一個能通的 IP 網路就能跑。這也是它最容易被誤會成「一種通訊技術」的原因。',
+   w:'它的需求是<b>一個 IP 網路</b>。非 IP 網路（例如 Meshtastic）無法直接承載它，但可以透過<b>應用層適配器</b>傳遞 CoT 的子集——官方 ATAK Plugin 就是這樣做的。'},
+  {k:'owrt',  n:'OpenWrt',      kind:'嵌入式作業系統',      prov:[],  need:[], host:['L4','L3','L2','1c','1b','1a'],
+   v:'<b>OpenWrt 不在任何一層——它是讓所有層跑起來的地方。</b>驅動、hostapd、802.11s、batman-adv、防火牆、DHCP，全都是它的套件。',
+   w:'但在 HaLow 上它有特殊地位：廠商的 802.11ah 驅動與專用工具幾乎都以 OpenWrt 為第一支援平台。<b>用不用 OpenWrt，實務上決定你拿不拿得到 802.11s。</b>'},
+  {k:'omanet',n:'OpenMANET',    kind:'整合方案',            prov:[],  need:[], host:['L4','L3','L2','1c','1b','1a'],
+   v:'<b>OpenMANET 不發明任何一層，它把別人的元件組起來</b>：Raspberry Pi 加 Morse Micro HaLow 板，跑 OpenWrt，802.11s 提供可達性、batman-adv 提供路由，再加上 PTT 應用與距離測試工具。',
+   w:'價值在選型與調校，不在發明。<b>風險在供應鏈</b>——參考硬體是 Seeed 與 Heltec，兩者皆為中國廠商，與 Meshtastic 是同一個「軟體乾淨、硬體不乾淨」的問題。'}
+];
+
+/* 層次堆疊 */
+var stack=document.getElementById('stack');
+LAYERS.forEach(function(L){
+  var d=document.createElement('div');
+  d.className='lyr'+(L.sub?' sub':'');
+  d.dataset.l=L.id;
+  d.innerHTML='<div class="lno">'+L.no+'</div>'+
+    '<div class="lbody"><div class="lname">'+L.name+'</div><div class="ldesc">'+L.desc+'</div></div>'+
+    '<div class="lmark"></div>';
+  stack.appendChild(d);
+});
+
+/* 技術按鈕 */
+var chips=document.getElementById('chips');
+var sel=null;
+TECH.forEach(function(T){
+  var b=document.createElement('button');
+  b.className='chip'; b.type='button'; b.dataset.k=T.k; b.textContent=T.n;
+  b.addEventListener('click',function(){ pick(T.k===sel?null:T.k); });
+  chips.appendChild(b);
+});
+
+function pick(k){
+  sel=k;
+  Array.prototype.forEach.call(chips.children,function(c){ c.classList.toggle('on',c.dataset.k===k); });
+  var rows=stack.querySelectorAll('.lyr');
+  var vb=document.getElementById('verdict');
+  if(!k){
+    Array.prototype.forEach.call(rows,function(r){
+      r.className='lyr'+(['1a','1b','1c'].indexOf(r.dataset.l)>=0?' sub':'');
+      r.querySelector('.lmark').textContent='';
+    });
+    vb.innerHTML='<span class="k">選擇上方任一項目</span>目前顯示完整的層次架構。點選任一名詞後，綠色代表它自己提供的層，琥珀色代表它必須依賴其他技術提供的層。';
+    return;
+  }
+  var T=TECH.filter(function(t){return t.k===k;})[0];
+  Array.prototype.forEach.call(rows,function(r){
+    var id=r.dataset.l, base='lyr'+(['1a','1b','1c'].indexOf(id)>=0?' sub':'');
+    var m=r.querySelector('.lmark');
+    if(T.prov.indexOf(id)>=0){ r.className=base+' provide'; m.textContent='自己提供'; }
+    else if(T.host&&T.host.indexOf(id)>=0){ r.className=base+' host'; m.textContent='承載／整合'; }
+    else if(T.need.indexOf(id)>=0){ r.className=base+' depend'; m.textContent='依賴他人'; }
+    else { r.className=base+' dim'; m.textContent=''; }
+  });
+  vb.innerHTML='<span class="k">'+T.n+' · '+T.kind+'</span>'+T.v+'<span class="warnline">▲ '+T.w+'</span>';
+}
+pick(null);
+
+/* 傳輸時間試算 */
+var PAY=[
+  {n:'TAK 位置更新（一筆 CoT）',      b:300},
+  {n:'一則簡短文字訊息',              b:100},
+  {n:'一分鐘壓縮語音',                b:60000},
+  {n:'一張壓縮照片',                  b:200000},
+  {n:'一張地圖圖磚',                  b:50000},
+  {n:'十秒低碼率影像',                b:500000}
+];
+var THR=[
+  {n:'Meshtastic（約 1 kbps）',        r:1000},
+  {n:'AX.25 1200 bps（約 0.6 kbps）',  r:600},
+  {n:'AX.25 9600 bps（約 5 kbps）',    r:5000},
+  {n:'LoRaWAN（約 1 kbps）',           r:1000},
+  {n:'802.11ah 遠距（約 1 Mbps）',     r:1000000},
+  {n:'802.11ah 近距（約 10 Mbps）',    r:10000000},
+  {n:'802.11s（約 20 Mbps）',          r:20000000},
+  {n:'商用 MANET 電台（約 10 Mbps）',  r:10000000},
+  {n:'4G（約 20 Mbps）',               r:20000000}
+];
+var sp=document.getElementById('bw_payload'), st=document.getElementById('bw_tech');
+PAY.forEach(function(p,i){ var o=document.createElement('option'); o.value=i; o.textContent=p.n; sp.appendChild(o); });
+THR.forEach(function(t,i){ var o=document.createElement('option'); o.value=i; o.textContent=t.n; st.appendChild(o); });
+
+function fmtBytes(b){
+  if(b<1000) return [String(b),'bytes'];
+  if(b<1000000) return [(b/1000).toFixed(1),'KB'];
+  return [(b/1000000).toFixed(2),'MB'];
+}
+function calcBW(){
+  var p=PAY[+sp.value], t=THR[+st.value];
+  var secs=(p.b*8)/t.r;
+  var sz=fmtBytes(p.b);
+  document.getElementById('bw_size').textContent=sz[0];
+  document.getElementById('bw_sizeu').textContent=sz[1];
+  var el=document.getElementById('bw_time'), eu=document.getElementById('bw_timeu'), note=document.getElementById('bw_note');
+  var txt,unit;
+  if(secs<1){ txt=(secs*1000).toFixed(0); unit='毫秒'; }
+  else if(secs<90){ txt=secs.toFixed(1); unit='秒'; }
+  else if(secs<5400){ txt=(secs/60).toFixed(1); unit='分鐘'; }
+  else { txt=(secs/3600).toFixed(1); unit='小時'; }
+  el.textContent=txt; eu.textContent=unit;
+  el.className='v'+(secs>30?' bad':'');
+  if(secs<=2) note.innerHTML='可行。這個組合在實務上沒有問題。';
+  else if(secs<=30) note.innerHTML='勉強可行。單筆沒問題，但如果多個節點同時要傳，頻道會很快飽和。';
+  else if(secs<=300) note.innerHTML='<span style="color:#F0B45E">不實用。</span>單筆就要數分鐘，而且期間整個頻道被佔住，其他人無法通訊。';
+  else note.innerHTML='<span style="color:#F0785A">完全不可行。</span>這個組合在物理上就不成立，不是調參數能解決的。';
+  note.innerHTML+='<br>此為理想值，未計入重傳、網狀轉發與佔空比限制，實際只會更久。';
+}
+sp.addEventListener('change',calcBW); st.addEventListener('change',calcBW);
+sp.value=0; st.value=0; calcBW();
+
+/* 導覽 */
+var NAV=[
+  ['grp','開場',null],
+  ['s-intro','清單本身就是教材','—'],
+  ['grp','兩把尺',null],
+  ['s-layers','TCP/IP 四層','1'],
+  ['s-topo','網路拓樸','2'],
+  ['grp','定位',null],
+  ['s-map','九個名詞的層位','3'],
+  ['grp','三個物理維度',null],
+  ['s-spectrum','頻譜','4'],
+  ['s-bw','頻寬','5'],
+  ['s-power','發射功率','6'],
+  ['grp','收斂',null],
+  ['s-use','使用場景','7'],
+  ['s-sc','供應鏈','8'],
+  ['s-clear','觀念釐清','9']
+];
+var ruler=document.getElementById('ruler');
+NAV.forEach(function(n){
+  if(n[0]==='grp'){ var g=document.createElement('div'); g.className='tick grp'; g.textContent=n[1]; ruler.appendChild(g); return; }
+  var a=document.createElement('a'); a.className='tick'; a.href='#'+n[0]; a.dataset.sec=n[0];
+  a.innerHTML='<span class="no">'+n[2]+'</span><span>'+n[1]+'</span>';
+  ruler.appendChild(a);
+});
+var ticks=Array.prototype.slice.call(ruler.querySelectorAll('.tick[data-sec]'));
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(!e.isIntersecting) return;
+    ticks.forEach(function(t){ t.classList.toggle('on',t.dataset.sec===e.target.id); }); });
+},{rootMargin:'-10% 0px -70% 0px'});
+document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
+
+document.getElementById('b-print').addEventListener('click',function(){ window.print(); });
+
+})();
+</script>
