@@ -17,8 +17,10 @@ sdrpp_config/*
 # ── 部署用的另一份 clone（同一遠端，不重複進 repo）──
 /ra_remote/
 
-# ── 投影片備份副本（另存的 V2 等，不進 repo）──
+# ── 投影片備份副本（另存的 V2、- 複製 等，不進 repo）──
 * V2.pptx
+* - 複製.pptx
+*_dump*.txt
 
 # ── 其他 ──
 _dump.txt
