@@ -28,16 +28,16 @@
     "iqCorrection": true,
     "lockMenuOrder": false,
     "manualOffset": 0.0,
-    "max": -40.0,
+    "max": -4.7058868408203125,
     "maximized": true,
     "menuElements": [
         {
             "name": "Source",
-            "open": false
+            "open": true
         },
         {
             "name": "Radio",
-            "open": false
+            "open": true
         },
         {
             "name": "Recorder",
@@ -77,7 +77,7 @@
         }
     ],
     "menuWidth": 300,
-    "min": -100.0,
+    "min": -110.5882339477539,
     "moduleInstances": {
         "Airspy Source": {
             "enabled": true,
