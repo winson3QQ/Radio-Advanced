@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>進階無線電 · 第一節：把數字變成看得見的電波</title>
+<meta name="description" content="進階無線電 第一節課程（純網頁版）：用 SDR 把頻率、功率、天線、頻寬、步進、亞音、offset、靜噪一個一個看清楚。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF5EC; --bg2:#F6ECDD; --surface:#FFFFFF; --surface2:#FFF7EE;
+  --border:#ECDFCB; --border2:#E0CFB4;
+  --ink:#2F2A25; --ink2:#5B5147; --ink3:#93867655;
+  --muted:#6B6157;
+  --primary:#F2643C; --primary-ink:#B83A1F; --primary-soft:#FFE5DA;
+  --teal:#1F9E96; --teal-ink:#0E6F68; --teal-soft:#DBF1EF;
+  --green:#5E8B54; --green-soft:#E7F0E1;
+  --amber:#C8832E; --amber-soft:#F8EBD6;
+  --red:#C0503A; --red-soft:#FBE3DC;
+  --dark:#43312A;
+  --mono:"Space Mono",ui-monospace,Consolas,monospace;
+  --sans:"Noto Sans TC","Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei",sans-serif;
+  --disp:"Baloo 2","Noto Sans TC",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.8;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:var(--primary-ink);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* header */
+header.top{position:sticky;top:0;z-index:30;background:rgba(251,245,236,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.top .bar{max-width:1000px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--disp);font-weight:800;font-size:17px;color:var(--ink);white-space:nowrap}
+.brand small{display:block;font-family:var(--sans);font-weight:600;font-size:11px;color:var(--muted)}
+.top nav{display:flex;gap:6px;overflow-x:auto;margin-left:auto;padding-bottom:2px;scrollbar-width:thin}
+.top nav a{font-size:12.5px;font-weight:700;color:var(--primary-ink);background:var(--primary-soft);border:1px solid #F6C9B8;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.top nav a:hover{background:#FFD6C6;text-decoration:none}
+
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+.hero{padding:40px 0 8px}
+.eyebrow{font-family:var(--sans);font-weight:800;letter-spacing:.12em;font-size:12px;color:var(--primary-ink)}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:34px;line-height:1.2;margin:8px 0 10px}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+
+/* session block */
+section.session{padding:22px 0 6px}
+.s-head{background:var(--dark);color:#F6ECE4;border-radius:18px;padding:22px 24px;margin:14px 0 22px;position:relative;overflow:hidden}
+.s-head .no{font-family:var(--disp);font-weight:800;font-size:13px;letter-spacing:.14em;color:#E9A583}
+.s-head h2{font-family:var(--disp);font-weight:800;font-size:27px;margin:2px 0 6px;color:#FFF}
+.s-head .sub{color:#E4D5CB;font-size:15px;margin:0}
+.s-head .myth{margin-top:14px;background:#00000030;border:1px solid #ffffff22;border-radius:12px;padding:9px 13px;font-size:14px;color:#F1E4DB}
+.s-head .myth b{color:#F3B58C}
+
+h3.sub-h{font-family:var(--disp);font-weight:700;font-size:21px;margin:30px 0 4px;color:var(--ink);scroll-margin-top:70px}
+h3.sub-h .k{display:inline-block;font-family:var(--sans);font-weight:800;font-size:12px;color:var(--primary-ink);background:var(--primary-soft);border-radius:6px;padding:1px 7px;vertical-align:middle;margin-right:8px}
+.lead{color:var(--ink2);margin:6px 0 14px}
+
+figure{margin:18px 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 5px 18px rgba(120,90,60,.06)}
+figure img{width:100%;height:auto;display:block}
+figcaption{padding:9px 14px;font-size:13.5px;color:var(--muted);background:var(--surface2);border-top:1px solid var(--border)}
+
+/* one-line summary */
+.oneline{display:flex;gap:12px;align-items:flex-start;background:var(--dark);color:#F4E8DF;border-radius:14px;padding:14px 18px;margin:18px 0;font-size:15px}
+.oneline b{color:#F3B58C;font-family:var(--disp);white-space:nowrap}
+
+/* callouts */
+.note{border-radius:12px;padding:13px 16px;margin:14px 0;font-size:14.5px;border:1px solid}
+.note .ct{font-weight:800;margin-right:6px}
+.note.key{background:var(--amber-soft);border-color:#EAD3AC;color:#6B4A16}.note.key .ct{color:var(--amber)}
+.note.tip{background:var(--teal-soft);border-color:#BEE6E2;color:#12564F}.note.tip .ct{color:var(--teal-ink)}
+.note.warn{background:var(--red-soft);border-color:#F0C7BC;color:#8A3324}.note.warn .ct{color:var(--red)}
+
+/* why pattern */
+.why{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:16px 0;background:var(--surface)}
+.why .star{background:var(--primary-soft);color:var(--primary-ink);font-weight:700;padding:12px 18px;font-size:15px;border-bottom:1px solid var(--border)}
+.why .row{display:grid;grid-template-columns:130px 1fr;gap:0;border-top:1px solid var(--border)}
+.why .row:first-of-type{border-top:none}
+.why .tag{font-weight:800;font-size:14px;padding:14px 16px;display:flex;align-items:center}
+.why .row.p1 .tag{background:var(--red-soft);color:#9E3B29}
+.why .row.p2 .tag{background:var(--amber-soft);color:#8A5A14}
+.why .row.p3 .tag{background:var(--green-soft);color:#3E6236}
+.why .txt{padding:14px 16px;color:var(--ink2);font-size:15px}
+
+/* grids */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.card h4{font-family:var(--disp);font-weight:700;margin:0 0 4px;font-size:17px;color:var(--ink)}
+.card h4 small{font-weight:600;color:var(--muted);font-size:13px}
+.card ul{margin:8px 0 0;padding-left:1.1em;color:var(--ink2);font-size:14.5px}
+.card li{margin:3px 0}
+.card li b{color:var(--ink)}
+
+.terms{list-style:none;margin:16px 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.terms li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.terms .n{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.terms .n.c2{background:var(--amber)}.terms .n.c3{background:var(--teal)}.terms .n.c4{background:var(--green)}.terms .n.c5{background:var(--dark)}
+.terms b{color:var(--ink)}.terms .en{color:var(--muted);font-family:var(--mono);font-size:12.5px;font-weight:700}
+.terms p{margin:2px 0 0;color:var(--ink2);font-size:14.5px}
+
+.shapes{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.shape{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.shape .glyph{font-family:var(--mono);font-size:20px;color:var(--primary-ink);margin-bottom:6px;letter-spacing:2px}
+.shape b{display:block;color:var(--ink);font-size:15px}
+.shape .en{color:var(--muted);font-size:12px}
+.shape p{margin:6px 0 0;font-size:13px;color:var(--ink2);line-height:1.6}
+
+/* steps */
+ol.steps{counter-reset:st;list-style:none;padding:0;margin:16px 0;display:flex;flex-direction:column;gap:10px}
+ol.steps li{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px 12px 48px}
+ol.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+ol.steps b{color:var(--ink)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:16px 0}
+table.tbl{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+table.tbl th,table.tbl td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+table.tbl thead th{background:var(--dark);color:#F3E7DE;font-family:var(--disp);font-weight:700;font-size:13.5px;white-space:nowrap}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:nth-child(even){background:var(--surface2)}
+table.tbl td b,table.tbl th b{color:var(--ink)}
+.ok{color:var(--green);font-weight:800}.no{color:var(--red);font-weight:800}.warnc{color:var(--amber);font-weight:800}
+/* threshold diagram */
+.thr{background:#241a15;border-radius:14px;padding:16px;margin:16px 0;position:relative}
+.thr .row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;margin:7px 0;font-size:14px;color:#F0E6DD}
+.thr .row b{font-family:var(--disp);white-space:nowrap}
+.thr .hi{background:#5a2a22}.thr .mid{background:#2f4a2c}.thr .lo{background:#5a4420}
+.thr .tag{font-weight:800;font-size:12px;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.thr .hi .tag{background:#c0503a;color:#fff}.thr .mid .tag{background:#5E8B54;color:#fff}.thr .lo .tag{background:#C8832E;color:#fff}
+footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;color:var(--muted);font-size:13.5px}
+
+@media(max-width:640px){
+  .hero h1{font-size:26px}.s-head h2{font-size:22px}.grid2,.shapes{grid-template-columns:1fr}
+  .why .row{grid-template-columns:1fr}.why .tag{border-bottom:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="bar">
+  <div class="brand">進階無線電 · 第一節<small>SDR × 手持無線電</small></div>
+  <nav>
+    <a href="#intro">總覽</a>
+    <a href="#s1">1 瀑布圖</a>
+    <a href="#s2">2 頻率</a>
+    <a href="#s3">3 功率</a>
+    <a href="#s4">4 天線</a>
+    <a href="#s5">5 寬窄頻</a>
+    <a href="#s6">6 步進</a>
+    <a href="#do1">動手做</a>
+    <a href="#s7">7 亞音</a>
+    <a href="#s8">8 Offset</a>
+    <a href="#think">想一想</a>
+    <a href="#s9">9 靜噪</a>
+    <a href="#tr">現場排查</a>
+    <a href="#final">任務</a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+
+  <div class="hero" id="intro">
+    <div class="eyebrow">COURSE · 第一節</div>
+    <h1>把選單上的數字，變成看得見的電波</h1>
+    <p>用一台 RTL-SDR，把頻率、功率、天線、頻寬、步進、亞音、offset、靜噪一個一個「指」給你看。這是第一節課程的完整網頁版。</p>
+    <div class="note key" style="margin-top:18px"><span class="ct">今天的路線</span>九段主題 ＋ 三段實作 ＋ 一個分組任務：
+      ① 瀑布圖 · ② 頻率 · ③ 發射功率 · ④ 天線 · ⑤ 寬/窄頻 · ⑥ 頻道步進 · ⑦ 亞音 · ⑧ Offset · ⑨ 靜噪，中間穿插動手做與「架一座中繼台」的想一想，最後用一個地震通聯任務收尾。</div>
+    <div class="note tip"><span class="ct">看不懂術語？</span>可搭配 <a href="glossary.html">白話手冊</a>（生活比喻、不用公式）與 <a href="slides-s1.html">投影片圖片版</a> 一起看。</div>
+  </div>
+
+  <!-- ===================== SESSION 1 ===================== -->
+  <section class="session" id="s1">
+    <div class="s-head">
+      <div class="no">SESSION 1</div>
+      <h2>頻譜 Spectrum &amp; 瀑布圖 Waterfall</h2>
+      <p class="sub">先學會讀這張圖——它是後面每一段共用的工具。</p>
+      <div class="myth">破除迷思　<b>「看到訊號，就是有人在發」</b> → 有些是接收機自己生的假訊號。</div>
+    </div>
+
+    <h3 class="sub-h" id="s1-1"><span class="k">1·1</span>一張圖，兩層資訊</h3>
+    <p class="lead">SDR 的畫面上下兩塊，其實是<strong>同一份資料的兩種畫法</strong>：上圖看「此刻」，下圖看「歷史」。</p>
+    <ul class="card" style="list-style:none;padding:16px 18px">
+      <li style="margin:0 0 8px"><b>橫軸 ＝ 頻率</b>（上下兩圖共用）：訊號在左右哪裡，就是頻率多少。</li>
+      <li style="margin:0 0 8px"><b>上圖 · Y 軸 ＝ 即時強度</b>：此刻每個頻率有多強（dBFS，相對值）。</li>
+      <li style="margin:0 0 8px"><b>下圖 · 往下 ＝ 時間流動</b>：新的在上、舊的往下捲，看得到歷史。</li>
+      <li style="margin:0"><b>下圖 · 亮度 ＝ 強度</b>：把上圖的「高度」換成「顏色深淺」，越亮越強。</li>
+    </ul>
+    <figure><img loading="lazy" src="s1_assets/n1_waterfall.webp" alt="頻譜與瀑布圖：上圖此刻強度、下圖時間歷史">
+      <figcaption>上：頻譜（此刻）｜下：瀑布（歷史）。同一份資料的兩種畫法。</figcaption></figure>
+    <div class="oneline"><b>一句話</b><span>亮度＝相對強度，由你設的色階決定；訊號攤多寬＝佔用頻寬。</span></div>
+
+    <h3 class="sub-h" id="s1-2"><span class="k">1·2</span>瀑布圖上會遇到的五個詞</h3>
+    <ul class="terms">
+      <li><span class="n">1</span><div><b>載波</b> <span class="en">Carrier</span><p>被調變的那根基礎電波；沒說話時就是圖上乾淨的一根線。</p></div></li>
+      <li><span class="n c2">2</span><div><b>底噪</b> <span class="en">Noise Floor</span><p>沒有訊號時的背景雜訊；一切強度都跟它比高低。</p></div></li>
+      <li><span class="n c3">3</span><div><b>頻寬</b> <span class="en">Bandwidth</span><p>一個訊號左右攤開的寬度，決定它佔多少頻譜。</p></div></li>
+      <li><span class="n c4">4</span><div><b>頻段</b> <span class="en">Band</span><p>一段頻率的用途分區；圖上紅色標的「2m 業餘段」就是一個。</p></div></li>
+      <li><span class="n c5">5</span><div><b>DC 尖峰</b> <span class="en">DC Spike</span><p>接收機自己在正中央產生的假訊號，PTT 放開也不會消失。</p></div></li>
+    </ul>
+    <figure><img loading="lazy" src="s1_assets/n2_terms.webp" alt="同一張頻譜圖上標出五個詞">
+      <figcaption>同一張圖，把這五個詞指出來。</figcaption></figure>
+    <div class="note key"><span class="ct">什麼是「2m 業餘段」？</span>波長約 2 公尺（144–148 MHz）的業餘無線電頻段——我們整堂課的手持機都在這裡。</div>
+
+    <h3 class="sub-h" id="s1-3"><span class="k">1·3</span>先有標準答案：理想的頻譜長什麼樣</h3>
+    <div class="shapes">
+      <div class="shape"><div class="glyph">│</div><b>純載波</b><span class="en">沒調變</span><p>沒說話、沒資料——就是一根線。</p></div>
+      <div class="shape"><div class="glyph">┃┃┃</div><b>FM ＋ 單音</b><span class="en">一排等距的線</span><p>純音調變（測試音、亞音）長出可數的邊帶。</p></div>
+      <div class="shape"><div class="glyph">◠◠</div><b>FM 語音</b><span class="en">一坨連續的丘</span><p>真人講話＝很多頻率混在一起，邊帶糊成一片。</p></div>
+      <div class="shape"><div class="glyph">▟▙</div><b>數位訊號</b><span class="en">一塊平頂方塊</span><p>資料把整段頻寬填滿，像一堵牆。</p></div>
+    </div>
+    <div class="note key"><span class="ct">關鍵</span>FM 一「調變」就長出邊帶。用純音（測試音 1kHz、亞音 88.5Hz）→ 一根一根數得出來；用真人語音 → 糊成一坨。所以後面 W/N、亞音的「多根」是正常的。</div>
+
+    <h3 class="sub-h" id="s1-4"><span class="k">1·4</span>沒看過的訊號，怎麼判斷真假？</h3>
+    <p class="lead">不用看過，用常識推理三個問題：</p>
+    <ol class="steps">
+      <li><b>它有理由待在這裡嗎？</b>真訊號有來源與用途，會落在已知頻段；頻譜的無人地帶突然冒出東西，可疑。</li>
+      <li><b>形狀配得上用途嗎？</b>語音要一定寬度、資料更寬、信標很窄——寬度不合理就存疑。</li>
+      <li><b>行為像真的嗎？</b>會來會走＝有人通話；規律週期＝機器；一整排完美等距＝多半是你自己過載。</li>
+    </ol>
+    <p class="lead">還是不確定？<strong>動手戳它一下：</strong></p>
+    <div class="grid2">
+      <div class="card"><h4>按 PTT</h4><ul><li>跟著你亮滅的 ＝ <b>真</b></li><li>不理你的 ＝ <b>假</b></li></ul></div>
+      <div class="card"><h4>移中心頻率</h4><ul><li>真訊號<b>不動</b></li><li>鏡像／DC 假訊號跟著中心跑</li></ul></div>
+    </div>
+    <div class="note tip"><span class="ct">再一招</span>降功率：真訊號掉一點；過載假峰掉更多、甚至消失。</div>
+    <figure><img loading="lazy" src="s1_assets/s07_1.webp" alt="一排訊號，判斷真假">
+      <figcaption>第一次看到這排訊號，你怎麼知道它們是真是假？</figcaption></figure>
+  </section>
+
+  <!-- ===================== SESSION 2 ===================== -->
+  <section class="session" id="s2">
+    <div class="s-head">
+      <div class="no">SESSION 2</div>
+      <h2>頻率 Frequency</h2>
+      <p class="sub">大家最常碰到的參數——它在哪，以及它怎麼傳播。</p>
+      <div class="myth">破除迷思　<b>「頻率越高，一定傳越遠」</b> → 看環境；VHF、UHF 各有各的場子。</div>
+    </div>
+
+    <h3 class="sub-h" id="s2-1"><span class="k">2·1</span>為什麼要對頻率？</h3>
+    <div class="why">
+      <div class="star">★ 頻率對不上，其他全部免談——這是通訊的第一道門。</div>
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">空中同時有無數訊號。你要跟誰通，就得先和對方站到「同一個頻率」上。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">頻率＝事先約好的碰面地點；雙方對齊，才聽得到彼此。功率、天線都是之後的事。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">聽得到卻叫不到 → 先核對頻率與末位數字，比換天線、加功率都優先。</div></div>
+    </div>
+
+    <h3 class="sub-h" id="s2-2"><span class="k">2·2</span>頻率 ＝ 水平位置</h3>
+    <p class="lead">轉一個頻道，那根線就往右跳一格 →</p>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s10_1.webp" alt="144.900 MHz"><figcaption>144.900 MHz</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s10_2.webp" alt="145.000 MHz"><figcaption>145.000 MHz</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s10_3.webp" alt="145.050 MHz"><figcaption>145.050 MHz</figcaption></figure>
+    </div>
+    <div class="oneline"><b>一句話</b><span>頻率就是這根線的左右位置。聽得到卻叫不到，先查頻率末位數字，比查天線還優先。</span></div>
+
+    <h3 class="sub-h" id="s2-3"><span class="k">2·3</span>VHF 與 UHF：住在頻譜的哪裡</h3>
+    <div class="grid2">
+      <div class="card"><h4>VHF <small>30 – 300 MHz</small></h4><ul><li>← 頻率低 · 波長長</li><li><b>2m 業餘段</b>　144 – 148 MHz</li><li>145 MHz → λ ≈ 2.07 m（「2 米」段）</li></ul></div>
+      <div class="card"><h4>UHF <small>300 MHz – 3 GHz</small></h4><ul><li>頻率高 · 波長短 →</li><li><b>70cm 業餘段</b>　430 – 440 MHz</li><li>435 MHz → λ ≈ 0.69 m（「70 公分」段）</li></ul></div>
+    </div>
+    <div class="note key"><span class="ct">波長公式</span>λ = 光速 c ⁄ 頻率 f（c ≈ 3 × 10⁸ 公尺/秒）。頻率越高，波長越短。</div>
+    <div class="oneline"><b>一句話</b><span>波長由頻率決定；波長決定了天線多大、以及電波怎麼傳——這是下一段的重點。</span></div>
+
+    <h3 class="sub-h" id="s2-4"><span class="k">2·4</span>波長長短，各有各的場子（理論上）</h3>
+    <div class="grid2">
+      <div class="card"><h4>VHF · 2m <small>波長長（約 2 公尺）</small></h4><ul>
+        <li><b>繞射強</b>　能繞過山丘、地形起伏</li>
+        <li><b>開闊佔優</b>　郊區、野外傳得更遠</li>
+        <li><b>天線較長</b>　但增益容易做出來</li>
+        <li><b>適合</b>　山區、野外、長距離</li></ul></div>
+      <div class="card"><h4>UHF · 70cm <small>波長短（約 0.7 公尺）</small></h4><ul>
+        <li><b>直線性強</b>　靠反射鑽進建築、走廊</li>
+        <li><b>穿透雜亂</b>　市區、室內、大樓密集佔優</li>
+        <li><b>天線較短</b>　頻寬也較充裕</li>
+        <li><b>適合</b>　都市、室內、複雜地形</li></ul></div>
+    </div>
+    <div class="oneline"><b>一句話</b><span>沒有哪個「比較好」——看你在什麼環境。這是理論；真實世界還有下一段的變數。</span></div>
+
+    <h3 class="sub-h" id="s2-5"><span class="k">2·5</span>但理論歸理論：電波在真實環境會被折騰</h3>
+    <div class="grid2">
+      <div class="card"><h4>多路徑 <small>Multipath</small></h4><ul><li>同一訊號走不同路徑到達，彼此相加相消 → 忽強忽弱</li></ul></div>
+      <div class="card"><h4>反射 <small>Reflection</small></h4><ul><li>牆面、金屬、水面把電波彈開，產生第二條路徑</li></ul></div>
+      <div class="card"><h4>折射 <small>Refraction</small></h4><ul><li>大氣與對流層讓路徑彎曲，訊號方向偏掉</li></ul></div>
+      <div class="card"><h4>散射 <small>Scattering</small></h4><ul><li>雨、樹葉、粗糙表面把能量打散到四面八方</li></ul></div>
+      <div class="card"><h4>繞射 <small>Diffraction</small></h4><ul><li>從山稜、建築邊緣繞過去，障礙後也收得到一點</li></ul></div>
+      <div class="card"><h4>吸收 / 遮蔽 <small>Absorption</small></h4><ul><li>牆體、人體、雨水吸掉能量，大障礙後形成陰影</li></ul></div>
+    </div>
+    <div class="note warn"><span class="ct">加起來 ＝</span>訊號飄移、衰落、時好時壞。「理論上更好」≠「現場更好」——走幾步、轉正天線就不同。先看，再猜。</div>
+
+    <h3 class="sub-h" id="s2-6"><span class="k">2·6</span>近代想辦法克服——但 FM 是類比</h3>
+    <div class="grid2">
+      <div class="card"><h4>近代數位通訊怎麼對付不穩定</h4><ul>
+        <li><b>數位調變 + 錯誤更正 (FEC)</b>　收到有錯，靠冗餘碼自己補回來</li>
+        <li><b>展頻 / OFDM</b>　把資料攤到多個載波，避開被打爛的頻段</li>
+        <li><b>分集 / MIMO</b>　多支天線同時收，挑最好的那條路</li>
+        <li><b>自適應編碼 + 重傳</b>　通道差就降速、要求重送</li></ul></div>
+      <div class="card"><h4>業餘 FM 手持機 ＝ 類比，沒有這些</h4><ul>
+        <li>簡單、堅固、低延遲的即時語音</li>
+        <li>不需要基地台或網路就能通</li>
+        <li>跨廠牌互通，靠人與紀律運作</li>
+        <li><b>當基礎設施倒下，它還會動</b> ← 民防／災害的最後手段</li></ul>
+        <p style="margin:8px 0 0;font-size:13.5px;color:var(--muted)">抗噪靠 FM 捕獲效應，不靠演算法——訊號差就是差。所以前面每個參數都得調對。</p></div>
+    </div>
+    <div class="oneline"><b>一句話</b><span>業餘無線電的定位：在最壞情況下——沒電、沒網、沒基地台——仍然會動的通訊。</span></div>
+  </section>
+
+  <!-- ===================== SESSION 3 ===================== -->
+  <section class="session" id="s3">
+    <div class="s-head">
+      <div class="no">SESSION 3</div>
+      <h2>發射功率 TX Power</h2>
+      <p class="sub">H / M / L —— 功率大，只是線更亮。</p>
+      <div class="myth">破除迷思　<b>「功率越大越好」</b> → 夠用就好；大只是更耗電、更燙、干擾更廣。</div>
+    </div>
+    <h3 class="sub-h" id="s3-1"><span class="k">3·1</span>為什麼要有 H / M / L？</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">訊號會隨距離變弱。功率決定你「推得多遠」，但推得越遠，也干擾越廣、越耗電。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">給你 H / M / L 三段可選，讓你按需要挑——夠用就好，不是越大越好。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">近距離用 L：省電、少干擾、機殼不燙；只有邊緣地帶才加到 H。</div></div>
+    </div>
+    <h3 class="sub-h" id="s3-2"><span class="k">3·2</span>功率 ＝ 高度 / 亮度（寬度不變）</h3>
+    <p class="lead">功率大 ＝ 訊號更高、更亮，但<strong>左右寬度完全不變</strong>。通不通，還要看對方收不收得到——<strong>加功率不保證通</strong>。</p>
+    <div class="grid2">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s17_1.webp" alt="實測 H 高功率"><figcaption>實測 H　峰值 −47 dB</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s17_2.webp" alt="實測 L 低功率"><figcaption>實測 L　峰值 −51 dB</figcaption></figure>
+    </div>
+    <div class="note key"><span class="ct">實測（Narrow 窄頻，加 −20 dB 衰減）</span>H ≈ −47 dB、L ≈ −51 dB——高度差看得出來（功率＝高度／亮度），而左右寬度一樣。先把訊號拉離天花板（衰減／拉遠），H 與 L 的差異才顯現。</div>
+  </section>
+
+  <!-- ===================== SESSION 4 ===================== -->
+  <section class="session" id="s4">
+    <div class="s-head">
+      <div class="no">SESSION 4</div>
+      <h2>天線 Antenna</h2>
+      <p class="sub">增益 ＝ 把功率集中打出去；頻率、接頭要對得上。</p>
+      <div class="myth">先想清楚　<b>「天線隨便接就好」</b> → 頻率要對、增益看場景、接頭要對得上，接錯就白費功率。</div>
+    </div>
+    <h3 class="sub-h" id="s4-1"><span class="k">4·1</span>天線增益實測：換一支天線，載波差約 13 dB</h3>
+    <p class="lead">同條件替換法：只換發射端天線、其他不動，讀 FFT 峰值相減。</p>
+    <figure style="text-align:center"><img loading="lazy" src="s1_assets/s19_1.webp" alt="短天線與長天線" style="max-width:260px;width:100%"><figcaption>左 短天線 (Ant1)　右 長天線 (Ant3)：同軸接同一台 MTS 發射。</figcaption></figure>
+    <div class="grid2" style="grid-template-columns:1fr 1fr">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s19_2.webp" alt="短天線 Ant1 SDR"><figcaption>短天線 Ant1 → 峰值 <b class="no">−42 dB</b></figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s19_3.webp" alt="長天線 Ant3 SDR"><figcaption>長天線 Ant3 → 峰值 <b class="ok">−29 dB</b></figcaption></figure>
+    </div>
+    <div class="oneline"><b>長 − 短 ≈ 13 dB</b><span>長天線把能量集中 → 載波明顯更強。</span></div>
+    <div class="note key"><span class="ct">替換法量測條件</span>MTS 發純載波 145.050 MHz（Wide／低功率／−20 dB 衰減）；RTL-SDR 固定接收（Gain 0、AGC 全關）。兩張噪聲底一致（約 −100 dB）＝條件相同。</div>
+    <div class="note warn"><span class="ct">註</span>這是室內相對讀數（含短天線效率低＋近場／反射），非 dBi 認證增益值；但「長 &gt; 短」順序正確，符合「天線越長、增益越高、載波越強」。要認證數字需室外遠場。</div>
+    <h3 class="sub-h" id="s4-2"><span class="k">4·2</span>挑天線看三件事：頻率、增益、接頭</h3>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="card"><h4>① 頻率</h4><ul><li>天線有設計頻段（例：FM 136–174 / 400–480MHz ＝ V/U 雙頻）。</li><li>用在對的頻段才有效率；不對會 SWR 高、功率被反射回機身。</li></ul></div>
+      <div class="card"><h4>② 增益 <small>gain</small></h4><ul><li>常見 dBi / dBd（dBd ＝ dBi − 2.15）。</li><li>越高打越遠，但波束越扁、仰角越窄。手持／移動未必越高越好。</li></ul></div>
+      <div class="card"><h4>③ 接頭規格</h4><ul><li>常見 SMA-公 / SMA-母 / BNC…。</li><li>母機與天線的公母、螺紋要對得上；接錯裝不上或接觸不良、功率漏失。</li></ul></div>
+    </div>
+    <figure><img loading="lazy" src="s1_assets/n3_connectors.webp" alt="三支天線接頭 ①②③"><figcaption>① 短　② 中（標示 FM 136–174 / 400–480MHz ＝ V/U 雙頻）　③ 長</figcaption></figure>
+    <div class="note tip"><span class="ct">辨識法</span>中央有針＝公、凹孔＝母，天線要和機身「相反」才鎖得上。SMA 與 RP-SMA 外觀近似、中央針／孔相反，買前務必先確認機身規格。</div>
+  </section>
+
+  <!-- ===================== SESSION 5 ===================== -->
+  <section class="session" id="s5">
+    <div class="s-head">
+      <div class="no">SESSION 5</div>
+      <h2>寬頻 / 窄頻 W / N</h2>
+      <p class="sub">面板寫「頻寬」，其實它設的是「訊號最多能佔多寬」的上限。</p>
+      <div class="myth">破除迷思　<b>「面板寫頻寬，就是在設頻寬」</b> → 設的是寬度的天花板；實際多寬看你多大聲。</div>
+    </div>
+    <h3 class="sub-h" id="s5-1"><span class="k">5·1</span>為什麼要有寬 / 窄頻？</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">頻譜不夠用。使用者暴增，主管機關必須在不新增頻譜下擠出更多頻道。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">把訊號寬度的天花板砍一半（窄頻），頻道間隔就能縮一半，同一段頻譜塞進兩倍頻道。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">代價是音質與訊噪比略降；跨單位務必統一 W 或 N，否則一個破音、一個太小聲。</div></div>
+    </div>
+    <h3 class="sub-h" id="s5-2"><span class="k">5·2</span>寬 / 窄頻 ＝ 訊號寬度的天花板</h3>
+    <div class="grid2">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s23_1.webp" alt="寬頻 W"><figcaption>寬頻 W：天花板高，最寬可到約 16 kHz</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s23_2.webp" alt="窄頻 N"><figcaption>窄頻 N：天花板低，最寬約 11 kHz</figcaption></figure>
+    </div>
+    <div class="oneline"><b>一句話</b><span>W/N 設的是「最寬能到多寬」的上限；你講多大聲，決定實際走到哪。太小聲用不滿、太大聲會超出。</span></div>
+    <div class="note warn"><span class="ct">場景</span>跨單位一邊寬一邊窄 → 聲音一個破一個太小，兩邊都以為是對方訊號弱。統一 W/N，寫進通聯計畫。</div>
+  </section>
+
+  <!-- ===================== SESSION 6 ===================== -->
+  <section class="session" id="s6">
+    <div class="s-head">
+      <div class="no">SESSION 6</div>
+      <h2>頻道步進 Step</h2>
+      <p class="sub">從「轉頻率的最小單位」，到「沒協調好就壓到隔壁」。</p>
+      <div class="myth">破除迷思　<b>「步進只是調頻率的方便設定」</b> → 設錯會叫不到頻率，還會壓到隔壁。</div>
+    </div>
+    <h3 class="sub-h" id="s6-1"><span class="k">6·1</span>為什麼要有頻道步進？</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">整段頻譜要切成整齊的「頻道格」，大家才停在同樣的位置上、不各停各的。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">步進＝頻道間隔的跳動單位；設對，才停得上格線、也才不會壓到鄰頻。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">叫不到某頻率（步進太大跳過了）、或被鄰頻抱怨干擾 → 都先查步進。</div></div>
+    </div>
+    <h3 class="sub-h" id="s6-2"><span class="k">6·2</span>步進：轉頻率的最小跳動單位</h3>
+    <p class="lead">步進 (STEP) ＝ 你每按一下、轉一格，頻率跳動的最小量。常見 5 / 6.25 / 12.5 / 25 kHz。整個頻段被它切成一格一格。</p>
+    <div class="grid2">
+      <div class="card"><h4><span class="no">✗</span> 步進 25 kHz</h4><ul><li>停得到：145.000 / .025 / .050 / .075 / .100</li><li><b class="no">停不到 145.0125</b>（被跳過）</li></ul></div>
+      <div class="card"><h4><span class="ok">✓</span> 步進 12.5 kHz</h4><ul><li>停得到：…145.000 / .0125 / .025 / .0375 / .050…</li><li><b class="ok">145.0125 剛好落在格線上</b></li></ul></div>
+    </div>
+    <div class="oneline"><b>一句話</b><span>聽得到卻停不上去，八成是步進設太大——先查步進，再懷疑天線。</span></div>
+    <h3 class="sub-h" id="s6-3"><span class="k">6·3</span>步進沒協調 → 鄰頻重疊；為什麼留「保護頻帶」</h3>
+    <p class="lead">真實訊號會超出「理論／佔用頻寬」——邊緣的「裙擺」向外溢。<strong>保護頻帶 ＝ 頻道間隔 − 佔用頻寬</strong>，就是留給裙擺的緩衝，算出負數＝必定重疊。</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>設定</th><th>頻道間隔</th><th>保護頻帶</th><th>結果</th></tr></thead>
+      <tbody>
+        <tr><td>寬頻 16k</td><td>25 kHz</td><td>+9 kHz</td><td><b class="ok">安全</b></td></tr>
+        <tr><td>寬頻 16k</td><td>12.5 kHz</td><td>−3.5 kHz</td><td><b class="no">重疊</b></td></tr>
+        <tr><td>窄頻 11k</td><td>12.5 kHz</td><td>+1.5 kHz</td><td><b class="warnc">勉強</b></td></tr>
+      </tbody>
+    </table></div>
+    <figure><img loading="lazy" src="s1_assets/s28_1.webp" alt="窄頻 FM 訊號裙擺溢出頻寬框"><figcaption>實測 · 窄頻 FM：訊號裙擺溢出頻寬框——所以要留保護頻帶。</figcaption></figure>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="card"><h4>裙擺</h4><ul><li>真實訊號會超出理論頻寬——邊緣還有能量。</li></ul></div>
+      <div class="card"><h4>漂移</h4><ul><li>發射頻率會隨溫度、晶體誤差飄，不會永遠停在正中央。</li></ul></div>
+      <div class="card"><h4>濾波器</h4><ul><li>接收濾波器不是磚牆，邊緣慢慢滾降，鄰頻會漏一點進來。</li></ul></div>
+    </div>
+    <div class="note key"><span class="ct">FM 要多寬才夠？</span>寬頻 25k − 16k ＝ 9k（夠）；窄頻 12.5k − 11k ＝ 只剩 1.5k——所以窄頻對頻率準確度與濾波器要求更嚴。</div>
+  </section>
+
+  <!-- ===================== 動手做 ===================== -->
+  <section class="session" id="do1">
+    <div class="s-head" style="background:#4a3b22">
+      <div class="no" style="color:#E9C083">動手做 · 分組實作</div>
+      <h2>調出這個形狀</h2>
+      <p class="sub">一對無線電、兩種設定，在頻譜上疊出「一寬一窄」——這就是你這組要做出來的畫面。</p>
+    </div>
+    <h3 class="sub-h" id="do1-1"><span class="k">分組</span>六組各據一個頻段</h3>
+    <p class="lead">每組拿到一段夠寬的頻段，兩台就在裡面錯開頻率。全部落在 2m 頻段內、避開呼叫與衛星頻率。</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>組別</th><th>頻段（MHz）</th><th>寬度</th></tr></thead>
+      <tbody>
+        <tr><td><b>第 1 組</b></td><td>144.700 – 144.800</td><td>100 kHz</td></tr>
+        <tr><td><b>第 2 組</b></td><td>144.840 – 144.940</td><td>100 kHz</td></tr>
+        <tr><td><b>第 3 組</b></td><td>144.980 – 145.080</td><td>100 kHz</td></tr>
+        <tr><td><b>第 4 組</b></td><td>145.120 – 145.220</td><td>100 kHz</td></tr>
+        <tr><td><b>第 5 組</b></td><td>145.260 – 145.360</td><td>100 kHz</td></tr>
+        <tr><td><b>第 6 組</b></td><td>145.400 – 145.480</td><td>100 kHz</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note key"><span class="ct">規則</span>① 各組可同時發射——先低功率、先看 SDR 確認沒蓋到隔壁組　② 一組內兩台錯開頻率、設不同 W/N 與功率　③ 全程盯 SDR。</div>
+    <div class="note warn"><span class="ct">※</span>頻率為課堂示意：已避開呼叫頻率 145.500 與 ISS／衛星 145.800，並限制在 2m 頻段 144–146 MHz。開課前仍須依 NCC 頻段規劃與當地緊急／中繼／衛星／APRS 頻率確認。</div>
+    <h3 class="sub-h" id="do1-2"><span class="k">題目</span>兩台一起發，疊出一寬一窄</h3>
+    <div class="grid2">
+      <div class="card"><h4>做法</h4><ul>
+        <li><b>A 台</b>　寬頻 (W) ＋ 低功率 (L)</li>
+        <li><b>B 台</b>　窄頻 (N) ＋ 高功率 (H)</li>
+        <li><b>錯開</b>　兩台頻率在你們的頻段內稍微分開</li>
+        <li><b>疊圖</b>　開 SDR 的 FFT Hold，兩台輪流發</li></ul></div>
+      <div class="card"><h4>想一想</h4><ul>
+        <li>哪個佔的頻寬大？哪個比較高（訊號強）？</li>
+        <li>兩台靠太近會怎樣？</li>
+        <li><b>高度看功率、寬度看 W/N，兩件事互不相干</b>——這正是判斷「同一個頻段裡有幾台、各是什麼設定」的基本功。</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== SESSION 7 ===================== -->
+  <section class="session" id="s7">
+    <div class="s-head">
+      <div class="no">SESSION 7</div>
+      <h2>亞音 CTCSS</h2>
+      <p class="sub">重點：亞音<strong>不是加密</strong>。</p>
+      <div class="myth">破除迷思　<b>「設了亞音＝私人頻道，別人聽不到」</b> → 它一點都不加密，只關你自己的喇叭。</div>
+    </div>
+    <h3 class="sub-h" id="s7-1"><span class="k">7·1</span>為什麼要有亞音（CTCSS）？</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">同一個頻率常要多組人共用。你不想整天聽到別組的通話與雜音。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">發射端蓋一個「暗號」（次音頻），收端只對暗號開喇叭——這是分群，不是加密。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">中繼台要正確亞音才會開；但你講的每句話仍是明語，任何人、任何 SDR 都收得到。</div></div>
+    </div>
+    <h3 class="sub-h" id="s7-2"><span class="k">7·2</span>亞音在瀑布圖上：一排梳齒</h3>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s34_1.webp" alt="無亞音"><figcaption><b>無亞音</b>：一根乾淨載波</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s34_2.webp" alt="88.5 Hz"><figcaption><b>88.5 Hz</b>：梳齒密、根數多</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s34_3.webp" alt="254.1 Hz"><figcaption><b>254.1 Hz</b>：梳齒疏、根數少</figcaption></figure>
+    </div>
+    <div class="oneline"><b>一句話</b><span>梳齒間隔 ＝ 亞音頻率。不用問你，數格子就讀得出你設的是幾赫茲（實測誤差 ≤1.4%）。</span></div>
+    <h3 class="sub-h" id="s7-3"><span class="k">7·3</span>亞音不是加密——它只關你的喇叭</h3>
+    <div class="grid2">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s35_1.webp" alt="B 沒設亞音"><figcaption>① B 沒設亞音 → <b class="ok">喇叭出聲</b></figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s35_2.webp" alt="B 設了亞音"><figcaption>⑤ B 設了亞音 → <b class="no">喇叭不出聲</b></figcaption></figure>
+    </div>
+    <p class="lead">同一個電波（總功率差 0.58 dB、頻寬差 10 Hz），B 卻一個聽得到、一個聽不到。而且 B 不出聲時 <b>BUSY 燈仍亮著</b>——它自己承認收到了，只是不放給你聽。</p>
+    <div class="note warn"><span class="ct">通聯紀律</span>人員位置、傷患個資、物資數量——設了亞音也一樣不能明語講。</div>
+    <h3 class="sub-h" id="s7-4"><span class="k">動手做</span>設傳 / 收亞音，體驗通聯差異</h3>
+    <p class="lead">兩台 A / B 對到同一頻率。分開設「發射碼 T-CTCS」與「接收碼 R-CTCS」，走四種組合，觀察通不通。<b>收碼＝收聽要不要「驗」亞音；傳碼＝發射要不要「帶」亞音。</b></p>
+    <div class="note key"><span class="ct">各組亞音</span>第 1 組 88.5 Hz · 第 2 組 100.0 Hz …（各組不同碼，同頻分群）。</div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>測試</th><th>A 台</th><th>B 台</th><th>結果（現場填）</th></tr></thead>
+      <tbody>
+        <tr><td><b>1</b></td><td>設 T-CTCS 88.5、不設 R</td><td>設 T-CTCS 88.5、不設 R</td><td>只發射帶碼、收聽不驗 →</td></tr>
+        <tr><td><b>2</b></td><td>不設 T、設 R-CTCS 88.5</td><td>不設 T、設 R-CTCS 88.5</td><td>只收聽驗碼、發射不帶 →</td></tr>
+        <tr><td><b>3</b></td><td>設 T ＋ R 88.5</td><td>設 T ＋ R 88.5</td><td>都設同碼 →</td></tr>
+        <tr><td><b>4</b></td><td>設 T ＋ R 88.5</td><td>設 T ＋ R <b>100</b></td><td>碼不同 →</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note tip"><span class="ct">會歸納出</span>T-CTCS ＝ 蓋章給別人驗（發射）；R-CTCS ＝ 驗別人的章（決定你聽不聽）。要通：兩邊 T＋R 同碼；分群：同頻不同碼。</div>
+  </section>
+
+  <!-- ===================== SESSION 8 ===================== -->
+  <section class="session" id="s8">
+    <div class="s-head">
+      <div class="no">SESSION 8</div>
+      <h2>Offset　收發分裂</h2>
+      <div class="myth"><b>「offset 改的是我收聽的頻率」</b> → 不，offset 只在按 PTT 發射時生效；你顯示／收聽的頻率不動。</div>
+      <p class="sub" style="margin-top:12px">重點：中繼台一收一發不同頻。offset 決定「發射」跳去哪——方向(＋/−)＋大小；還要配亞音才進得了中繼台。</p>
+    </div>
+    <h3 class="sub-h" id="s8-1"><span class="k">8·1</span>為什麼要 offset？中繼台一收一發</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">中繼台要「同時」聽你講、又把你的話轉播出去。若收發同頻，它一發就會蓋掉自己正在收的訊號（自我干擾），根本無法運作。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">讓中繼台「收一個頻率、發另一個頻率」，兩者相差固定的 offset（2m 常見 −600 kHz）。你的機器：顯示／收聽＝中繼台輸出；一按 PTT 自動平移 offset ＝中繼台輸入。<b>offset 只動 TX，不動 RX。</b></div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">打不進中繼台，先查三件事：頻率（輸出對不對）、offset（方向＋大小）、亞音（CTCSS）。三者缺一不可——只設 offset 數值卻沒設方向（＋/−），機器根本不會平移。</div></div>
+    </div>
+    <h3 class="sub-h" id="s8-2"><span class="k">8·2</span>offset 實測：TX 平移、RX 不動</h3>
+    <div class="grid2">
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s39_1.webp" alt="offset -10k"><figcaption>設 offset <b>−10k</b> → 發射落在 145.040（紅線左）</figcaption></figure>
+      <figure style="margin:0"><img loading="lazy" src="s1_assets/s39_2.webp" alt="offset +10k"><figcaption>設 offset <b>+10k</b> → 發射落在 145.060（紅線右）</figcaption></figure>
+    </div>
+    <div class="grid2">
+      <div class="card"><h4>RX</h4><ul><li>顯示／收聽 <b>145.050</b>　＝中繼台輸出（不動）</li></ul></div>
+      <div class="card"><h4>TX</h4><ul><li>145.050 ± offset　＝中繼台輸入（按 PTT 才平移）</li></ul></div>
+    </div>
+    <div class="note key"><span class="ct">看圖</span>紅線＝你設定的 145.050（RX 不動）；黃色載波＝按 PTT 的發射位置，隨 offset 左右平移。實測用 ±10 kHz 小偏移才同框看得到；真實中繼台常 ±600 kHz，要把 SDR 頻寬開大才看得到跳到哪。</div>
+  </section>
+
+  <!-- ===================== 想一想 ===================== -->
+  <section class="session" id="think">
+    <div class="s-head" style="background:#2f4038">
+      <div class="no" style="color:#9CC9BE">想一想</div>
+      <h2>架一座 2m 中繼台</h2>
+      <p class="sub">中繼台「同時收、同時發」（全雙工）。先想清楚：最少要設定什麼才能通話？</p>
+    </div>
+    <div class="grid2">
+      <div class="card"><h4>中繼台在做什麼？</h4><ul><li>兩台手持機互相聽不到（太遠、被山擋）就不能直通。</li><li>中繼台架在高處，同時「收」、再用另一個頻率「發」，替大家轉發——把每個人的涵蓋範圍放大到中繼台看得到的地方。</li></ul></div>
+      <div class="card"><h4>什麼時候用？</h4><ul><li>手持直通常只有幾公里、怕地形遮蔽。山區搜救、跨市聯絡、災難現場，靠一座山頂中繼台就能把分散的小隊連起來。</li><li><b>注意：它一倒，靠它的人全斷</b>——要留直通備援。</li></ul></div>
+    </div>
+    <h3 class="sub-h" id="think-ans"><span class="k">參考答案</span>一座 2m 中繼台這樣設</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>參數</th><th>參考答案（範例）</th><th>為什麼這樣設</th></tr></thead>
+      <tbody>
+        <tr><td colspan="3" style="background:var(--primary-soft);color:var(--primary-ink);font-weight:800">能通話的最低必要</td></tr>
+        <tr><td><b>輸出頻率（你收）</b></td><td>145.600 MHz</td><td>這是公布出去的中繼台頻率——大家把它設進「接收」。</td></tr>
+        <tr><td><b>輸入頻率（你發）</b></td><td>145.000 MHz</td><td>＝輸出 − 位移；中繼台就在這個頻率「聽」你發話。</td></tr>
+        <tr><td><b>位移（方向＋大小）</b></td><td>−600 kHz（向下）</td><td>2m 標準位移 600 kHz。要夠大——中繼台同時收發，太近會「自己蓋掉自己」、保護頻帶也不足（S6）。</td></tr>
+        <tr><td colspan="3" style="background:var(--teal-soft);color:var(--teal-ink);font-weight:800">讓它好用、不互擾</td></tr>
+        <tr><td><b>亞音（存取）</b></td><td>開，88.5 Hz</td><td>擋雜訊與鄰台誤觸、避免亂開台；但它不加密，話仍是明語（S7）。</td></tr>
+        <tr><td><b>發射功率＋架高</b></td><td>大功率、架高處</td><td>中繼台要覆蓋廣，所以架高、功率大（S3）；但干擾半徑同時放大，要協調。</td></tr>
+        <tr><td><b>與鄰台協調</b></td><td>頻率／亞音錯開</td><td>鄰台的輸入／輸出若太近，就是放大版的鄰頻重疊（S6）。</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note warn"><span class="ct">＊</span>範例數字依當地 2m 頻段規劃與頻率協調而定；重點是每一項都「說得出為什麼」。</div>
+  </section>
+
+  <!-- ===================== SESSION 9 ===================== -->
+  <section class="session" id="s9">
+    <div class="s-head">
+      <div class="no">SESSION 9</div>
+      <h2>靜噪 Squelch</h2>
+      <div class="myth"><b>「靜噪把訊號關掉了」</b> → 它只關你的喇叭，電波照舊、別人照收。</div>
+    </div>
+    <h3 class="sub-h" id="s9-1"><span class="k">9·1</span>為什麼要有靜噪？</h3>
+    <div class="why">
+      <div class="row p1"><div class="tag">要解決的問題</div><div class="txt">沒訊號時，收音機會一直發出白噪音「沙沙聲」。你不想整天聽它，也不想手動去關喇叭。</div></div>
+      <div class="row p2"><div class="tag">設計原理</div><div class="txt">設一個「訊號強度門檻」：低於門檻就把喇叭關掉、高於門檻才出聲——它只關喇叭，不動電波。可再加亞音當第二道條件，只對暗號開喇叭。</div></div>
+      <div class="row p3"><div class="tag">現場場景</div><div class="txt">設太高→弱訊號漏接（以為沒人）；設太低→一直有雜音。收不到時先想：是靜噪太高還是真沒訊號？用 SDR 瀑布圖一看便知——有訊號卻沒聲＝靜噪太高。</div></div>
+    </div>
+    <h3 class="sub-h" id="s9-2"><span class="k">9·2</span>靜噪：在「底噪」之上，畫一條門檻線</h3>
+    <p class="lead"><b>底噪</b>＝背景雜訊的高度；<b>靜噪 SQL</b>＝你在底噪之上畫的一條門檻線。訊號高過線→喇叭開；低於線（含底噪）→喇叭關。</p>
+    <div class="thr">
+      <div class="row hi"><span class="tag">太高</span><div>門檻拉到訊號之上 → <b>連訊號都擋掉＝漏接</b>（有人也聽不到）</div></div>
+      <div class="row mid"><span class="tag">剛好</span><div>門檻在底噪之上、訊號之下 → <b>雜音關、真訊號一來就開</b> ✔</div></div>
+      <div class="row lo"><span class="tag">太低</span><div>門檻壓進底噪裡 → <b>雜音漏出來＝一直沙沙</b></div></div>
+    </div>
+    <div class="note tip"><span class="ct">它只關喇叭、不動電波</span>你這裡沒聲，不代表別人沒收到——SDR、沒設靜噪的人照樣收得到（跟亞音「不是加密」同一個道理）。</div>
+    <h3 class="sub-h" id="s9-3"><span class="k">動手做</span>調 SQL 找門檻（用低功率）</h3>
+    <p class="lead">各組甲聽、乙發（同頻率）。把 SQL 從 0 慢慢往上轉，看喇叭：一直響 → 只在乙發時響 → 連乙發都不響。弱訊號用<b>低功率 (L)</b>做。</p>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>測試</th><th>甲的 SQL</th><th>乙發射</th><th>甲喇叭</th><th>體驗／學到</th></tr></thead>
+      <tbody>
+        <tr><td><b>①</b></td><td>SQL 0（全開）</td><td>沒人發</td><td><b class="warnc">一直沙沙</b></td><td>太低＝整天雜音</td></tr>
+        <tr><td><b>②</b></td><td>調到雜音剛消失</td><td>沒人發</td><td><b class="ok">安靜</b></td><td>這個值＝「門檻」（設在底噪之上）</td></tr>
+        <tr><td><b>③</b></td><td>維持門檻</td><td>乙近距·正常發</td><td><b class="ok">出聲、清楚</b></td><td>設對：安靜又收得到</td></tr>
+        <tr><td><b>④</b></td><td>SQL 轉到最高</td><td>乙轉低功率 L 發</td><td><b class="no">聽不到（漏接）</b></td><td>太高＝有人也漏接；SDR／BUSY 仍看得到</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note key"><span class="ct">⚑ 收不到先分辨</span>「靜噪太高」還是「真的沒訊號」？按 MONI（監聽）或看 SDR 瀑布圖——有訊號卻沒聲＝靜噪太高。</div>
+  </section>
+
+  <!-- ===================== 現場排查 ===================== -->
+  <section class="session" id="tr">
+    <div class="s-head" style="background:#3a2f2a">
+      <div class="no" style="color:#E9A583">現場排查 · TROUBLESHOOTING</div>
+      <h2>出問題，怎麼查？</h2>
+      <p class="sub">用學過的每一層，從最便宜、最常見的先查起。</p>
+    </div>
+    <h3 class="sub-h" id="tr-1"><span class="k">心法</span>先聽、分層、一次一項</h3>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="card"><h4>① 先聽、先看表</h4><ul><li>靜噪 SQL 設 0，聽有沒有訊號或雜音，先分辨「真沒訊號」還是「設定問題」。</li></ul></div>
+      <div class="card"><h4>② 分層照成本查</h4><ul><li>設定（免費最常見）→ 實體（天線接頭＞高度視距＞功率）→ 系統（中繼位移／亞音、可達性、單點失效）。</li></ul></div>
+      <div class="card"><h4>③ 一次一項＋找人對測</h4><ul><li>改一個參數就測一次；請隊友用另一台幫你聽，才分得出是「發不出」還是「收不到」。</li></ul></div>
+    </div>
+    <div class="note key"><span class="ct">黃金順序</span>先查五個免費設定——頻率／步進／寬窄／亞音／靜噪；再懷疑天線與距離（接頭鎖緊、架高、視距）；最後才動功率——功率不是萬靈丹（S3）。</div>
+    <h3 class="sub-h" id="tr-2"><span class="k">收訊</span>聽不到、聽不清：症狀 → 怎麼查 → 怎麼解</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>症狀</th><th>可能原因</th><th>怎麼查</th><th>怎麼解</th></tr></thead>
+      <tbody>
+        <tr><td><b>完全沒聲音</b></td><td>沒對到頻率／靜噪太高／要亞音沒對</td><td>設 SQL=0 監聽有無雜音；核對頻率與步進</td><td>對頻＋對步進；降靜噪；關或對正亞音</td></tr>
+        <tr><td><b>轉不到想要的頻率</b></td><td>步進設太大</td><td>試著轉到 145.0125</td><td>改小步進</td></tr>
+        <tr><td><b>聲音破、尖</b></td><td>對方寬頻、你窄頻</td><td>問對方是 W 還是 N</td><td>統一寬窄頻</td></tr>
+        <tr><td><b>聲音悶、小聲</b></td><td>對方窄頻、你寬頻</td><td>同上</td><td>統一寬窄頻</td></tr>
+        <tr><td><b>一直有雜音</b></td><td>訊號弱／靜噪太低</td><td>看 S 表格數低不低</td><td>靠近／架高／換天線；調高靜噪</td></tr>
+      </tbody>
+    </table></div>
+    <h3 class="sub-h" id="tr-3"><span class="k">發射·系統</span>發不出去、中繼與覆蓋</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>症狀</th><th>可能原因</th><th>怎麼查</th><th>怎麼解</th></tr></thead>
+      <tbody>
+        <tr><td><b>別人都收不到我</b></td><td>天線沒鎖／接錯、功率太低</td><td>檢查接頭公母、鎖緊；請隊友聽你發射</td><td>鎖緊／換對接頭；架高；適度功率</td></tr>
+        <tr><td><b>直通不通、走中繼才通</b></td><td>兩台互相聽不到（可達性）</td><td>隊友直呼看得到彼此嗎；是否被地形擋</td><td>靠近／架高／走中繼台</td></tr>
+        <tr><td><b>開不了中繼台</b></td><td>入口亞音錯、位移方向或大小錯</td><td>對照中繼台的參數</td><td>設對入口亞音與位移</td></tr>
+        <tr><td><b>中繼台一倒全斷</b></td><td>星狀單點失效</td><td>—</td><td>預留直通備援頻率、分散節點</td></tr>
+        <tr><td><b>覆蓋不到遠隊</b></td><td>距離／地形超出</td><td>看地形與視距</td><td>高增益天線＋架高（天線＞功率）；中繼延伸</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===================== 分組任務 ===================== -->
+  <section class="session" id="final">
+    <div class="s-head" style="background:#4a2820">
+      <div class="no" style="color:#F0A07A">FINAL · 分組任務</div>
+      <h2>災難現場通訊計畫</h2>
+      <p class="sub">用今天學到的每一個參數，替你的小隊做決定。</p>
+    </div>
+    <h3 class="sub-h" id="final-1"><span class="k">情境</span>一場地震後的現場通聯</h3>
+    <div class="card"><p style="margin:0;color:var(--ink2);font-size:15px">強震後市電中斷。你是新竹市現場指揮所民防通訊官，要替下列單位設計一份「能立即部署」的通訊計畫：<b>指揮所</b>（市區高點）、<b>搜救隊×3</b>（分散山區與倒塌區，相距數公里、地形遮蔽）、<b>後送隊×2</b>（往醫院），每隊僅能聽到自己隊員的通訊。可用器材：每人一台 2m/70cm 手持機（0.5–5 W）、少量高增益天線、可選配 Meshtastic 節點；電力僅電池與少量太陽能；市內有一座 2m 中繼台可用（145.700 MHz，−0.6 MHz）。部分傷患名單需保密。指定主用頻段：2m 業餘頻段（需執照）。</p></div>
+    <h3 class="sub-h" id="final-2"><span class="k">要決定</span>你要決定的七件事</h3>
+    <div class="grid2">
+      <div class="card"><h4>1 · 頻率與步進</h4><ul><li>各隊用哪些頻率？步進統一才不會互相壓到（S6）</li></ul></div>
+      <div class="card"><h4>2 · 寬 / 窄頻</h4><ul><li>全體統一 W 還是 N？跨隊會不會不相容（S5）</li></ul></div>
+      <div class="card"><h4>3 · 功率</h4><ul><li>哪些用 H、哪些用 L？覆蓋 vs 耗電（S3）</li></ul></div>
+      <div class="card"><h4>4 · 亞音與紀律</h4><ul><li>要不要用亞音分隊？哪些話不能明語（S7）</li></ul></div>
+      <div class="card"><h4>5 · 天線與架設</h4><ul><li>要不要高增益、架高？機動隊選型（S4）</li></ul></div>
+      <div class="card"><h4>6 · 中繼台</h4><ul><li>要不要架？輸入／輸出／位移／亞音（想一想）</li></ul></div>
+      <div class="card"><h4>7 · 資料鏈路與韌性</h4><ul><li>語音／位置(Meshtastic)／態勢圖(TAK)；星狀還是網狀備援、單點失效（第二節）</li></ul></div>
+      <div class="card" style="background:var(--red-soft);border-color:#F0C7BC"><h4>限制</h4><ul><li>保密：業餘禁加密、免執照供應鏈存疑</li><li>電力：停電，算功耗與太陽能</li></ul></div>
+    </div>
+    <div class="note tip"><span class="ct">交付</span>每組上台用一句「症狀 → 用哪個參數 → 為什麼」講一個你們預先擋掉的通訊故障。</div>
+    <h3 class="sub-h" id="final-3"><span class="k">參考答案</span>新竹地震通訊計畫這樣配</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>條件</th><th>參考答案（範例）</th><th>為什麼</th></tr></thead>
+      <tbody>
+        <tr><td><b>頻率與步進</b></td><td>各隊分配不同頻率、步進統一 12.5k；跨隊經中繼台一進一出</td><td>頻率錯開不互壓、步進統一避免鄰頻重疊（S6）</td></tr>
+        <tr><td><b>寬 / 窄頻</b></td><td>全體窄頻 N</td><td>頻道多、可容納更多隊，語音夠用（S5）</td></tr>
+        <tr><td><b>功率</b></td><td>指揮所／中繼台 H；隊員平時 L</td><td>覆蓋 vs 省電；功率非萬靈丹（S3）</td></tr>
+        <tr><td><b>亞音</b></td><td>各隊不同入口亞音分隊；傷患個資不上明語</td><td>擋誤觸、分群（S7）；業餘頻段禁加密</td></tr>
+        <tr><td><b>天線與架設</b></td><td>指揮所／中繼台高增益且架高；隊員原廠短天線</td><td>天線效益 &gt; 加功率（S4）</td></tr>
+        <tr><td><b>中繼台</b></td><td>架一座 2m 中繼台：145.700／−0.6／設入口亞音</td><td>手持直通蓋不住山區，中繼台延伸覆蓋（想一想）</td></tr>
+        <tr><td><b>資料鏈路與韌性</b></td><td>位置用 Meshtastic(太陽能)；TAK 走 802.11；中繼台倒了退回直通</td><td>語音＋資料分工、避免單點失效（第二節）</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note warn"><span class="ct">＊</span>數字為範例，實際依頻率協調與現場而定；重點是每一項都說得出「為什麼」。需保密內容必須另規劃管道。</div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  進階無線電 · 曙豐防災自訓團 ｜ 教學用途。頻率（如 145.050 MHz）為教學示意，實際請用主管機關核配頻率。
+  ｜ <a href="index.html">← 學習站首頁</a> ｜ <a href="slides-s1.html">投影片圖片版</a>
+</div></footer>
+
+</body>
+</html>
