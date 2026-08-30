@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>進階無線電 第二節 · 無線科技分層解析</title>
+<title>進階無線電 · 無線科技分層解析</title>
 
 <style>
 :root{
@@ -176,8 +176,7 @@ svg.fig{width:100%; height:auto; display:block; background:var(--paper-2); borde
 
 <main>
 <div class="bar">
-  <div class="stat">第二節 · 純概念講解 · 無實驗</div>
-  <button class="bbtn" id="b-print">列印 / 存 PDF</button>
+  <div class="stat">純概念講解 · 無實驗</div>
   <button class="bbtn solid" onclick="location.href='#s-map'">直接看定位表</button>
 </div>
 
@@ -1168,7 +1167,6 @@ var io=new IntersectionObserver(function(es){
 },{rootMargin:'-10% 0px -70% 0px'});
 document.querySelectorAll('section[id]').forEach(function(s){ io.observe(s); });
 
-document.getElementById('b-print').addEventListener('click',function(){ window.print(); });
 
 })();
 </script>
