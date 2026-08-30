@@ -49,7 +49,9 @@ header.top{position:sticky;top:0;z-index:30;background:rgba(251,245,236,.93);bac
 .qr-card .qe{font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--primary-ink)}
 .qr-card .qt{color:var(--ink2);font-size:14px;margin:2px 0 6px}
 .qr-card .qu{font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--bg2);padding:2px 8px;border-radius:6px;display:inline-block}
-@media(max-width:520px){.qr-card{flex-direction:column;text-align:center}}
+.qr-card .qr-txt{flex:1;min-width:0}
+.qr-card img.qr-logo{height:92px;width:auto;flex:0 0 auto;margin-left:14px}
+@media(max-width:520px){.qr-card{flex-direction:column;text-align:center}.qr-card img.qr-logo{margin-left:0;height:78px}}
 
 /* session block */
 section.session{padding:22px 0 6px}
@@ -171,18 +173,18 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;co
   <div class="hero" id="intro">
     <div class="qr-card">
       <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQMAAADRyf5aAAAABlBMVEUaFxT///8KLzV6AAABgElEQVR42u2a2wrDMAxDxf7/nz26+iI3Tiljb1MHIV3ydLBlxQ3syQPt0q5vd+F8PpNj8D+NVl548vzDLgRYB2eFDbUiXo0XcLKBT47x8x4r4jXwyvDKWBOv2/jy0SrexOtGv86QctXyfJR+Dbx8MvxUHwdeaS3OFwyGRLyYV+QeaGacnOLV48sHsANDqb94rfURKfSh++nzxWvhZZGWyLpIVl+8rvoVAcYxFSZf+rX4iTwMkVcNXvITG/2ykvjoU2Suitfi7209NdaiePV8pF5Xlkpu6ohX03tPPCvrxcGnfBz0vnNK02o6P4752DqEpf4m/3XTz6HmfbBz4ypei18lN19eAjoPbepjOYhmyNQvHPtfYSCsbCuyHyZe1/gqq3VJzzgciVePLyvHmsJlZc3E6xJfbFwBVLRBer/1E735BSoD4rX0J6KHk11WTk/xGnlFYQwjhrwgIF4Dr9IsuiIgP7E/D6Vg8dda9b+29RHVgka/1SReg//SzUHt+vmuN541HhU86nWqAAAAAElFTkSuQmCC" alt="進階無線電 QR Code">
-      <div>
+      <div class="qr-txt">
         <div class="qe">掃碼把課程帶著走</div>
         <div class="qt">手機掃這個 QR，上課跟著看、課後隨時複習。</div>
         <span class="qu">winson3qq.github.io/Radio-Advanced/</span>
       </div>
+      <img class="qr-logo" src="s1_assets/badge.webp" alt="台灣曙豐防災自訓團">
     </div>
     <div class="eyebrow">COURSE · 第一節</div>
     <h1>把選單上的數字，變成看得見的電波</h1>
     <p>用一台 RTL-SDR，把頻率、功率、天線、頻寬、步進、亞音、offset、靜噪一個一個「指」給你看。這是第一節課程的完整網頁版。</p>
     <div class="note key" style="margin-top:18px"><span class="ct">今天的路線</span>九段主題 ＋ 三段實作 ＋ 一個分組任務：
       ① 瀑布圖 · ② 頻率 · ③ 發射功率 · ④ 天線 · ⑤ 寬/窄頻 · ⑥ 頻道步進 · ⑦ 亞音 · ⑧ Offset · ⑨ 靜噪，中間穿插動手做與「架一座中繼台」的想一想，最後用一個地震通聯任務收尾。</div>
-    <div class="note tip"><span class="ct">看不懂術語？</span>可搭配 <a href="glossary.html">白話手冊</a>（生活比喻、不用公式）與 <a href="slides-s1.html">投影片圖片版</a> 一起看。</div>
   </div>
 
   <!-- ===================== SESSION 1 ===================== -->
@@ -682,7 +684,7 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;co
 
 <footer><div class="wrap">
   進階無線電 · 曙豐防災自訓團 ｜ 教學用途。頻率（如 145.050 MHz）為教學示意，實際請用主管機關核配頻率。<br>
-  站內其他頁：<a href="course-s2.html">第二節 · 無線科技分層</a> · <a href="glossary.html">白話手冊</a> · <a href="math.html">深入數學</a> · <a href="practice.html">分組練習</a> · <a href="theory.html">RF 理論（情境版）</a> · <a href="slides-s1.html">投影片圖片版</a>
+  延伸閱讀：<a href="course-s2.html">第二節 · 無線科技分層</a>
 </div></footer>
 
 </body>
