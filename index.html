@@ -44,6 +44,12 @@ header.top{position:sticky;top:0;z-index:30;background:rgba(251,245,236,.93);bac
 .eyebrow{font-family:var(--sans);font-weight:800;letter-spacing:.12em;font-size:12px;color:var(--primary-ink)}
 .hero h1{font-family:var(--disp);font-weight:800;font-size:34px;line-height:1.2;margin:8px 0 10px}
 .hero p{margin:0;color:var(--muted);font-size:16px}
+.qr-card{display:flex;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 18px;margin:0 0 22px;box-shadow:0 5px 18px rgba(120,90,60,.06)}
+.qr-card img.qr{width:96px;height:96px;flex:0 0 96px;border-radius:8px;background:#fff;padding:5px;border:1px solid var(--border);image-rendering:pixelated}
+.qr-card .qe{font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--primary-ink)}
+.qr-card .qt{color:var(--ink2);font-size:14px;margin:2px 0 6px}
+.qr-card .qu{font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--bg2);padding:2px 8px;border-radius:6px;display:inline-block}
+@media(max-width:520px){.qr-card{flex-direction:column;text-align:center}}
 
 /* session block */
 section.session{padding:22px 0 6px}
@@ -140,7 +146,7 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;co
 <body>
 
 <header class="top"><div class="bar">
-  <div class="brand">進階無線電 · 第一節<small>SDR × 手持無線電</small></div>
+  <div class="brand">進階無線電<small>SDR × 手持無線電</small></div>
   <nav>
     <a href="#intro">總覽</a>
     <a href="#s1">1 瀑布圖</a>
@@ -156,12 +162,21 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;co
     <a href="#s9">9 靜噪</a>
     <a href="#tr">現場排查</a>
     <a href="#final">任務</a>
+    <a href="course-s2.html" style="background:var(--teal-soft);border-color:#BEE6E2;color:var(--teal-ink)">第二節 →</a>
   </nav>
 </div></header>
 
 <div class="wrap">
 
   <div class="hero" id="intro">
+    <div class="qr-card">
+      <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQMAAADRyf5aAAAABlBMVEUaFxT///8KLzV6AAABgElEQVR42u2a2wrDMAxDxf7/nz26+iI3Tiljb1MHIV3ydLBlxQ3syQPt0q5vd+F8PpNj8D+NVl548vzDLgRYB2eFDbUiXo0XcLKBT47x8x4r4jXwyvDKWBOv2/jy0SrexOtGv86QctXyfJR+Dbx8MvxUHwdeaS3OFwyGRLyYV+QeaGacnOLV48sHsANDqb94rfURKfSh++nzxWvhZZGWyLpIVl+8rvoVAcYxFSZf+rX4iTwMkVcNXvITG/2ykvjoU2Suitfi7209NdaiePV8pF5Xlkpu6ohX03tPPCvrxcGnfBz0vnNK02o6P4752DqEpf4m/3XTz6HmfbBz4ypei18lN19eAjoPbepjOYhmyNQvHPtfYSCsbCuyHyZe1/gqq3VJzzgciVePLyvHmsJlZc3E6xJfbFwBVLRBer/1E735BSoD4rX0J6KHk11WTk/xGnlFYQwjhrwgIF4Dr9IsuiIgP7E/D6Vg8dda9b+29RHVgka/1SReg//SzUHt+vmuN541HhU86nWqAAAAAElFTkSuQmCC" alt="進階無線電 QR Code">
+      <div>
+        <div class="qe">掃碼把課程帶著走</div>
+        <div class="qt">手機掃這個 QR，上課跟著看、課後隨時複習。</div>
+        <span class="qu">winson3qq.github.io/Radio-Advanced/</span>
+      </div>
+    </div>
     <div class="eyebrow">COURSE · 第一節</div>
     <h1>把選單上的數字，變成看得見的電波</h1>
     <p>用一台 RTL-SDR，把頻率、功率、天線、頻寬、步進、亞音、offset、靜噪一個一個「指」給你看。這是第一節課程的完整網頁版。</p>
@@ -667,7 +682,7 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:26px 0 60px;co
 
 <footer><div class="wrap">
   進階無線電 · 曙豐防災自訓團 ｜ 教學用途。頻率（如 145.050 MHz）為教學示意，實際請用主管機關核配頻率。<br>
-  站內其他頁：<a href="glossary.html">白話手冊</a> · <a href="math.html">深入數學</a> · <a href="practice.html">分組練習</a> · <a href="theory.html">RF 理論（情境版）</a> · <a href="slides-s1.html">投影片圖片版</a>
+  站內其他頁：<a href="course-s2.html">第二節 · 無線科技分層</a> · <a href="glossary.html">白話手冊</a> · <a href="math.html">深入數學</a> · <a href="practice.html">分組練習</a> · <a href="theory.html">RF 理論（情境版）</a> · <a href="slides-s1.html">投影片圖片版</a>
 </div></footer>
 
 </body>
